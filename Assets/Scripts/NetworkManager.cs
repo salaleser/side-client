@@ -110,8 +110,8 @@ public class NetworkManager : MonoBehaviour
 			{
 				var cellPrefabInstance = Instantiate(cellPrefab, new Vector3(i, 0, j), Quaternion.identity);
 				var cell = cellPrefabInstance.GetComponent<Cell>();
-				cell.x = i;
-				cell.y = j;
+				cell.location.x = i;
+				cell.location.y = j;
 				foreach(var l in response.locations)
 				{
 					if (i == l.x && j == l.y)
@@ -150,37 +150,8 @@ public class NetworkManager : MonoBehaviour
 						}
 
 						var locationPrefabInstance = Instantiate(locationPrefab, cellPrefabInstance.transform);
-						switch (cl.address.type_id)
-						{
-							case 0:
-								var city = locationPrefabInstance.GetComponent<City>();
-								if (city != null)
-								{
-									city.location = l;
-								}
-								break;
-							case 1:
-								var block = locationPrefabInstance.GetComponent<Block>();
-								if (block != null)
-								{
-									block.location = l;
-								}
-								break;
-							case 2:
-								var landLot = locationPrefabInstance.GetComponent<LandLot>();
-								if (landLot != null)
-								{
-									landLot.location = l;
-								}
-								break;
-							case 3:
-								var facility = locationPrefabInstance.GetComponent<Facility>();
-								if (facility != null)
-								{
-									facility.location = l;
-								}
-								break;
-						}
+						var location = locationPrefabInstance.GetComponent<Location>();
+						location.location = l;
 					}
 				}
 			}

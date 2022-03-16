@@ -4,28 +4,13 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
 	public NetworkManager networkManager;
-	public Location currentLocation;
-
-	private void Start()
-	{
-	}
+	public LocationItem currentLocation;
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.M))
+		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			StartCoroutine(networkManager.Location(-1));
-		}
-		if (Input.GetKeyDown(KeyCode.N))
-		{
-			StartCoroutine(networkManager.Location(-2));
-		}
-		if (Input.GetKeyDown(KeyCode.B))
-		{
-			if (currentLocation.address.type_id > 0)
-			{
-				StartCoroutine(networkManager.Location(currentLocation.parent_id));
-			}
 		}
 
 		if (Input.GetKeyDown(KeyCode.Alpha0))
@@ -39,8 +24,11 @@ public class GameManager : MonoBehaviour
 		StartCoroutine(networkManager.Location(locationId));
 	}
 
-	public void ExitButton(int locationId)
+	public void ExitButton()
 	{
-		StartCoroutine(networkManager.Location(locationId));
+		if (currentLocation.address.type_id > 0)
+		{
+			StartCoroutine(networkManager.Location(currentLocation.parent_id));
+		}
 	}
 }

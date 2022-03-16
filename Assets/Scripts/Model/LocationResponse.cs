@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 [System.Serializable]
-public class Citizen
+public class CitizenItem
 {
     public int id;
     public string name;
@@ -31,7 +31,7 @@ public class Address
 }
 
 [System.Serializable]
-public class Location
+public class LocationItem
 {
     public int x;
     public int y;
@@ -59,7 +59,7 @@ public class Location
 [System.Serializable]
 public class LocationResponse
 {
-    public List<Citizen> citizens = new();
-    public List<Location> locations = new();
-    public Location current_location;
+    public List<CitizenItem> citizens = new();
+    public List<LocationItem> locations = new();
+    public LocationItem current_location;
 }

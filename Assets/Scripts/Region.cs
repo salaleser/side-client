@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Region : MonoBehaviour
+public class Region : Location
 {
-    public Location location;
 }
