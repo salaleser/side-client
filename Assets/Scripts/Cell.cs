@@ -9,7 +9,7 @@ public class Cell : Location
 
     private void Start()
     {
-        var textObject = GameObject.Find("Text");
+        var textObject = GameObject.Find("HUD/Text");
         _text = textObject.GetComponent<Text>();
 
         var gameManagerObject = GameObject.Find("GameManager");

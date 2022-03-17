@@ -15,6 +15,7 @@ public class NetworkManager : MonoBehaviour
 
 	public Text title;
 	public Text text;
+	public side.ChatController chatController;
 	public GameManager gameManager;
 	public GameObject cellPrefab;
 	public GameObject citizenLevel3Prefab;
@@ -76,6 +77,34 @@ public class NetworkManager : MonoBehaviour
         }
 	}
 
+	public IEnumerator Chat(int citizenId, int locationId, string text)
+    {
+		var query = $"citizen_id={citizenId}&location_id={locationId}";
+		var uri = $"http://{Host}:{Port}/chat?{query}";
+		
+		using (UnityWebRequest webRequest = UnityWebRequest.Post(uri, text))
+        {
+			yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    break;
+            }
+        }
+	}
+
 	private void Process(string json)
 	{
 		var response = JsonUtility.FromJson<LocationResponse>(json);
@@ -83,6 +112,8 @@ public class NetworkManager : MonoBehaviour
 		var cl = response.current_location;
 		gameManager.currentLocation = cl;
 		title.text = $"{cl.type_id} — {cl.address.title}";
+
+		chatController.ReplaceChat(response.chat);
 
 		for (var i = 1; i <= Width; i++)
 		{

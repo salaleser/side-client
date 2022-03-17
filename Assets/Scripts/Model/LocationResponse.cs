@@ -1,4 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+
+[System.Serializable]
+public class ChatItem
+{
+    public string citizen_id;
+    public string text;
+    public string created_at;
+
+    public override string ToString() => @$"[{DateTime.Parse(created_at).ToString("dd.MM.yyyy hh:mm:ss")}] {citizen_id}: {text}";
+}
 
 [System.Serializable]
 public class CitizenItem
@@ -9,12 +20,14 @@ public class CitizenItem
     public string name;
     public string action_type_emoji;
     public int root_item_id;
+    public List<ItemItem> items = new();
 
     public override string ToString() => @$"Citizen:
     X: {x}
     Y: {y}
     ID: {id}
-    Name: {name}";
+    Name: {name}
+    Items Count: {items.Count}";
 }
 
 [System.Serializable]
@@ -80,9 +93,9 @@ public class LocationItem
     public int type_id;
     public string owner_id;
     public int parent_id;
+    public List<ItemItem> items = new();
     public string type_emoji;
     public int root_item_id;
-
 
     public override string ToString() => @$"Location:
     X: {x}
@@ -92,6 +105,7 @@ public class LocationItem
     Type ID: {type_id}
     Owner ID: {owner_id}
     Parent ID: {parent_id}
+    Items Count: {items.Count}
 
 {address}";
 }
@@ -101,6 +115,6 @@ public class LocationResponse
 {
     public List<CitizenItem> citizens = new();
     public List<LocationItem> locations = new();
-    public List<ItemItem> items = new();
+    public List<ChatItem> chat = new();
     public LocationItem current_location;
 }
