@@ -13,15 +13,15 @@ public class Cell : Location
         _text = textObject.GetComponent<Text>();
 
         var gameManagerObject = GameObject.Find("GameManager");
-        _gameManager = gameManagerObject.GetComponent<GameManager>();
+        gameManager = gameManagerObject.GetComponent<GameManager>();
 
-        _hud = GameObject.Find("HUD");
+        hud = GameObject.Find("HUD");
 
-        var exitButton = Instantiate(buttonPrefab, new Vector3(x, y - 30 * 1, z), Quaternion.identity, _hud.transform);
+        var exitButton = Instantiate(buttonPrefab, new Vector3(130, 30, z), Quaternion.identity, hud.transform);
         exitButton.SetActive(false);
         exitButton.GetComponentInChildren<Text>().text = "Exit";
         exitButton.GetComponent<Button>().onClick.AddListener(() => {
-            _gameManager.ExitButton();
+            gameManager.ExitButton();
         });
         buttons.Add(exitButton);
     }
@@ -47,14 +47,15 @@ public class Cell : Location
                 }
                 foreach(var location in hit.transform.GetComponentsInChildren<Location>())
                 {
-                    _text.text = location.location.ToString();
+                    _text.text += $"\n\n{location.item}";
                     location.ShowButtons();
+                }
+                foreach(var citizen in hit.transform.GetComponentsInChildren<Citizen>())
+                {
+                    _text.text += $"\n\n{citizen.item}";
+                    citizen.ShowButtons();
                 }
             }
         }
     }
-
-    public override string ToString() => @$"Cell:
-    X: {x}
-    Y: {y}";
 }

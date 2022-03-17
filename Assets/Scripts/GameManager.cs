@@ -31,4 +31,9 @@ public class GameManager : MonoBehaviour
 			StartCoroutine(networkManager.Location(currentLocation.parent_id));
 		}
 	}
+
+	public void InventoryButton(int citizenId)
+	{
+		Debug.Log("InventoryButton");
+	}
 }

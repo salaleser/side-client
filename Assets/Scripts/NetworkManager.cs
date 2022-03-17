@@ -17,6 +17,9 @@ public class NetworkManager : MonoBehaviour
 	public Text text;
 	public GameManager gameManager;
 	public GameObject cellPrefab;
+	public GameObject citizenLevel3Prefab;
+	public GameObject citizenLevel4Prefab;
+	public GameObject citizenLevel5Prefab;
 	public GameObject cityPrefab;
 	public GameObject blockPrefab;
 	public GameObject landLotPrefab;
@@ -25,36 +28,13 @@ public class NetworkManager : MonoBehaviour
 	public GameObject copperMineFacilityPrefab;
 	public GameObject furnitureFactoryFacilityPrefab;
 
-	private readonly List<GameObject> _buttonsList = new();
-
 	private void DestroyAll()
 	{
         text.text = "—";
 		var objects = GameObject.FindGameObjectsWithTag("Side");
 		foreach(var o in objects)
 		{
-			foreach(var bo in o.GetComponentsInChildren<City>())
-			{
-				foreach (var b in bo.buttons)
-				{
-					Destroy(b);
-				}
-			}
-			foreach(var bo in o.GetComponentsInChildren<Block>())
-			{
-				foreach (var b in bo.buttons)
-				{
-					Destroy(b);
-				}
-			}
-			foreach(var bo in o.GetComponentsInChildren<LandLot>())
-			{
-				foreach (var b in bo.buttons)
-				{
-					Destroy(b);
-				}
-			}
-			foreach(var bo in o.GetComponentsInChildren<Facility>())
+			foreach(var bo in o.GetComponentsInChildren<Location>())
 			{
 				foreach (var b in bo.buttons)
 				{
@@ -104,14 +84,14 @@ public class NetworkManager : MonoBehaviour
 		gameManager.currentLocation = cl;
 		title.text = $"{cl.type_id} — {cl.address.title}";
 
-		for (var i = 0; i < Width; i++)
+		for (var i = 1; i <= Width; i++)
 		{
-			for (var j = 0; j < Height; j++)
+			for (var j = 1; j <= Height; j++)
 			{
 				var cellPrefabInstance = Instantiate(cellPrefab, new Vector3(i, 0, j), Quaternion.identity);
 				var cell = cellPrefabInstance.GetComponent<Cell>();
-				cell.location.x = i;
-				cell.location.y = j;
+				cell.item.x = i;
+				cell.item.y = j;
 				foreach(var l in response.locations)
 				{
 					if (i == l.x && j == l.y)
@@ -151,7 +131,37 @@ public class NetworkManager : MonoBehaviour
 
 						var locationPrefabInstance = Instantiate(locationPrefab, cellPrefabInstance.transform);
 						var location = locationPrefabInstance.GetComponent<Location>();
-						location.location = l;
+						location.item = l;
+					}
+				}
+
+				foreach(var c in response.citizens)
+				{
+					if (i == c.x && j == c.y)
+					{
+						GameObject citizenPrefab = null;
+
+						if (cl.address.type_id == 2)
+						{
+							citizenPrefab = citizenLevel3Prefab;
+						}
+						else if (cl.address.type_id == 3)
+						{
+							citizenPrefab = citizenLevel4Prefab;
+						}
+						else if (cl.address.type_id == 4)
+						{
+							citizenPrefab = citizenLevel5Prefab;
+						}
+						else
+						{
+							// TODO: житель в странной локации, не должно его тут быть
+							continue;
+						}
+
+						var citizenPrefabInstance = Instantiate(citizenPrefab, cellPrefabInstance.transform);
+						var citizen = citizenPrefabInstance.GetComponent<Citizen>();
+						citizen.item = c;
 					}
 				}
 			}

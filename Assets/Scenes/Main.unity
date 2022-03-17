@@ -352,6 +352,9 @@ MonoBehaviour:
   text: {fileID: 1881210457}
   gameManager: {fileID: 1840017880}
   cellPrefab: {fileID: 9040041545605410619, guid: bd352a1f5da4c4da2a6b3139f4f75e89, type: 3}
+  citizenLevel3Prefab: {fileID: 9040041545605410619, guid: 74093c32a82bd4cc19030f9f287d8c75, type: 3}
+  citizenLevel4Prefab: {fileID: 9040041545605410619, guid: 682c75b716f314f4ab6a7c7ee70b47bd, type: 3}
+  citizenLevel5Prefab: {fileID: 9040041545605410619, guid: 634fbc60833f8483c94ddca97232a269, type: 3}
   cityPrefab: {fileID: 9040041545605410619, guid: 2c45941604218458abae46fcac79b616, type: 3}
   blockPrefab: {fileID: 9040041545605410619, guid: 244fea8cb370a4ae8a7158842e2fe4f2, type: 3}
   landLotPrefab: {fileID: 9040041545605410619, guid: 061dc6b41704745ac8ef3642a72bd9db, type: 3}
@@ -748,17 +751,17 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 24
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 2
+    m_MinSize: 0
     m_MaxSize: 40
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 0.8
   m_Text: New Text
 --- !u!222 &1881210458
 CanvasRenderer:

@@ -732,7 +732,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e679d48b095304749b3b315ab8f1c490, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  location:
+  buttonPrefab: {fileID: 1343136061256876229, guid: fe8725bef40a6477495944cb5e24647a, type: 3}
+  buttons: []
+  item:
     x: 0
     y: 0
     id: 0
@@ -747,8 +749,6 @@ MonoBehaviour:
     owner_id: 
     parent_id: 0
     type_emoji: 
-  buttonPrefab: {fileID: 1343136061256876229, guid: fe8725bef40a6477495944cb5e24647a, type: 3}
-  buttons: []
 --- !u!1 &9040041546069332437
 GameObject:
   m_ObjectHideFlags: 0

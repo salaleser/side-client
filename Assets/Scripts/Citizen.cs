@@ -2,12 +2,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Location : Entity
+public class Citizen : Entity
 {
-    public LocationItem item;
+    public CitizenItem item;
 
     protected const int x = 130;
-    protected const int y = 300;
+    protected const int y = 600;
     protected const int z = 0;
 
     private void Start()
@@ -19,9 +19,9 @@ public class Location : Entity
 
 		var enterButton = Instantiate(buttonPrefab, new Vector3(x, y - 30 * 0, z), Quaternion.identity, hud.transform);
         enterButton.SetActive(false);
-        enterButton.GetComponentInChildren<Text>().text = "Enter";
+        enterButton.GetComponentInChildren<Text>().text = "Inventory";
         enterButton.GetComponent<Button>().onClick.AddListener(() => {
-            gameManager.EnterButton(item.id);
+            gameManager.InventoryButton(item.id);
         });
         buttons.Add(enterButton);
     }
