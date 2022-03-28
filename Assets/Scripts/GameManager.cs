@@ -3,37 +3,23 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-	public NetworkManager networkManager;
-	public LocationItem currentLocation;
+	public AddressItem currentAddress;
+	public CitizenItem currentCitizen;
 
-	private void Update()
+	public static GameManager Instance { get; private set; }
+
+	private void Awake()
 	{
-		if (Input.GetKeyDown(KeyCode.Space))
+		if (Instance == null)
 		{
-			StartCoroutine(networkManager.Location(-1));
+			Instance = this;
+			DontDestroyOnLoad(gameObject);
 		}
-
-		if (Input.GetKeyDown(KeyCode.Alpha0))
+		else
 		{
-			SceneManager.LoadScene("Main");
-		}
-	}
-
-	public void EnterButton(int locationId)
-	{
-		StartCoroutine(networkManager.Location(locationId));
-	}
-
-	public void ExitButton()
-	{
-		if (currentLocation.address.type_id > 0)
-		{
-			StartCoroutine(networkManager.Location(currentLocation.parent_id));
+			Destroy(gameObject);
 		}
 	}
 
-	public void InventoryButton(int citizenId)
-	{
-		Debug.Log("InventoryButton");
-	}
+
 }

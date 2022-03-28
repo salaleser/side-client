@@ -7,8 +7,6 @@ namespace side
 {
     public class ChatController : MonoBehaviour
     {
-        public GameManager gameManager;
-        public NetworkManager networkManager;
         public TMP_InputField inputField;
 
         public TMP_Text displayOutput;
@@ -34,7 +32,7 @@ namespace side
 
         public void Send(string text)
         {
-            StartCoroutine(networkManager.Chat(263, gameManager.currentLocation.id, text));
+            NetworkManager.Instance.Chat(GameManager.Instance.currentCitizen.id, GameManager.Instance.currentAddress.locations[0].id, text);
 
             inputField.text = string.Empty;
         }

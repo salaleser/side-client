@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Item : Entity
+public class Lot : Entity
 {
-    public ItemItem item;
+    public LotItem item;
 
     private void Start()
     {
-        var marketButton = Instantiate(buttonPrefab, new Vector3(130, 60, 0), Quaternion.identity, NetworkManager.Instance.hud.transform);
-        marketButton.SetActive(false);
-        marketButton.GetComponentInChildren<Text>().text = "Market";
-        marketButton.GetComponent<Button>().onClick.AddListener(() => {
-            NetworkManager.Instance.Market();
+        var exitButton = Instantiate(buttonPrefab, new Vector3(130, 30, 0), Quaternion.identity, NetworkManager.Instance.hud.transform);
+        exitButton.SetActive(false);
+        exitButton.GetComponentInChildren<Text>().text = "Exit";
+        exitButton.GetComponent<Button>().onClick.AddListener(() => {
+            NetworkManager.Instance.ExitButton();
         });
-        buttons.Add(marketButton);
+        buttons.Add(exitButton);
 
         var openButton = Instantiate(buttonPrefab, new Vector3(130, 120, 0), Quaternion.identity, NetworkManager.Instance.hud.transform);
         openButton.SetActive(false);
         openButton.GetComponentInChildren<Text>().text = "Open";
         openButton.GetComponent<Button>().onClick.AddListener(() => {
-            NetworkManager.Instance.Inventory(item.id);
+            NetworkManager.Instance.Inventory(item.item_id);
         });
         buttons.Add(openButton);
     }

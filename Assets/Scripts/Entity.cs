@@ -7,9 +7,6 @@ public class Entity : MonoBehaviour
     public GameObject buttonPrefab;
     public List<GameObject> buttons = new();
 
-    protected GameManager gameManager;
-    protected GameObject hud;
-
     public void ShowButtons()
     {
         foreach(var b in buttons)

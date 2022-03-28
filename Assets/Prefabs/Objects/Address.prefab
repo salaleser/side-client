@@ -676,7 +676,7 @@ GameObject:
   - component: {fileID: 6339760826222529971}
   - component: {fileID: 6432805631788093170}
   m_Layer: 0
-  m_Name: Cell
+  m_Name: Address
   m_TagString: Side
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -729,24 +729,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 9040041545605410619}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e679d48b095304749b3b315ab8f1c490, type: 3}
+  m_Script: {fileID: 11500000, guid: b45fae80db73649bcb6a55692d1d389b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   buttonPrefab: {fileID: 1343136061256876229, guid: fe8725bef40a6477495944cb5e24647a, type: 3}
   buttons: []
   item:
+    id: 0
     x: 0
     y: 0
-    id: 0
     title: 
-    address:
-      id: 0
-      title: 
-      type_id: 0
-      parent_id: 0
-      type_emoji: 
     type_id: 0
-    owner_id: 
     parent_id: 0
     type_emoji: 
 --- !u!1 &9040041546069332437
