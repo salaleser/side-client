@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 [System.Serializable]
-public class ChatItem
+public class MessageItem
 {
     public string citizen_id;
     public string text;

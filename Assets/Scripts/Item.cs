@@ -9,7 +9,7 @@ public class Item : Entity
 
     private void Start()
     {
-        var marketButton = Instantiate(buttonPrefab, new Vector3(130, 60, 0), Quaternion.identity, NetworkManager.Instance.hud.transform);
+        var marketButton = Instantiate(buttonPrefab, new Vector3(130, 60, 0), Quaternion.identity, NetworkManager.Instance.inventoryCanvas.transform);
         marketButton.SetActive(false);
         marketButton.GetComponentInChildren<Text>().text = "Market";
         marketButton.GetComponent<Button>().onClick.AddListener(() => {
@@ -17,7 +17,7 @@ public class Item : Entity
         });
         buttons.Add(marketButton);
 
-        var openButton = Instantiate(buttonPrefab, new Vector3(130, 120, 0), Quaternion.identity, NetworkManager.Instance.hud.transform);
+        var openButton = Instantiate(buttonPrefab, new Vector3(130, 120, 0), Quaternion.identity, NetworkManager.Instance.inventoryCanvas.transform);
         openButton.SetActive(false);
         openButton.GetComponentInChildren<Text>().text = "Open";
         openButton.GetComponent<Button>().onClick.AddListener(() => {

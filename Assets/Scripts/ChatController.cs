@@ -21,7 +21,7 @@ namespace side
             inputField.onSubmit.RemoveListener(Send);
         }
 
-        public void ReplaceChat(List<ChatItem> messages)
+        public void ReplaceChat(List<MessageItem> messages)
         {
             displayOutput.text = string.Empty;
             foreach(var m in messages)
@@ -32,7 +32,7 @@ namespace side
 
         public void Send(string text)
         {
-            NetworkManager.Instance.Chat(GameManager.Instance.currentCitizen.id, GameManager.Instance.currentAddress.locations[0].id, text);
+            NetworkManager.Instance.Chat(GameManager.Instance.currentCitizen.id, GameManager.Instance.currentCitizen.room_id, text);
 
             inputField.text = string.Empty;
         }

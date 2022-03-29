@@ -476,7 +476,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 68c87ef7f9c2847c6bd82be9d486de00, type: 2}
+  - {fileID: 2100000, guid: 30fb50eaedade485dbdfc003938903c8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -674,9 +674,9 @@ GameObject:
   m_Component:
   - component: {fileID: 9040041545605410616}
   - component: {fileID: 6339760826222529971}
-  - component: {fileID: 6432805631788093170}
+  - component: {fileID: 5854104257506822970}
   m_Layer: 0
-  m_Name: Address
+  m_Name: StorageRoom
   m_TagString: Side
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -720,7 +720,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 0.1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6432805631788093170
+--- !u!114 &5854104257506822970
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -729,20 +729,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 9040041545605410619}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b45fae80db73649bcb6a55692d1d389b, type: 3}
+  m_Script: {fileID: 11500000, guid: c273cc49513744851a315ade24e04d1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   buttonPrefab: {fileID: 1343136061256876229, guid: fe8725bef40a6477495944cb5e24647a, type: 3}
   buttons: []
   item:
     id: 0
+    type_id: 0
     x: 0
     y: 0
-    title: 
-    type_id: 0
-    parent_id: 0
-    type_emoji: 
-    locations: []
+    w: 0
+    h: 0
+    title: 0
+    room_item_id: 0
+    items: []
+    citizens: []
+    messages: []
 --- !u!1 &9040041546069332437
 GameObject:
   m_ObjectHideFlags: 0

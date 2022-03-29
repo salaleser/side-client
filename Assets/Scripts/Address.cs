@@ -9,12 +9,15 @@ public class Address : Entity
 
     private void Start()
     {
-        var enterButton = Instantiate(buttonPrefab, new Vector3(130, 300, 0), Quaternion.identity, this.transform);
-        enterButton.SetActive(false);
-        enterButton.GetComponentInChildren<Text>().text = "Enter";
-        enterButton.GetComponent<Button>().onClick.AddListener(() => {
-            NetworkManager.Instance.Location(item.id);
-        });
-        buttons.Add(enterButton);
+        if (item.type_id < 4)
+        {
+            var addressButton = Instantiate(buttonPrefab, new Vector3(130, 300, 0), Quaternion.identity, this.transform);
+            addressButton.SetActive(false);
+            addressButton.GetComponentInChildren<Text>().text = $"Inspect {item.title}";
+            addressButton.GetComponent<Button>().onClick.AddListener(() => {
+                NetworkManager.Instance.Address(item.id);
+            });
+            buttons.Add(addressButton);
+        }
     }
 }

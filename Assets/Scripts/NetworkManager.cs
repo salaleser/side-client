@@ -12,23 +12,27 @@ public class NetworkManager : Manager
 	private const int Width = 8;
 	private const int Height = 8;
 
-	public GameObject buttonsCanvas;
+	public GameObject mainButtonsPanel;
     public List<GameObject> buttons = new();
 	public GameObject marketCanvas;
 	public GameObject inventoryCanvas;
+	public GameObject tasksCanvas;
 	public GameObject entitiesCanvas;
+	public GameObject shading;
 
-	public GameObject hud;
 	public Text title;
 	public Text text;
 	public side.ChatController chatController;
 	public GameObject mainButtonPrefab;
 	public GameObject itemPrefab;
+	public GameObject taskPrefab;
 	public GameObject lotPrefab;
 	public GameObject addressPrefab;
-	public GameObject citizenLevel3Prefab;
-	public GameObject citizenLevel4Prefab;
-	public GameObject citizenLevel5Prefab;
+	public GameObject hrDepartmentRoomPrefab;
+	public GameObject workshopRoomPrefab;
+	public GameObject lobbyRoomPrefab;
+	public GameObject storageRoomPrefab;
+	public GameObject citizenPrefab;
 	public GameObject cityPrefab;
 	public GameObject blockPrefab;
 	public GameObject landLotPrefab;
@@ -54,28 +58,35 @@ public class NetworkManager : Manager
 
 	private void Start()
 	{
-		Location(GameManager.Instance.currentAddress.id);
+		Citizen(263);
 
-		var marketButton = Instantiate(mainButtonPrefab, new Vector3(600, 30, 0), Quaternion.identity, buttonsCanvas.transform);
-        marketButton.GetComponentInChildren<Text>().text = "M: [A]";
+		var marketButton = Instantiate(mainButtonPrefab, new Vector3(600, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        marketButton.GetComponentInChildren<Text>().text = "Mrkt";
         marketButton.GetComponent<Button>().onClick.AddListener(() => {
             NetworkManager.Instance.Market();
         });
         buttons.Add(marketButton);
 
-		var exitButton = Instantiate(mainButtonPrefab, new Vector3(660, 30, 0), Quaternion.identity, buttonsCanvas.transform);
-        exitButton.GetComponentInChildren<Text>().text = "Exit";
-        exitButton.GetComponent<Button>().onClick.AddListener(() => {
-            NetworkManager.Instance.ExitButton();
+		var closeButton = Instantiate(mainButtonPrefab, new Vector3(660, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        closeButton.GetComponentInChildren<Text>().text = "Close";
+        closeButton.GetComponent<Button>().onClick.AddListener(() => {
+            NetworkManager.Instance.CloseButton();
         });
-        buttons.Add(exitButton);
+        buttons.Add(closeButton);
 
-		var locationUpButton = Instantiate(mainButtonPrefab, new Vector3(720, 30, 0), Quaternion.identity, buttonsCanvas.transform);
-        locationUpButton.GetComponentInChildren<Text>().text = "Up";
-        locationUpButton.GetComponent<Button>().onClick.AddListener(() => {
-            NetworkManager.Instance.LocationUpButton();
+		var mapButton = Instantiate(mainButtonPrefab, new Vector3(720, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        mapButton.GetComponentInChildren<Text>().text = "Map";
+        mapButton.GetComponent<Button>().onClick.AddListener(() => {
+            NetworkManager.Instance.MapButton();
         });
-        buttons.Add(locationUpButton);
+        buttons.Add(mapButton);
+
+		var citizenButton = Instantiate(mainButtonPrefab, new Vector3(780, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        citizenButton.GetComponentInChildren<Text>().text = "Ctzn";
+        citizenButton.GetComponent<Button>().onClick.AddListener(() => {
+            NetworkManager.Instance.CitizenButton();
+        });
+        buttons.Add(citizenButton);
 	}
 
 	void Update() {  
@@ -90,19 +101,27 @@ public class NetworkManager : Manager
         }
     }
 
-	public void LocationUpButton()
+	public void MapButton()
 	{
 		HideAllButtons();
-		if (GameManager.Instance.currentAddress.type_id > 0)
-		{
-			Location(GameManager.Instance.currentAddress.parent_id);
-		}
+		shading.SetActive(false);
+		Address(1);
 	}
 
-	public void ExitButton()
+	public void CitizenButton()
 	{
 		HideAllButtons();
-		Location(GameManager.Instance.currentAddress.id);
+		shading.SetActive(false);
+		Citizen(GameManager.Instance.currentCitizen.id);
+	}
+
+	public void CloseButton()
+	{
+		HideAllButtons();
+		shading.SetActive(false);
+		DestroyAll<Item>();
+		DestroyAll<Lot>();
+		DestroyAll<Task>();
 	}
 
 	public void ShowButtons(Transform transform)
@@ -111,7 +130,7 @@ public class NetworkManager : Manager
 		text.text = "";
 		foreach(var address in transform.GetComponentsInChildren<Address>())
 		{
-			text.text += $"\n\n{address.item}";
+			text.text += $"{address.item}";
 			address.ShowButtons();
 		}
 		foreach(var location in transform.GetComponentsInChildren<Location>())
@@ -124,6 +143,11 @@ public class NetworkManager : Manager
 			text.text += $"\n\n{citizen.item}";
 			citizen.ShowButtons();
 		}
+		foreach(var room in transform.GetComponentsInChildren<Room>())
+		{
+			text.text += $"\n\n{room.item}";
+			room.ShowButtons();
+		}
 	}
 
 	public void HideAllButtons()
@@ -135,35 +159,20 @@ public class NetworkManager : Manager
 		}
 	}
 
-	private void DestroyAll()
+	private void DestroyAll<T>() where T : Entity
 	{
-		HideAllButtons();
         text.text = "—";
 		var objects = GameObject.FindGameObjectsWithTag("Side");
 		foreach(var o in objects)
 		{
-			foreach(var bo in o.GetComponentsInChildren<Location>())
+			foreach(var bo in o.GetComponentsInChildren<T>())
 			{
 				foreach (var b in bo.buttons)
 				{
 					Destroy(b);
 				}
+				Destroy(o);
 			}
-			foreach(var bo in o.GetComponentsInChildren<Item>())
-			{
-				foreach (var b in bo.buttons)
-				{
-					Destroy(b);
-				}
-			}
-			foreach(var bo in o.GetComponentsInChildren<Lot>())
-			{
-				foreach (var b in bo.buttons)
-				{
-					Destroy(b);
-				}
-			}
-			Destroy(o);
 		}
 	}
 
@@ -199,58 +208,120 @@ public class NetworkManager : Manager
 
 	public void Market()
 	{
+		shading.SetActive(true);
+
 		var query = $"";
 		var uri = $"http://{Host}:{Port}/market?{query}";
 		StartCoroutine(Request(uri, (result) =>
 		{
-			DestroyAll();
 			ProcessMarket(result);
 		}));
 	}
 
-	public void Location(int locationId)
+	public void Citizen(int citizenId)
     {
-		var query = $"location_id={locationId}";
-		var uri = $"http://{Host}:{Port}/location?{query}";
+		var query = $"citizen_id={citizenId}";
+		var uri = $"http://{Host}:{Port}/citizen?{query}";
 		
 		StartCoroutine(Request(uri, (result) =>
 		{
-			DestroyAll();
-			ProcessLocation(result);
+			ProcessCitizen(result);
+		}));
+	}
+
+	public void Address(int addressId)
+    {
+		var query = $"address_id={addressId}";
+		var uri = $"http://{Host}:{Port}/address?{query}";
+		
+		StartCoroutine(Request(uri, (result) =>
+		{
+			ProcessAddress(result);
+		}));
+	}
+
+	public void Floor(int locationId, int floorNumber)
+    {
+		var query = $"location_id={locationId}&floor_number={floorNumber}";
+		var uri = $"http://{Host}:{Port}/floor?{query}";
+		
+		StartCoroutine(Request(uri, (result) =>
+		{
+			ProcessFloor(result);
+		}));
+	}
+
+	public void Room(int roomId)
+    {
+		var query = $"citizen_id={GameManager.Instance.currentCitizen.id}&room_id={roomId}";
+		var uri = $"http://{Host}:{Port}/room?{query}";
+		
+		StartCoroutine(Request(uri, (result) =>
+		{
+			Floor(GameManager.Instance.currentCitizen.location_id, GameManager.Instance.currentCitizen.floor_number);
 		}));
 	}
 
 	public void Inventory(int rootItemId)
     {
+		shading.SetActive(true);
+
 		var query = $"root_item_id={rootItemId}";
 		var uri = $"http://{Host}:{Port}/inventory?{query}";
 		
 		StartCoroutine(Request(uri, (result) =>
 		{
-			DestroyAll();
 			ProcessInventory(result);
 		}));
 	}
 
-	public void Chat(int citizenId, int locationId, string text)
+	public void Chat(int citizenId, int roomId, string text)
     {
-		var query = $"citizen_id={citizenId}&location_id={locationId}";
+		text = UnityWebRequest.EscapeURL(text);
+
+		var query = $"citizen_id={citizenId}&room_id={roomId}&text={text}";
 		var uri = $"http://{Host}:{Port}/chat?{query}";
 		
 		StartCoroutine(Request(uri, (result) =>
 		{
+			var c = JsonUtility.FromJson<ChatResponse>(result);
+			chatController.ReplaceChat(c.messages);
 		}));
 	}
 
-	private void ProcessLocation(string json)
+	public void Tasks(int locationId)
 	{
-		var response = JsonUtility.FromJson<LocationResponse>(json);
+		shading.SetActive(true);
 
-		GameManager.Instance.currentAddress = response.current_address;
-		var ca = GameManager.Instance.currentAddress;
+		var query = $"location_id={locationId}";
+		var uri = $"http://{Host}:{Port}/tasks?{query}";
+		
+		StartCoroutine(Request(uri, (result) =>
+		{
+			ProcessTasks(result);
+		}));
+	}
+
+	public void TaskAccept(int citizenId, int taskId)
+	{
+		var query = $"citizen_id={citizenId}&task_id={taskId}";
+		var uri = $"http://{Host}:{Port}/task-accept?{query}";
+		
+		StartCoroutine(Request(uri, (result) =>
+		{
+			ProcessTasks(result);
+		}));
+	}
+
+	private void ProcessAddress(string json)
+	{
+		var response = JsonUtility.FromJson<AddressResponse>(json);
+
+		DestroyAll<Room>();
+		DestroyAll<Address>();
+
+		var ca = response.current_address;
 		title.text = $"{ca.type_id} — {ca.title}";
-
-		chatController.ReplaceChat(response.chat);
 
 		for (var i = 1; i <= Width; i++)
 		{
@@ -312,42 +383,82 @@ public class NetworkManager : Manager
 						var location = locationPrefabInstance.GetComponent<Location>();
 				
 						location.item = l;
-
-						foreach(var c in l.citizens)
-						{
-							if (i != c.x && j != c.y)
-							{
-								continue;
-							}
-
-							GameObject citizenPrefab = null;
-
-							if (a.type_id == 2)
-							{
-								citizenPrefab = citizenLevel3Prefab;
-							}
-							else if (a.type_id == 3)
-							{
-								citizenPrefab = citizenLevel4Prefab;
-							}
-							else if (a.type_id == 4)
-							{
-								citizenPrefab = citizenLevel5Prefab;
-							}
-							else
-							{
-								// TODO: житель в странной локации, не должно его тут быть
-								continue;
-							}
-
-							var citizenPrefabInstance = Instantiate(citizenPrefab, addressPrefabInstance.transform);
-							var citizen = citizenPrefabInstance.GetComponent<Citizen>();
-							citizen.item = c;
-						}
 					}
 				}
 			}
 		}
+	}
+
+	private void ProcessFloor(string json)
+	{
+		var response = JsonUtility.FromJson<FloorResponse>(json);
+
+		DestroyAll<Room>();
+		DestroyAll<Address>();
+
+		var floor = response.floor;
+		title.text = $"{floor.number} — {floor.rooms.Count}";
+
+		foreach(var r in floor.rooms)
+		{
+			var isCitizensInstantiated = false;
+			for (var i = 1; i <= Width; i++)
+			{
+				for (var j = 1; j <= Height; j++)
+				{
+					if (i >= r.x && i < r.x + r.w && j <= r.y && j > r.y - r.h)
+					{
+						isCitizensInstantiated = InstantiateRoom(r, i, j, isCitizensInstantiated);
+					}
+				}
+			}
+		}
+	}
+
+	private bool InstantiateRoom(RoomItem r, int x, int y, bool isCitizensInstantiated)
+	{
+		GameObject roomPrefab = null;
+		if (r.type_id == 1)
+		{
+			roomPrefab = hrDepartmentRoomPrefab;
+		}
+		else if (r.type_id == 2)
+		{
+			roomPrefab = workshopRoomPrefab;
+		}
+		else if (r.type_id == 3)
+		{
+			roomPrefab = lobbyRoomPrefab;
+		}
+		else if (r.type_id == 4)
+		{
+			roomPrefab = storageRoomPrefab;
+		}
+
+		var roomPrefabInstance = Instantiate(roomPrefab, new Vector3(x, 0, y), Quaternion.identity, entitiesCanvas.transform);
+		var room = roomPrefabInstance.GetComponent<Room>();
+
+		room.item = r;
+
+		if (!isCitizensInstantiated)
+		{
+			// TODO: расположить по клеткам
+			foreach(var c in r.citizens)
+			{
+				var citizenPrefabInstance = Instantiate(citizenPrefab, roomPrefabInstance.transform);
+				var citizen = citizenPrefabInstance.GetComponent<Citizen>();
+				citizen.item = c;
+				
+				if (c.id == GameManager.Instance.currentCitizen.id)
+				{
+					GameManager.Instance.currentCitizen = c;
+					chatController.ReplaceChat(r.messages);
+				}
+			}
+			isCitizensInstantiated = true;
+		}
+
+		return isCitizensInstantiated;
 	}
 
     private void ProcessMarket(string json)
@@ -357,6 +468,8 @@ public class NetworkManager : Manager
         {
             return;
         }
+
+		DestroyAll<Lot>();
 
         var col = 0;
         var row = 0;
@@ -379,6 +492,18 @@ public class NetworkManager : Manager
         }
 	}
 
+	private void ProcessCitizen(string json)
+	{
+		var response = JsonUtility.FromJson<CitizenResponse>(json);
+        if (response == null)
+        {
+            return;
+        }
+
+		GameManager.Instance.currentCitizen = response.citizen;
+		Floor(GameManager.Instance.currentCitizen.location_id, GameManager.Instance.currentCitizen.floor_number);
+	}
+
     private void ProcessInventory(string json)
 	{
 		var response = JsonUtility.FromJson<InventoryResponse>(json);
@@ -386,6 +511,8 @@ public class NetworkManager : Manager
         {
             return;
         }
+
+		DestroyAll<Item>();
 
         if (response.title != null)
         {
@@ -408,6 +535,39 @@ public class NetworkManager : Manager
             var button = itemInstance.GetComponent<Button>();
             button.GetComponentInChildren<TMP_Text>().text = response.items[i].type_title;
             button.onClick.AddListener(item.Handler);
+
+            row++;
+        }
+	}
+
+	private void ProcessTasks(string json)
+	{
+		var response = JsonUtility.FromJson<TaskResponse>(json);
+        if (response == null)
+        {
+            return;
+        }
+
+		DestroyAll<Task>();
+
+        title.text = $"Tasks (Location ID {GameManager.Instance.currentCitizen.location_id})";
+
+        var col = 0;
+        var row = 0;
+		for (var i = 0; i < response.tasks.Count; i++)
+        {
+            if (i % 5 == 0)
+            {
+                col++;
+                row = 0;
+            }
+
+            var taskInstance = Instantiate(taskPrefab, new Vector3(100 + 120 * col, 700 - 60 * row, 0), Quaternion.identity, tasksCanvas.transform);
+            var task = taskInstance.GetComponent<Task>();
+            task.item = response.tasks[i];
+            var button = taskInstance.GetComponent<Button>();
+            button.GetComponentInChildren<TMP_Text>().text = $"{task.item.title} ({(task.item.is_free ? "free" : "busy")})";
+            button.onClick.AddListener(task.Handler);
 
             row++;
         }

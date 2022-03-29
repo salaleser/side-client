@@ -6,15 +6,11 @@ public class Citizen : Entity
 {
     public CitizenItem item;
 
-    protected const int x = 130;
-    protected const int y = 300;
-    protected const int z = 0;
-
     private void Start()
     {
-		var inventoryButton = Instantiate(buttonPrefab, new Vector3(x, y - 30 * 0, z), Quaternion.identity, NetworkManager.Instance.hud.transform);
+		var inventoryButton = Instantiate(buttonPrefab, new Vector3(130, 270, 0), Quaternion.identity, this.transform);
         inventoryButton.SetActive(false);
-        inventoryButton.GetComponentInChildren<Text>().text = "Inventory";
+        inventoryButton.GetComponentInChildren<Text>().text = $"Inventory ({item.name})";
         inventoryButton.GetComponent<Button>().onClick.AddListener(() => {
 		    NetworkManager.Instance.Inventory(item.root_item_id);
         });

@@ -10,10 +10,7 @@ public class LocationItem
     public string owner_id;
     public int parent_id;
     public int address_id;
-    public List<ItemItem> items = new();
-    public List<CitizenItem> citizens = new();
-    public string type_emoji;
-    public int root_item_id;
+    public int floors_count;
 
     public override string ToString() => @$"Location:
     ID: {id}
@@ -22,6 +19,5 @@ public class LocationItem
     Owner ID: {owner_id}
     Parent ID: {parent_id}
     Address ID: {address_id}
-    Citizens Count: {citizens.Count}
-    Items Count: {items.Count}";
+    Floors Count: {floors_count}";
 }
