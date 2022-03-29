@@ -27,12 +27,23 @@ public class NetworkManager : Manager
 	public GameObject itemPrefab;
 	public GameObject taskPrefab;
 	public GameObject lotPrefab;
+	
+	public GameObject emptyAddressPrefab;
 	public GameObject addressPrefab;
+
+	public GameObject emptyRoomPrefab;
 	public GameObject hrDepartmentRoomPrefab;
+	public GameObject hrDepartmentRoomClosedPrefab;
 	public GameObject workshopRoomPrefab;
+	public GameObject workshopRoomClosedPrefab;
 	public GameObject lobbyRoomPrefab;
+	public GameObject lobbyRoomClosedPrefab;
 	public GameObject storageRoomPrefab;
+	public GameObject storageRoomClosedPrefab;
+
+	public GameObject userPrefab;
 	public GameObject citizenPrefab;
+
 	public GameObject cityPrefab;
 	public GameObject blockPrefab;
 	public GameObject landLotPrefab;
@@ -258,6 +269,7 @@ public class NetworkManager : Manager
 		
 		StartCoroutine(Request(uri, (result) =>
 		{
+			GameManager.Instance.currentCitizen.room_id = roomId;
 			Floor(GameManager.Instance.currentCitizen.location_id, GameManager.Instance.currentCitizen.floor_number);
 		}));
 	}
@@ -316,75 +328,99 @@ public class NetworkManager : Manager
 	private void ProcessAddress(string json)
 	{
 		var response = JsonUtility.FromJson<AddressResponse>(json);
+		if (response == null)
+		{
+			return;
+		}
+
+		GameManager.Instance.mapAddressId = response.current_address.id;
+		GameManager.Instance.mapAddressParentId = response.current_address.parent_id;
 
 		DestroyAll<Room>();
 		DestroyAll<Address>();
+		DestroyAll<Citizen>();
 
 		var ca = response.current_address;
 		title.text = $"{ca.type_id} — {ca.title}";
 
-		for (var i = 1; i <= Width; i++)
+		var addressMap = new AddressItem[Width, Height];
+		foreach(var a in response.addresses)
 		{
-			for (var j = 1; j <= Height; j++)
+			for (var i = 0; i < Width; i++)
 			{
-				foreach(var a in response.addresses)
+				for (var j = 0; j < Height; j++)
 				{
-					if (i != a.x || j != a.y)
+					if (i+1 == a.x && j+1 == a.y)
 					{
-						continue;
-					}
-
-					var addressPrefabInstance = Instantiate(addressPrefab, new Vector3(i, 0, j), Quaternion.identity, entitiesCanvas.transform);
-					var address = addressPrefabInstance.GetComponent<Address>();
-
-					address.item = a;
-
-					foreach(var l in ca.locations)
-					{
-						if (a.id != l.address_id)
-						{
-							continue;
-						}
-
-						GameObject locationPrefab = null;
-
-						if (a.type_id == 1)
-						{
-							locationPrefab = cityPrefab;
-						}
-						else if (a.type_id == 2)
-						{
-							locationPrefab = blockPrefab;
-						}
-						else if (a.type_id == 3)
-						{
-							locationPrefab = landLotPrefab;
-						}
-						else if (a.type_id == 4)
-						{
-							switch (l.type_id)
-							{
-								case 1:
-									locationPrefab = coalMineFacilityPrefab;
-									break;
-								case 2:
-									locationPrefab = copperMineFacilityPrefab;
-									break;
-								case 3:
-									locationPrefab = furnitureFactoryFacilityPrefab;
-									break;
-								default:
-									locationPrefab = defaultFacilityPrefab;
-									break;
-							}
-						}
-
-						var locationPrefabInstance = Instantiate(locationPrefab, addressPrefabInstance.transform);
-						var location = locationPrefabInstance.GetComponent<Location>();
-				
-						location.item = l;
+						addressMap[i, j] = a;
 					}
 				}
+			}
+		}
+
+		for (var i = 0; i < Width; i++)
+		{
+			for (var j = 0; j < Height; j++)
+			{
+				if (addressMap[i, j] == null)
+				{
+					Instantiate(emptyAddressPrefab, new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
+				}
+				else
+				{
+					InstantiateAddress(addressMap[i, j], ca, i+1, j+1);
+				}
+			}
+		}
+	}
+
+	private void InstantiateAddress(AddressItem a, AddressItem ca, int x, int y)
+	{
+		var addressPrefabInstance = Instantiate(addressPrefab, new Vector3(x, 0, y), Quaternion.identity, entitiesCanvas.transform);
+		var address = addressPrefabInstance.GetComponent<Address>();
+
+		address.item = a;
+
+		foreach(var l in ca.locations)
+		{
+			if (a.id == l.address_id)
+			{
+				GameObject locationPrefab = null;
+				if (a.type_id == 1)
+				{
+					locationPrefab = cityPrefab;
+				}
+				else if (a.type_id == 2)
+				{
+					locationPrefab = blockPrefab;
+				}
+				else if (a.type_id == 3)
+				{
+					locationPrefab = landLotPrefab;
+				}
+				else if (a.type_id == 4)
+				{
+					switch (l.type_id)
+					{
+						case 1:
+							locationPrefab = coalMineFacilityPrefab;
+							break;
+						case 2:
+							locationPrefab = copperMineFacilityPrefab;
+							break;
+						case 3:
+							locationPrefab = furnitureFactoryFacilityPrefab;
+							break;
+						default:
+							locationPrefab = defaultFacilityPrefab;
+							break;
+					}
+				}
+
+				var locationPrefabInstance = Instantiate(locationPrefab, addressPrefabInstance.transform);
+				var location = locationPrefabInstance.GetComponent<Location>();
+
+				location.item = l;
 			}
 		}
 	}
@@ -392,73 +428,130 @@ public class NetworkManager : Manager
 	private void ProcessFloor(string json)
 	{
 		var response = JsonUtility.FromJson<FloorResponse>(json);
+		if (response == null)
+		{
+			return;
+		}
 
 		DestroyAll<Room>();
 		DestroyAll<Address>();
+		DestroyAll<Citizen>();
 
 		var floor = response.floor;
 		title.text = $"{floor.number} — {floor.rooms.Count}";
-
+		
+		var floorMap = new RoomItem[Width, Height];
 		foreach(var r in floor.rooms)
 		{
-			var isCitizensInstantiated = false;
-			for (var i = 1; i <= Width; i++)
+			for (var i = 0; i < Width; i++)
 			{
-				for (var j = 1; j <= Height; j++)
+				for (var j = 0; j < Height; j++)
 				{
-					if (i >= r.x && i < r.x + r.w && j <= r.y && j > r.y - r.h)
+					if (i+1 >= r.x && i+1 < r.x + r.w && j+1 <= r.y && j+1 > r.y - r.h)
 					{
-						isCitizensInstantiated = InstantiateRoom(r, i, j, isCitizensInstantiated);
+						floorMap[i, j] = r;
 					}
 				}
 			}
 		}
+
+		for (var i = 0; i < Width; i++)
+		{
+			for (var j = 0; j < Height; j++)
+			{
+				if (floorMap[i, j] == null)
+				{
+					Instantiate(emptyRoomPrefab, new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
+				}
+				else
+				{
+					InstantiateRoom(floorMap[i, j], i+1, j+1);
+				}
+			}
+		}
+
+		foreach(var r in floor.rooms)
+		{
+			if (r.id != GameManager.Instance.currentCitizen.room_id)
+			{
+				continue;
+			}
+
+			chatController.ReplaceChat(r.messages);
+
+			GameObject prefab = null;
+			for (var i = 0; i < r.citizens.Count; i++)
+			{
+				var c = r.citizens[i];
+				if (c.id == GameManager.Instance.currentCitizen.id)
+				{
+					prefab = userPrefab;
+					GameManager.Instance.currentCitizen = c;
+				}
+				else
+				{
+					prefab = citizenPrefab;
+				}
+
+				var citizenPrefabInstance = Instantiate(prefab, new Vector3(i+3, 0, 11), Quaternion.identity, entitiesCanvas.transform);
+				var citizen = citizenPrefabInstance.GetComponent<Citizen>();
+				citizen.item = c;
+			}
+		}
 	}
 
-	private bool InstantiateRoom(RoomItem r, int x, int y, bool isCitizensInstantiated)
+	private void InstantiateRoom(RoomItem r, int x, int y)
 	{
 		GameObject roomPrefab = null;
 		if (r.type_id == 1)
 		{
-			roomPrefab = hrDepartmentRoomPrefab;
+			if (r.id == GameManager.Instance.currentCitizen.room_id)
+			{
+				roomPrefab = hrDepartmentRoomPrefab;
+			}
+			else
+			{
+				roomPrefab = hrDepartmentRoomClosedPrefab;
+			}
 		}
 		else if (r.type_id == 2)
 		{
-			roomPrefab = workshopRoomPrefab;
+			if (r.id == GameManager.Instance.currentCitizen.room_id)
+			{
+				roomPrefab = workshopRoomPrefab;
+			}
+			else
+			{
+				roomPrefab = workshopRoomClosedPrefab;
+			}
 		}
 		else if (r.type_id == 3)
 		{
-			roomPrefab = lobbyRoomPrefab;
+			if (r.id == GameManager.Instance.currentCitizen.room_id)
+			{
+				roomPrefab = lobbyRoomPrefab;
+			}
+			else
+			{
+				roomPrefab = lobbyRoomClosedPrefab;
+			}
 		}
 		else if (r.type_id == 4)
 		{
-			roomPrefab = storageRoomPrefab;
+			if (r.id == GameManager.Instance.currentCitizen.room_id)
+			{
+				roomPrefab = storageRoomPrefab;
+			}
+			else
+			{
+				roomPrefab = storageRoomClosedPrefab;
+			}
 		}
 
 		var roomPrefabInstance = Instantiate(roomPrefab, new Vector3(x, 0, y), Quaternion.identity, entitiesCanvas.transform);
 		var room = roomPrefabInstance.GetComponent<Room>();
 
 		room.item = r;
-
-		if (!isCitizensInstantiated)
-		{
-			// TODO: расположить по клеткам
-			foreach(var c in r.citizens)
-			{
-				var citizenPrefabInstance = Instantiate(citizenPrefab, roomPrefabInstance.transform);
-				var citizen = citizenPrefabInstance.GetComponent<Citizen>();
-				citizen.item = c;
-				
-				if (c.id == GameManager.Instance.currentCitizen.id)
-				{
-					GameManager.Instance.currentCitizen = c;
-					chatController.ReplaceChat(r.messages);
-				}
-			}
-			isCitizensInstantiated = true;
-		}
-
-		return isCitizensInstantiated;
 	}
 
     private void ProcessMarket(string json)

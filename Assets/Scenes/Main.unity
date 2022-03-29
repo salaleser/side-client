@@ -478,19 +478,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38658498339124b878dc0b9779495045, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentAddress:
-    id: 0
-    x: 0
-    y: 0
-    title: 
-    type_id: 0
-    parent_id: 0
-    type_emoji: 
-    locations: []
-  currentFloor:
-    id: 0
-    number: 0
-    rooms: []
   currentCitizen:
     id: 0
     name: 
@@ -498,12 +485,18 @@ MonoBehaviour:
     account_id: 0
     active_task_id: 0
     room_id: 0
+    address_id: 0
+    address_type_id: 0
+    address_parent_id: 0
     floor_number: 0
     action_type_emoji: 
     root_item_id: 0
     items: []
     statuses: []
     characteristics: []
+  mapLocationId: 0
+  mapAddressId: 0
+  mapAddressParentId: 0
 --- !u!4 &559488106
 Transform:
   m_ObjectHideFlags: 0
@@ -1178,11 +1171,18 @@ MonoBehaviour:
   itemPrefab: {fileID: 5523004236194669490, guid: 08357065c8fef4b758747ac4cd69ab11, type: 3}
   taskPrefab: {fileID: 5523004236194669490, guid: b8a559821a352483ea82726f49f02d9e, type: 3}
   lotPrefab: {fileID: 5523004236194669490, guid: cc0fbf3735c1b4e3ba91b46db6ec0cfd, type: 3}
+  emptyAddressPrefab: {fileID: 9040041545605410619, guid: 05b46d2ef939248e880cae71f55e567a, type: 3}
   addressPrefab: {fileID: 9040041545605410619, guid: bd352a1f5da4c4da2a6b3139f4f75e89, type: 3}
+  emptyRoomPrefab: {fileID: 9040041545605410619, guid: 988323108f3804370b6e755ffd9bd23a, type: 3}
   hrDepartmentRoomPrefab: {fileID: 9040041545605410619, guid: fa06489b1f8454077bbb2b15b95ab2e7, type: 3}
+  hrDepartmentRoomClosedPrefab: {fileID: 9040041545605410619, guid: f44c7e86290a5410dab450c6edb9f8db, type: 3}
   workshopRoomPrefab: {fileID: 9040041545605410619, guid: da7aa2d1bc85a4811816f64da65310e1, type: 3}
+  workshopRoomClosedPrefab: {fileID: 9040041545605410619, guid: 28f039ffec1154ffc8d11c0017bab35c, type: 3}
   lobbyRoomPrefab: {fileID: 9040041545605410619, guid: 173e82d7417854236adfd2a4255ff07d, type: 3}
+  lobbyRoomClosedPrefab: {fileID: 9040041545605410619, guid: a7c9129782ac248488d636734d1625df, type: 3}
   storageRoomPrefab: {fileID: 9040041545605410619, guid: ccabb8fadaf4946959ff2f05fbafdf63, type: 3}
+  storageRoomClosedPrefab: {fileID: 9040041545605410619, guid: d589f3ae6cc2246d496d8d60736e0445, type: 3}
+  userPrefab: {fileID: 9040041545605410619, guid: 685ceffd61f4f4814b1265f0730b7889, type: 3}
   citizenPrefab: {fileID: 9040041545605410619, guid: 634fbc60833f8483c94ddca97232a269, type: 3}
   cityPrefab: {fileID: 9040041545605410619, guid: 2c45941604218458abae46fcac79b616, type: 3}
   blockPrefab: {fileID: 9040041545605410619, guid: 244fea8cb370a4ae8a7158842e2fe4f2, type: 3}

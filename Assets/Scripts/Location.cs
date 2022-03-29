@@ -12,7 +12,7 @@ public class Location : Entity
         {
             var floorButton = Instantiate(buttonPrefab, new Vector3(130, 330, 0), Quaternion.identity, this.transform);
             floorButton.SetActive(false);
-            floorButton.GetComponentInChildren<Text>().text = $"Go to {item.title}";
+            floorButton.GetComponentInChildren<Text>().text = $"Move inside {item.title}";
             floorButton.GetComponent<Button>().onClick.AddListener(() => {
                 NetworkManager.Instance.Floor(item.id, 0);
             });

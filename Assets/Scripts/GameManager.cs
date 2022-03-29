@@ -4,6 +4,9 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
 	public CitizenItem currentCitizen;
+	public int mapLocationId;
+	public int mapAddressId;
+	public int mapAddressParentId;
 
 	public static GameManager Instance { get; private set; }
 

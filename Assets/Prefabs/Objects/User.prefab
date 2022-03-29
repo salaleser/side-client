@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: aed5cfe104e88471f994a710428b7c58, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,9 +98,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3509747120898777543}
   - component: {fileID: 5340932308723224577}
-  - component: {fileID: 995040682090124093}
+  - component: {fileID: 7324987471346939996}
   m_Layer: 0
-  m_Name: Citizen
+  m_Name: User
   m_TagString: Side
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
     items: []
     statuses: []
     characteristics: []
---- !u!136 &995040682090124093
+--- !u!136 &7324987471346939996
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
