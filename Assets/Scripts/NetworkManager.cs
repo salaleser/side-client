@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -11,6 +12,9 @@ public class NetworkManager : Manager
 {
 	private const int Width = 8;
 	private const int Height = 8;
+
+	private string Host;
+	private string Port;
 
 	public GameObject mainButtonsPanel;
     public List<GameObject> buttons = new();
@@ -67,8 +71,40 @@ public class NetworkManager : Manager
 		}
 	}
 
+	private void LoadConfig()
+	{
+		var path = Application.dataPath + "/StreamingAssets/config.txt";
+		using (StreamReader reader = new StreamReader(path))
+		{
+			try
+			{
+				var config = reader.ReadToEnd();
+				foreach (var line in config.Split("\n"))
+				{
+					var pair = line.Split("=");
+					var key = pair[0];
+					var value = pair[1];
+					if (key == "Host")
+					{
+						Host = value;
+					}
+					else if (key == "Port")
+					{
+						Port = value;
+					}
+				}
+			}
+			catch (System.Exception e)
+			{
+				Debug.Log(e);
+			}
+		}
+	}
+
 	private void Start()
 	{
+		LoadConfig();
+
 		Citizen(263);
 
 		var marketButton = Instantiate(mainButtonPrefab, new Vector3(600, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
@@ -223,6 +259,7 @@ public class NetworkManager : Manager
 
 		var query = $"";
 		var uri = $"http://{Host}:{Port}/market?{query}";
+
 		StartCoroutine(Request(uri, (result) =>
 		{
 			ProcessMarket(result);

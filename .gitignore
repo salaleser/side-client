@@ -74,3 +74,4 @@ crashlytics-build.properties
 ## salaleser
 .idea/
 .vscode/
+/Assets/StreamingAssets/config.txt
