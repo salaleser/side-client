@@ -485,16 +485,16 @@ public class NetworkManager : Manager
 		GameObject addressPrefab = null;
 		switch (a.type_id)
 		{
-			case 0:
+			case AddressTypes.Region:
 				addressPrefab = regionAddressPrefab;
 				break;
-			case 1:
+			case AddressTypes.City:
 				addressPrefab = cityAddressPrefab;
 				break;
-			case 2:
+			case AddressTypes.Block:
 				addressPrefab = blockAddressPrefab;
 				break;
-			case 3:
+			case AddressTypes.LandLot:
 				addressPrefab = landLotAddressPrefab;
 				break;
 			default:
@@ -641,27 +641,27 @@ public class NetworkManager : Manager
 		var room = roomPrefabInstance.GetComponent<Room>();
 
 		Color color = Color.white;
-		if (r.type_id == 1)
+		if (r.type_id == RoomTypes.HrDepartment)
 		{
 			color = Color.blue;
 		}
-		else if (r.type_id == 2)
+		else if (r.type_id == RoomTypes.Workshop)
 		{
 			color = Color.red;
 		}
-		else if (r.type_id == 3)
+		else if (r.type_id == RoomTypes.Lobby)
 		{
 			color = Color.yellow;
 		}
-		else if (r.type_id == 4)
+		else if (r.type_id == RoomTypes.Storage)
 		{
 			color = Color.gray;
 		}
-		else if (r.type_id == 5)
+		else if (r.type_id == RoomTypes.Bedroom)
 		{
 			color = Color.cyan;
 		}
-		else if (r.type_id == 6)
+		else if (r.type_id == RoomTypes.Reception)
 		{
 			color = Color.magenta;
 		}
