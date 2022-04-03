@@ -161,8 +161,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -679.5679, y: 191.08026}
-  m_SizeDelta: {x: -1359.1356, y: -382.1607}
+  m_AnchoredPosition: {x: -679.57, y: 346.87}
+  m_SizeDelta: {x: -1359.1356, y: -693.7368}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &26027162
 MonoBehaviour:
@@ -478,7 +478,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38658498339124b878dc0b9779495045, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentCitizen:
+  state: 0
+  address:
+    id: 0
+    x: 0
+    y: 0
+    title: 
+    type_id: 0
+    type_title: 
+    parent_id: 0
+    location:
+      id: 0
+      type_id: 0
+      type_title: 
+      owner_id: 0
+      address_id: 0
+      address_parent_id: 0
+      floors: []
+  location:
+    id: 0
+    type_id: 0
+    type_title: 
+    owner_id: 0
+    address_id: 0
+    address_parent_id: 0
+    floors: []
+  floor:
+    id: 0
+    number: 0
+    rooms: []
+  citizen:
     id: 0
     name: 
     account_id: 0
@@ -495,10 +524,6 @@ MonoBehaviour:
     items: []
     statuses: []
     characteristics: []
-  state: 0
-  mapLocationId: 0
-  mapAddressId: 0
-  mapAddressParentId: 0
 --- !u!4 &559488106
 Transform:
   m_ObjectHideFlags: 0
@@ -1280,16 +1305,8 @@ MonoBehaviour:
   coalMineLocationPrefab: {fileID: 9040041545605410619, guid: b42ff8781d0c740a9a9a42d3b3954d0a, type: 3}
   copperMineLocationPrefab: {fileID: 9040041545605410619, guid: e4203b1a9d3b94f059d7f5a67691f2d1, type: 3}
   furnitureFactoryLocationPrefab: {fileID: 9040041545605410619, guid: cd2724da63ec94775b9b6c895f205231, type: 3}
-  emptyRoomPrefab: {fileID: 9040041545605410619, guid: 988323108f3804370b6e755ffd9bd23a, type: 3}
-  hrDepartmentRoomPrefab: {fileID: 9040041545605410619, guid: fa06489b1f8454077bbb2b15b95ab2e7, type: 3}
-  hrDepartmentRoomClosedPrefab: {fileID: 9040041545605410619, guid: f44c7e86290a5410dab450c6edb9f8db, type: 3}
-  workshopRoomPrefab: {fileID: 9040041545605410619, guid: da7aa2d1bc85a4811816f64da65310e1, type: 3}
-  workshopRoomClosedPrefab: {fileID: 9040041545605410619, guid: 28f039ffec1154ffc8d11c0017bab35c, type: 3}
-  lobbyRoomPrefab: {fileID: 9040041545605410619, guid: 173e82d7417854236adfd2a4255ff07d, type: 3}
-  lobbyRoomClosedPrefab: {fileID: 9040041545605410619, guid: a7c9129782ac248488d636734d1625df, type: 3}
-  storageRoomPrefab: {fileID: 9040041545605410619, guid: ccabb8fadaf4946959ff2f05fbafdf63, type: 3}
-  storageRoomClosedPrefab: {fileID: 9040041545605410619, guid: d589f3ae6cc2246d496d8d60736e0445, type: 3}
-  userPrefab: {fileID: 9040041545605410619, guid: 685ceffd61f4f4814b1265f0730b7889, type: 3}
+  openRoomPrefab: {fileID: 9040041545605410619, guid: 31e570a0693444af68b2610cbc4fd5da, type: 3}
+  closedRoomPrefab: {fileID: 9040041545605410619, guid: 4d2faf986b5d644a9aeeffd27acb34d5, type: 3}
   citizenPrefab: {fileID: 9040041545605410619, guid: 634fbc60833f8483c94ddca97232a269, type: 3}
 --- !u!4 &1561466740
 Transform:
@@ -1343,7 +1360,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0016441, y: -234.92}
+  m_AnchoredPosition: {x: -0.0021944, y: -78.132}
   m_SizeDelta: {x: 364.86, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1586627794
@@ -1650,8 +1667,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0016022, y: 15}
-  m_SizeDelta: {x: 364.86, y: 469.84}
+  m_AnchoredPosition: {x: 0.0016022, y: 0.0002594}
+  m_SizeDelta: {x: 364.86, y: 186.26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1745255016
 MonoBehaviour:

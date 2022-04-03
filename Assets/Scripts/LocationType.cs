@@ -9,12 +9,6 @@ public class LocationType : Entity
 
     private void Start()
     {
-        var acceptTaskButton = Instantiate(buttonPrefab, new Vector3(130, 300, 0), Quaternion.identity, NetworkManager.Instance.buildCanvas.transform);
-        acceptTaskButton.SetActive(false);
-        acceptTaskButton.GetComponentInChildren<Text>().text = $"Build {item.title}";
-        acceptTaskButton.GetComponent<Button>().onClick.AddListener(() => {
-            NetworkManager.Instance.RegisterLocation(item.address_id, item.id);
-        });
-        buttons.Add(acceptTaskButton);
+        AddButton($"Build {item.title}", () => NetworkManager.Instance.RegisterLocation(item.address_id, item.id));
     }
 }

@@ -53,21 +53,9 @@ public class NetworkManager : Manager
 	public GameObject copperMineLocationPrefab;
 	public GameObject furnitureFactoryLocationPrefab;
 
-	public GameObject defaultRoomPrefab;
-	public GameObject defaultRoomClosedPrefab;
-	public GameObject emptyRoomPrefab;
-	public GameObject hrDepartmentRoomPrefab;
-	public GameObject hrDepartmentRoomClosedPrefab;
-	public GameObject workshopRoomPrefab;
-	public GameObject workshopRoomClosedPrefab;
-	public GameObject lobbyRoomPrefab;
-	public GameObject lobbyRoomClosedPrefab;
-	public GameObject storageRoomPrefab;
-	public GameObject storageRoomClosedPrefab;
-	public GameObject bedroomRoomPrefab;
-	public GameObject bedroomRoomClosedPrefab;
+	public GameObject openRoomPrefab;
+	public GameObject closedRoomPrefab;
 
-	public GameObject userPrefab;
 	public GameObject citizenPrefab;
 
 	public static NetworkManager Instance { get; private set; }
@@ -613,7 +601,7 @@ public class NetworkManager : Manager
 			{
 				if (floorMap[i, j] == null)
 				{
-					Instantiate(emptyRoomPrefab, new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
+					Instantiate(openRoomPrefab, new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
 				}
 				else
 				{
@@ -631,98 +619,54 @@ public class NetworkManager : Manager
 
 			chatController.ReplaceChat(r.messages);
 
-			GameObject prefab = null;
 			for (var i = 0; i < r.citizens.Count; i++)
 			{
-				var c = r.citizens[i];
-				if (c.id == GameManager.Instance.citizen.id)
+				var citizenPrefabInstance = Instantiate(citizenPrefab, new Vector3(i+3, 0, 11), Quaternion.identity, entitiesCanvas.transform);
+				var citizen = citizenPrefabInstance.GetComponent<Citizen>();
+
+				if (r.citizens[i].id == GameManager.Instance.citizen.id)
 				{
-					prefab = userPrefab;
-				}
-				else
-				{
-					prefab = citizenPrefab;
+					citizen.GetComponentInChildren<Renderer>().material.color = Color.green;
 				}
 
-				var citizenPrefabInstance = Instantiate(prefab, new Vector3(i+3, 0, 11), Quaternion.identity, entitiesCanvas.transform);
-				var citizen = citizenPrefabInstance.GetComponent<Citizen>();
-				citizen.item = c;
+				citizen.item = r.citizens[i];
 			}
 		}
 	}
 
 	private void InstantiateRoom(RoomItem r, int x, int y)
 	{
-		GameObject roomPrefab = null;
+		var roomPrefabInstance = Instantiate(r.id == GameManager.Instance.citizen.room_id ? openRoomPrefab : closedRoomPrefab,
+			new Vector3(x, 0, y), Quaternion.identity, entitiesCanvas.transform);
+		var room = roomPrefabInstance.GetComponent<Room>();
+
+		Color color = Color.white;
 		if (r.type_id == 1)
 		{
-			if (r.id == GameManager.Instance.citizen.room_id)
-			{
-				roomPrefab = hrDepartmentRoomPrefab;
-			}
-			else
-			{
-				roomPrefab = hrDepartmentRoomClosedPrefab;
-			}
+			color = Color.blue;
 		}
 		else if (r.type_id == 2)
 		{
-			if (r.id == GameManager.Instance.citizen.room_id)
-			{
-				roomPrefab = workshopRoomPrefab;
-			}
-			else
-			{
-				roomPrefab = workshopRoomClosedPrefab;
-			}
+			color = Color.red;
 		}
 		else if (r.type_id == 3)
 		{
-			if (r.id == GameManager.Instance.citizen.room_id)
-			{
-				roomPrefab = lobbyRoomPrefab;
-			}
-			else
-			{
-				roomPrefab = lobbyRoomClosedPrefab;
-			}
+			color = Color.yellow;
 		}
 		else if (r.type_id == 4)
 		{
-			if (r.id == GameManager.Instance.citizen.room_id)
-			{
-				roomPrefab = storageRoomPrefab;
-			}
-			else
-			{
-				roomPrefab = storageRoomClosedPrefab;
-			}
+			color = Color.gray;
 		}
 		else if (r.type_id == 5)
 		{
-			if (r.id == GameManager.Instance.citizen.room_id)
-			{
-				roomPrefab = bedroomRoomPrefab;
-			}
-			else
-			{
-				roomPrefab = bedroomRoomClosedPrefab;
-			}
+			color = Color.cyan;
 		}
-		else
+		else if (r.type_id == 6)
 		{
-			if (r.id == GameManager.Instance.citizen.room_id)
-			{
-				roomPrefab = defaultRoomPrefab;
-			}
-			else
-			{
-				roomPrefab = defaultRoomClosedPrefab;
-			}
+			color = Color.magenta;
 		}
 
-		var roomPrefabInstance = Instantiate(roomPrefab, new Vector3(x, 0, y), Quaternion.identity, entitiesCanvas.transform);
-		var room = roomPrefabInstance.GetComponent<Room>();
+		room.GetComponentInChildren<Renderer>().material.color = color;
 
 		room.item = r;
 	}

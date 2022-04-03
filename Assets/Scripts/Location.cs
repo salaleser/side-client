@@ -12,20 +12,11 @@ public class Location : Entity
         {
             if (item.owner_id == GameManager.Instance.citizen.id)
             {
-                var zoomInButton = Instantiate(buttonPrefab, new Vector3(130, 300, 0), Quaternion.identity, this.transform);
-                zoomInButton.SetActive(false);
-                zoomInButton.GetComponentInChildren<Text>().text = $"Zoom in";
-                zoomInButton.GetComponent<Button>().onClick.AddListener(() => {
-                    NetworkManager.Instance.Location(item.id);
-                });
-                buttons.Add(zoomInButton);
+                AddButton("Zoom in", () => NetworkManager.Instance.Location(item.id));
             }
             else
             {
-                var moveInsideButton = Instantiate(buttonPrefab, new Vector3(130, 330, 0), Quaternion.identity, this.transform);
-                moveInsideButton.SetActive(false);
-                moveInsideButton.GetComponentInChildren<Text>().text = $"Move inside";
-                moveInsideButton.GetComponent<Button>().onClick.AddListener(() => {
+                AddButton("Move inside", () => {
                     foreach(var f in item.floors)
                     {
                         if (f.number == 0)
@@ -40,7 +31,6 @@ public class Location : Entity
                         }
                     }
                 });
-                buttons.Add(moveInsideButton);
             }
         }
     }

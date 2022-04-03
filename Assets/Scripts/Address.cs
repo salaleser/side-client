@@ -13,35 +13,17 @@ public class Address : Entity
         {
             if (item.type_id < 4)
             {
-                var zoomInButton = Instantiate(buttonPrefab, new Vector3(130, 300, 0), Quaternion.identity, this.transform);
-                zoomInButton.SetActive(false);
-                zoomInButton.GetComponentInChildren<Text>().text = $"Zoom in";
-                zoomInButton.GetComponent<Button>().onClick.AddListener(() => {
-                    NetworkManager.Instance.Address(item.id);
-                });
-                buttons.Add(zoomInButton);
+                AddButton("Zoom in", () => NetworkManager.Instance.Address(item.id));
             }
 
             if (item.type_id == 4 && item.location == null)
             {
-                var registerLocationButton = Instantiate(buttonPrefab, new Vector3(130, 270, 0), Quaternion.identity, this.transform);
-                registerLocationButton.SetActive(false);
-                registerLocationButton.GetComponentInChildren<Text>().text = $"Build Location";
-                registerLocationButton.GetComponent<Button>().onClick.AddListener(() => {
-                    NetworkManager.Instance.Build(item.id);
-                });
-                buttons.Add(registerLocationButton);
+                AddButton("Build Location", () => NetworkManager.Instance.Build(item.id));
             }
         }
         else
         {
-            var registerAddressButton = Instantiate(buttonPrefab, new Vector3(130, 300, 0), Quaternion.identity, this.transform);
-            registerAddressButton.SetActive(false);
-            registerAddressButton.GetComponentInChildren<Text>().text = $"Build Address";
-            registerAddressButton.GetComponent<Button>().onClick.AddListener(() => {
-                NetworkManager.Instance.RegisterAddress(GameManager.Instance.address.id, item.x, item.y, "");
-            });
-            buttons.Add(registerAddressButton);
+            AddButton("Build Address", () => NetworkManager.Instance.RegisterAddress(GameManager.Instance.address.id, item.x, item.y, ""));
         }
     }
 }

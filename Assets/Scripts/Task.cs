@@ -11,13 +11,7 @@ public class Task : Entity
     {
         if (item.is_free)
         {
-            var acceptTaskButton = Instantiate(buttonPrefab, new Vector3(130, 300, 0), Quaternion.identity, NetworkManager.Instance.tasksCanvas.transform);
-            acceptTaskButton.SetActive(false);
-            acceptTaskButton.GetComponentInChildren<Text>().text = $"Accept {item.title}";
-            acceptTaskButton.GetComponent<Button>().onClick.AddListener(() => {
-                NetworkManager.Instance.TaskAccept(GameManager.Instance.citizen.id, item.id);
-            });
-            buttons.Add(acceptTaskButton);
+            AddButton($"Accept {item.title}", () => NetworkManager.Instance.TaskAccept(GameManager.Instance.citizen.id, item.id));
         }
     }
 }
