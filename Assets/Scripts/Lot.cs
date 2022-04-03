@@ -5,16 +5,9 @@ using UnityEngine.UI;
 
 public class Lot : Entity
 {
-    public LotItem item;
+    new public LotItem item;
 
     private void Start()
     {
     }
-
-    public void Handler()
-    {
-        NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{item}";
-        ShowButtons();
-    }   
 }

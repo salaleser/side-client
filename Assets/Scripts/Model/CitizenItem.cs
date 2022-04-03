@@ -6,13 +6,14 @@ public class CitizenItem
 {
     public int id;
     public string name;
-    public int location_id;
     public int account_id;
     public int active_task_id;
     public int room_id;
     public int address_id;
     public int address_type_id;
     public int address_parent_id;
+    public int location_id;
+    public int floor_id;
     public int floor_number;
     public string action_type_emoji;
     public int root_item_id;

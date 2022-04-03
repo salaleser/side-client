@@ -17,24 +17,44 @@ public class NetworkManager : Manager
 	private string Port;
 
 	public GameObject mainButtonsPanel;
-    public List<GameObject> buttons = new();
+	public GameObject mainButtonPrefab;
+	private GameObject marketButton;
+	private GameObject inventoryButton;
+	private GameObject mapButton;
+	private GameObject citizenButton;
+	private GameObject zoomOutButton;
+
 	public GameObject marketCanvas;
 	public GameObject inventoryCanvas;
+	public GameObject buildCanvas;
 	public GameObject tasksCanvas;
 	public GameObject entitiesCanvas;
 	public GameObject shading;
+	public GameObject cursor;
+	private GameObject _cursor;
 
-	public Text title;
+	public TMP_Text title;
 	public Text text;
 	public side.ChatController chatController;
-	public GameObject mainButtonPrefab;
 	public GameObject itemPrefab;
 	public GameObject taskPrefab;
 	public GameObject lotPrefab;
+	public GameObject locationTypePrefab;
 	
 	public GameObject emptyAddressPrefab;
-	public GameObject addressPrefab;
+	public GameObject defaultAddressPrefab;
+	public GameObject regionAddressPrefab;
+	public GameObject cityAddressPrefab;
+	public GameObject blockAddressPrefab;
+	public GameObject landLotAddressPrefab;
 
+	public GameObject defaultLocationPrefab;
+	public GameObject coalMineLocationPrefab;
+	public GameObject copperMineLocationPrefab;
+	public GameObject furnitureFactoryLocationPrefab;
+
+	public GameObject defaultRoomPrefab;
+	public GameObject defaultRoomClosedPrefab;
 	public GameObject emptyRoomPrefab;
 	public GameObject hrDepartmentRoomPrefab;
 	public GameObject hrDepartmentRoomClosedPrefab;
@@ -44,17 +64,11 @@ public class NetworkManager : Manager
 	public GameObject lobbyRoomClosedPrefab;
 	public GameObject storageRoomPrefab;
 	public GameObject storageRoomClosedPrefab;
+	public GameObject bedroomRoomPrefab;
+	public GameObject bedroomRoomClosedPrefab;
 
 	public GameObject userPrefab;
 	public GameObject citizenPrefab;
-
-	public GameObject cityPrefab;
-	public GameObject blockPrefab;
-	public GameObject landLotPrefab;
-	public GameObject defaultFacilityPrefab;
-	public GameObject coalMineFacilityPrefab;
-	public GameObject copperMineFacilityPrefab;
-	public GameObject furnitureFactoryFacilityPrefab;
 
 	public static NetworkManager Instance { get; private set; }
 
@@ -106,34 +120,55 @@ public class NetworkManager : Manager
 		LoadConfig();
 
 		Citizen(263);
+		Address(13);
 
-		var marketButton = Instantiate(mainButtonPrefab, new Vector3(600, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        marketButton.GetComponentInChildren<Text>().text = "Mrkt";
+		marketButton = Instantiate(mainButtonPrefab, new Vector3(600, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        marketButton.GetComponentInChildren<Text>().text = "Market";
         marketButton.GetComponent<Button>().onClick.AddListener(() => {
-            NetworkManager.Instance.Market();
+			HideAllButtons();
+			Market();
         });
-        buttons.Add(marketButton);
 
-		var closeButton = Instantiate(mainButtonPrefab, new Vector3(660, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        closeButton.GetComponentInChildren<Text>().text = "Close";
-        closeButton.GetComponent<Button>().onClick.AddListener(() => {
-            NetworkManager.Instance.CloseButton();
-        });
-        buttons.Add(closeButton);
+		// closeButton = Instantiate(mainButtonPrefab, new Vector3(660, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        // closeButton.GetComponentInChildren<Text>().text = "-";
+        // closeButton.GetComponent<Button>().onClick.AddListener(() => {
 
-		var mapButton = Instantiate(mainButtonPrefab, new Vector3(720, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        mapButton.GetComponentInChildren<Text>().text = "Map";
+        // });
+
+		mapButton = Instantiate(mainButtonPrefab, new Vector3(720, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        mapButton.GetComponentInChildren<Text>().text = "Show Map";
         mapButton.GetComponent<Button>().onClick.AddListener(() => {
-            NetworkManager.Instance.MapButton();
+            HideAllButtons();
+			Address(1);
         });
-        buttons.Add(mapButton);
 
-		var citizenButton = Instantiate(mainButtonPrefab, new Vector3(780, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        citizenButton.GetComponentInChildren<Text>().text = "Ctzn";
+		citizenButton = Instantiate(mainButtonPrefab, new Vector3(780, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        citizenButton.GetComponentInChildren<Text>().text = "Show Floor";
         citizenButton.GetComponent<Button>().onClick.AddListener(() => {
-            NetworkManager.Instance.CitizenButton();
+            HideAllButtons();
+			Floor(GameManager.Instance.currentCitizen.floor_id);
         });
-        buttons.Add(citizenButton);
+
+		zoomOutButton = Instantiate(mainButtonPrefab, new Vector3(840, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        zoomOutButton.GetComponentInChildren<Text>().text = "Zoom Out";
+        zoomOutButton.GetComponent<Button>().onClick.AddListener(() => {
+            HideAllButtons();
+			if (GameManager.Instance.state == GameManager.Floor)
+			{
+				Address(GameManager.Instance.currentCitizen.address_parent_id);
+			}
+			else if (GameManager.Instance.state == GameManager.Map)
+			{
+				Address(GameManager.Instance.mapAddressParentId);
+			}
+        });
+
+		inventoryButton = Instantiate(mainButtonPrefab, new Vector3(900, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        inventoryButton.GetComponentInChildren<Text>().text = "Inventory";
+        inventoryButton.GetComponent<Button>().onClick.AddListener(() => {
+            HideAllButtons();
+			Inventory(GameManager.Instance.currentCitizen.root_item_id);
+        });
 	}
 
 	void Update() {  
@@ -142,34 +177,14 @@ public class NetworkManager : Manager
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit)) {
                 ShowButtons(hit.transform);
+				Destroy(_cursor);
+				_cursor = Instantiate(cursor, hit.transform);
             } else {
+				Destroy(_cursor);
 				text.text = "—";
 			}
         }
     }
-
-	public void MapButton()
-	{
-		HideAllButtons();
-		shading.SetActive(false);
-		Address(1);
-	}
-
-	public void CitizenButton()
-	{
-		HideAllButtons();
-		shading.SetActive(false);
-		Citizen(GameManager.Instance.currentCitizen.id);
-	}
-
-	public void CloseButton()
-	{
-		HideAllButtons();
-		shading.SetActive(false);
-		DestroyAll<Item>();
-		DestroyAll<Lot>();
-		DestroyAll<Task>();
-	}
 
 	public void ShowButtons(Transform transform)
 	{
@@ -223,8 +238,10 @@ public class NetworkManager : Manager
 		}
 	}
 
-	IEnumerator Request(string url, Action<string> result)
+	IEnumerator Request(string endpoint, string query, Action<string> result)
 	{
+		var url = $"http://{Host}:{Port}/{endpoint}?{query}";
+
 		string[] pages = url.Split('/');
 		int page = pages.Length - 1;
 
@@ -257,10 +274,7 @@ public class NetworkManager : Manager
 	{
 		shading.SetActive(true);
 
-		var query = $"";
-		var uri = $"http://{Host}:{Port}/market?{query}";
-
-		StartCoroutine(Request(uri, (result) =>
+		StartCoroutine(Request("market", "", (result) =>
 		{
 			ProcessMarket(result);
 		}));
@@ -269,45 +283,76 @@ public class NetworkManager : Manager
 	public void Citizen(int citizenId)
     {
 		var query = $"citizen_id={citizenId}";
-		var uri = $"http://{Host}:{Port}/citizen?{query}";
 		
-		StartCoroutine(Request(uri, (result) =>
+		StartCoroutine(Request("citizen", query, (result) =>
 		{
 			ProcessCitizen(result);
 		}));
 	}
 
-	public void Address(int addressId)
+	public void Address(int? addressId)
     {
 		var query = $"address_id={addressId}";
-		var uri = $"http://{Host}:{Port}/address?{query}";
 		
-		StartCoroutine(Request(uri, (result) =>
+		StartCoroutine(Request("address", query, (result) =>
+		{
+			ProcessAddress(result);
+		}));
+		
+		GameManager.Instance.state = GameManager.Map;
+	}
+
+	public void RegisterAddress(int? parentId, int x, int y, string title)
+    {
+		var query = $"parent_id={parentId}&x={x}&y={y}&title={title}";
+		
+		StartCoroutine(Request("address-register", query, (result) =>
 		{
 			ProcessAddress(result);
 		}));
 	}
 
-	public void Floor(int locationId, int floorNumber)
+	public void RegisterLocation(int addressId, int locationTypeId)
     {
-		var query = $"location_id={locationId}&floor_number={floorNumber}";
-		var uri = $"http://{Host}:{Port}/floor?{query}";
+		var query = $"address_id={addressId}&location_type_id={locationTypeId}&citizen_id={GameManager.Instance.currentCitizen.id}";
 		
-		StartCoroutine(Request(uri, (result) =>
+		StartCoroutine(Request("location-register", query, (result) =>
 		{
-			ProcessFloor(result);
+			ProcessAddress(result);
 		}));
 	}
 
-	public void Room(int roomId)
+	public void Location(int locationId)
+    {
+		var query = $"location_id={locationId}";
+		
+		StartCoroutine(Request("location", query, (result) =>
+		{
+			ProcessLocation(result);
+		}));
+	
+		GameManager.Instance.state = GameManager.Floor;
+	}
+
+	public void Floor(int floorId)
+    {
+		var query = $"floor_id={floorId}";
+		
+		StartCoroutine(Request("floor", query, (result) =>
+		{
+			ProcessFloor(result);
+		}));
+	
+		GameManager.Instance.state = GameManager.Floor;
+	}
+
+	public void Room(int? roomId)
     {
 		var query = $"citizen_id={GameManager.Instance.currentCitizen.id}&room_id={roomId}";
-		var uri = $"http://{Host}:{Port}/room?{query}";
 		
-		StartCoroutine(Request(uri, (result) =>
+		StartCoroutine(Request("room", query, (result) =>
 		{
-			GameManager.Instance.currentCitizen.room_id = roomId;
-			Floor(GameManager.Instance.currentCitizen.location_id, GameManager.Instance.currentCitizen.floor_number);
+			ProcessRoom(result);
 		}));
 	}
 
@@ -316,11 +361,22 @@ public class NetworkManager : Manager
 		shading.SetActive(true);
 
 		var query = $"root_item_id={rootItemId}";
-		var uri = $"http://{Host}:{Port}/inventory?{query}";
 		
-		StartCoroutine(Request(uri, (result) =>
+		StartCoroutine(Request("inventory", query, (result) =>
 		{
 			ProcessInventory(result);
+		}));
+	}
+
+	public void Build(int? addressId)
+	{
+		shading.SetActive(true);
+
+		var query = $"address_id={addressId}";
+		
+		StartCoroutine(Request("build", query, (result) =>
+		{
+			ProcessBuild(result);
 		}));
 	}
 
@@ -329,9 +385,8 @@ public class NetworkManager : Manager
 		text = UnityWebRequest.EscapeURL(text);
 
 		var query = $"citizen_id={citizenId}&room_id={roomId}&text={text}";
-		var uri = $"http://{Host}:{Port}/chat?{query}";
 		
-		StartCoroutine(Request(uri, (result) =>
+		StartCoroutine(Request("chat", query, (result) =>
 		{
 			var c = JsonUtility.FromJson<ChatResponse>(result);
 			chatController.ReplaceChat(c.messages);
@@ -343,9 +398,8 @@ public class NetworkManager : Manager
 		shading.SetActive(true);
 
 		var query = $"location_id={locationId}";
-		var uri = $"http://{Host}:{Port}/tasks?{query}";
 		
-		StartCoroutine(Request(uri, (result) =>
+		StartCoroutine(Request("tasks", query, (result) =>
 		{
 			ProcessTasks(result);
 		}));
@@ -354,12 +408,23 @@ public class NetworkManager : Manager
 	public void TaskAccept(int citizenId, int taskId)
 	{
 		var query = $"citizen_id={citizenId}&task_id={taskId}";
-		var uri = $"http://{Host}:{Port}/task-accept?{query}";
 		
-		StartCoroutine(Request(uri, (result) =>
+		StartCoroutine(Request("task-accept", query, (result) =>
 		{
 			ProcessTasks(result);
 		}));
+	}
+
+	private void ProcessRoom(string json)
+	{
+		var response = JsonUtility.FromJson<RoomResponse>(json);
+		if (response == null)
+		{
+			return;
+		}
+
+		GameManager.Instance.currentCitizen = response.citizen;
+		ProcessLocation(json);
 	}
 
 	private void ProcessAddress(string json)
@@ -370,19 +435,30 @@ public class NetworkManager : Manager
 			return;
 		}
 
-		GameManager.Instance.mapAddressId = response.current_address.id;
-		GameManager.Instance.mapAddressParentId = response.current_address.parent_id;
+		GameManager.Instance.mapAddressId = response.address.id;
+		GameManager.Instance.mapAddressParentId = response.address.parent_id;
+
+		// FIXME: исключение для региона Side
+		zoomOutButton.SetActive(GameManager.Instance.mapAddressId != 1);
 
 		DestroyAll<Room>();
 		DestroyAll<Address>();
 		DestroyAll<Citizen>();
+		DestroyAll<Item>();
+		DestroyAll<Lot>();
+		DestroyAll<Task>();
+		DestroyAll<LocationType>();
+		shading.SetActive(false);
 
-		var ca = response.current_address;
-		title.text = $"{ca.type_id} — {ca.title}";
+		title.text = $"{response.address.type_title} {response.address.title}";
 
 		var addressMap = new AddressItem[Width, Height];
 		foreach(var a in response.addresses)
 		{
+			if (a.location.id == 0)
+			{
+				a.location = null;
+			}
 			for (var i = 0; i < Width; i++)
 			{
 				for (var j = 0; j < Height; j++)
@@ -401,65 +477,98 @@ public class NetworkManager : Manager
 			{
 				if (addressMap[i, j] == null)
 				{
-					Instantiate(emptyAddressPrefab, new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
+					var emptyAddressPrefabInstance = Instantiate(emptyAddressPrefab,
+						new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
+					var address = emptyAddressPrefabInstance.GetComponent<Address>();
+					var item = new AddressItem();
+					item.x = i+1;
+					item.y = j+1;
+					address.item = item;
 				}
 				else
 				{
-					InstantiateAddress(addressMap[i, j], ca, i+1, j+1);
+					InstantiateAddress(addressMap[i, j], i+1, j+1);
 				}
 			}
 		}
 	}
 
-	private void InstantiateAddress(AddressItem a, AddressItem ca, int x, int y)
+	private void InstantiateAddress(AddressItem a, int x, int y)
 	{
+		GameObject addressPrefab = null;
+		switch (a.type_id)
+		{
+			case 0:
+				addressPrefab = regionAddressPrefab;
+				break;
+			case 1:
+				addressPrefab = cityAddressPrefab;
+				break;
+			case 2:
+				addressPrefab = blockAddressPrefab;
+				break;
+			case 3:
+				addressPrefab = landLotAddressPrefab;
+				break;
+			default:
+				addressPrefab = defaultAddressPrefab;
+				break;
+		}
+		
 		var addressPrefabInstance = Instantiate(addressPrefab, new Vector3(x, 0, y), Quaternion.identity, entitiesCanvas.transform);
 		var address = addressPrefabInstance.GetComponent<Address>();
 
 		address.item = a;
 
-		foreach(var l in ca.locations)
+		if (a.location == null)
 		{
-			if (a.id == l.address_id)
+			return;
+		}
+
+		GameObject locationPrefab = null;
+		switch (a.location.type_id)
+		{
+			case 1:
+				locationPrefab = coalMineLocationPrefab;
+				break;
+			case 2:
+				locationPrefab = copperMineLocationPrefab;
+				break;
+			case 3:
+				locationPrefab = furnitureFactoryLocationPrefab;
+				break;
+			default:
+				locationPrefab = defaultLocationPrefab;
+				break;
+		}
+
+		var locationPrefabInstance = Instantiate(locationPrefab, addressPrefabInstance.transform);
+		var location = locationPrefabInstance.GetComponent<Location>();
+
+		location.item = a.location;
+	}
+
+	private void ProcessLocation(string json)
+	{
+		var response = JsonUtility.FromJson<LocationResponse>(json);
+		if (response == null)
+		{
+			return;
+		}
+
+		title.text = $"{response.location.type_title}";
+
+		var floorResponse = new FloorResponse();
+		foreach(var f in response.location.floors)
+		{
+			if (f.number == 0)
 			{
-				GameObject locationPrefab = null;
-				if (a.type_id == 1)
-				{
-					locationPrefab = cityPrefab;
-				}
-				else if (a.type_id == 2)
-				{
-					locationPrefab = blockPrefab;
-				}
-				else if (a.type_id == 3)
-				{
-					locationPrefab = landLotPrefab;
-				}
-				else if (a.type_id == 4)
-				{
-					switch (l.type_id)
-					{
-						case 1:
-							locationPrefab = coalMineFacilityPrefab;
-							break;
-						case 2:
-							locationPrefab = copperMineFacilityPrefab;
-							break;
-						case 3:
-							locationPrefab = furnitureFactoryFacilityPrefab;
-							break;
-						default:
-							locationPrefab = defaultFacilityPrefab;
-							break;
-					}
-				}
-
-				var locationPrefabInstance = Instantiate(locationPrefab, addressPrefabInstance.transform);
-				var location = locationPrefabInstance.GetComponent<Location>();
-
-				location.item = l;
+				floorResponse.floor = f;
+				break;
 			}
 		}
+
+		ProcessFloor(JsonUtility.ToJson(floorResponse));
 	}
 
 	private void ProcessFloor(string json)
@@ -473,9 +582,14 @@ public class NetworkManager : Manager
 		DestroyAll<Room>();
 		DestroyAll<Address>();
 		DestroyAll<Citizen>();
+		DestroyAll<Item>();
+		DestroyAll<Lot>();
+		DestroyAll<Task>();
+		DestroyAll<LocationType>();
+		shading.SetActive(false);
 
 		var floor = response.floor;
-		title.text = $"{floor.number} — {floor.rooms.Count}";
+		GameManager.Instance.mapFloorId = floor.id;
 		
 		var floorMap = new RoomItem[Width, Height];
 		foreach(var r in floor.rooms)
@@ -523,7 +637,6 @@ public class NetworkManager : Manager
 				if (c.id == GameManager.Instance.currentCitizen.id)
 				{
 					prefab = userPrefab;
-					GameManager.Instance.currentCitizen = c;
 				}
 				else
 				{
@@ -584,6 +697,28 @@ public class NetworkManager : Manager
 				roomPrefab = storageRoomClosedPrefab;
 			}
 		}
+		else if (r.type_id == 5)
+		{
+			if (r.id == GameManager.Instance.currentCitizen.room_id)
+			{
+				roomPrefab = bedroomRoomPrefab;
+			}
+			else
+			{
+				roomPrefab = bedroomRoomClosedPrefab;
+			}
+		}
+		else
+		{
+			if (r.id == GameManager.Instance.currentCitizen.room_id)
+			{
+				roomPrefab = defaultRoomPrefab;
+			}
+			else
+			{
+				roomPrefab = defaultRoomClosedPrefab;
+			}
+		}
 
 		var roomPrefabInstance = Instantiate(roomPrefab, new Vector3(x, 0, y), Quaternion.identity, entitiesCanvas.transform);
 		var room = roomPrefabInstance.GetComponent<Room>();
@@ -599,7 +734,11 @@ public class NetworkManager : Manager
             return;
         }
 
+		title.text = "Market";
+		DestroyAll<Item>();
 		DestroyAll<Lot>();
+		DestroyAll<Task>();
+		DestroyAll<LocationType>();
 
         var col = 0;
         var row = 0;
@@ -611,12 +750,9 @@ public class NetworkManager : Manager
                 row = 0;
             }
 
-            var lotInstance = Instantiate(lotPrefab, new Vector3(100 + 240 * col, 700 - 60 * row, 0), Quaternion.identity, marketCanvas.transform);
-            var lot = lotInstance.GetComponent<Lot>();
-            lot.item = response.lots[i];
-            var button = lotInstance.GetComponent<Button>();
-            button.GetComponentInChildren<TMP_Text>().text = $"{response.lots[i].item_type_title}: {response.lots[i].quantity}x{response.lots[i].price}₷ ({response.lots[i].owner_id})";
-            button.onClick.AddListener(lot.Handler);
+			var lot = InstantiateObject<Lot>(lotPrefab, marketCanvas,
+				$"{response.lots[i].item_type_title}: {response.lots[i].quantity}x{response.lots[i].price}₷ ({response.lots[i].owner_id})", 100, 700, col, row);
+			lot.item = response.lots[i];
 
             row++;
         }
@@ -631,7 +767,6 @@ public class NetworkManager : Manager
         }
 
 		GameManager.Instance.currentCitizen = response.citizen;
-		Floor(GameManager.Instance.currentCitizen.location_id, GameManager.Instance.currentCitizen.floor_number);
 	}
 
     private void ProcessInventory(string json)
@@ -643,6 +778,9 @@ public class NetworkManager : Manager
         }
 
 		DestroyAll<Item>();
+		DestroyAll<Lot>();
+		DestroyAll<Task>();
+		DestroyAll<LocationType>();
 
         if (response.title != null)
         {
@@ -659,15 +797,52 @@ public class NetworkManager : Manager
                 row = 0;
             }
 
-            var itemInstance = Instantiate(itemPrefab, new Vector3(100 + 120 * col, 700 - 120 * row, 0), Quaternion.identity, inventoryCanvas.transform);
-            var item = itemInstance.GetComponent<Item>();
-            item.item = response.items[i];
-            var button = itemInstance.GetComponent<Button>();
-            button.GetComponentInChildren<TMP_Text>().text = response.items[i].type_title;
-            button.onClick.AddListener(item.Handler);
+            var item = InstantiateObject<Item>(itemPrefab, inventoryCanvas,
+				response.items[i].type_title, 100, 700, col, row);
+			item.item = response.items[i];
 
             row++;
         }
+	}
+
+	private void ProcessBuild(string json)
+	{
+		var response = JsonUtility.FromJson<BuildResponse>(json);
+        if (response == null)
+        {
+            return;
+        }
+
+		DestroyAll<LocationType>();
+
+        var col = 0;
+        var row = 0;
+		for (var i = 0; i < response.location_types.Count; i++)
+        {
+            if (i % 5 == 0)
+            {
+                col++;
+                row = 0;
+            }
+
+            var locationType = InstantiateObject<LocationType>(locationTypePrefab, buildCanvas,
+				response.location_types[i].title,
+				100, 700, col, row);
+			locationType.item = response.location_types[i];
+
+            row++;
+        }
+	}
+
+	private T InstantiateObject<T>(GameObject prefab, GameObject parent, string title, int x, int y, int col, int row) where T : Entity
+	{
+		var rect = prefab.transform.GetComponent<RectTransform>().rect;
+		var instance = Instantiate(prefab, new Vector3(x + rect.width * col, y - rect.height * row, 0), Quaternion.identity, parent.transform);
+		var component = instance.GetComponent<T>();
+		var button = instance.GetComponent<Button>();
+		button.GetComponentInChildren<TMP_Text>().text = title;
+		button.onClick.AddListener(component.Handler);
+		return component;
 	}
 
 	private void ProcessTasks(string json)
@@ -692,12 +867,9 @@ public class NetworkManager : Manager
                 row = 0;
             }
 
-            var taskInstance = Instantiate(taskPrefab, new Vector3(100 + 120 * col, 700 - 60 * row, 0), Quaternion.identity, tasksCanvas.transform);
-            var task = taskInstance.GetComponent<Task>();
-            task.item = response.tasks[i];
-            var button = taskInstance.GetComponent<Button>();
-            button.GetComponentInChildren<TMP_Text>().text = $"{task.item.title} ({(task.item.is_free ? "free" : "busy")})";
-            button.onClick.AddListener(task.Handler);
+			var task = InstantiateObject<Task>(taskPrefab, tasksCanvas,
+				$"{response.tasks[i].title} ({(response.tasks[i].is_free ? "free" : "busy")})", 100, 700, col, row);
+			task.item = response.tasks[i];
 
             row++;
         }

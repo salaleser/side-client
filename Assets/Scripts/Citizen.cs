@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class Citizen : Entity
 {
-    public CitizenItem item;
+    new public CitizenItem item;
 
     private void Start()
     {

@@ -5,19 +5,18 @@ using System.Collections.Generic;
 public class LocationItem
 {
     public int id;
-    public string title;
     public int type_id;
-    public string owner_id;
-    public int parent_id;
+    public string type_title;
+    public int owner_id;
     public int address_id;
-    public int floors_count;
+    public int address_parent_id;
+    public List<FloorItem> floors;
 
     public override string ToString() => @$"Location:
     ID: {id}
-    Title: {title}
     Type ID: {type_id}
+    Type Title: {type_title}
     Owner ID: {owner_id}
-    Parent ID: {parent_id}
     Address ID: {address_id}
-    Floors Count: {floors_count}";
+    Floors Count: {floors.Count}";
 }

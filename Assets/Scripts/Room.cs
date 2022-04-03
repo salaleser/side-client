@@ -5,11 +5,21 @@ using UnityEngine.UI;
 
 public class Room : Entity
 {
-    public RoomItem item;
+    new public RoomItem item;
 
     private void Start()
     {
-        if (item.type_id > 0 && GameManager.Instance.currentCitizen.room_id != item.id)
+        if (item.id == null)
+        {
+            var buildRoomButton = Instantiate(buttonPrefab, new Vector3(130, 270, 0), Quaternion.identity, this.transform);
+            buildRoomButton.SetActive(false);
+            buildRoomButton.GetComponentInChildren<Text>().text = $"Bulid Room";
+            buildRoomButton.GetComponent<Button>().onClick.AddListener(() => {
+                Debug.LogWarning("Build Room");
+            });
+            buttons.Add(buildRoomButton);
+        }
+        else if (GameManager.Instance.currentCitizen.floor_id == GameManager.Instance.mapFloorId && GameManager.Instance.currentCitizen.room_id != item.id)
         {
             var enterRoomButton = Instantiate(buttonPrefab, new Vector3(130, 300, 0), Quaternion.identity, this.transform);
             enterRoomButton.SetActive(false);
@@ -22,15 +32,6 @@ public class Room : Entity
 
         switch (item.type_id)
         {
-            case 0:
-                var buildRoomButton = Instantiate(buttonPrefab, new Vector3(130, 270, 0), Quaternion.identity, this.transform);
-                buildRoomButton.SetActive(false);
-                buildRoomButton.GetComponentInChildren<Text>().text = $"Bulid Room";
-                buildRoomButton.GetComponent<Button>().onClick.AddListener(() => {
-                    Debug.LogWarning("Build Room");
-                });
-                buttons.Add(buildRoomButton);
-                break;
             case 1:
                 var findJobButton = Instantiate(buttonPrefab, new Vector3(130, 270, 0), Quaternion.identity, this.transform);
                 findJobButton.SetActive(false);
@@ -39,6 +40,24 @@ public class Room : Entity
                     NetworkManager.Instance.Tasks(GameManager.Instance.currentCitizen.location_id);
                 });
                 buttons.Add(findJobButton);
+                break;
+            case 3:
+                var moveInsideButton = Instantiate(buttonPrefab, new Vector3(130, 270, 0), Quaternion.identity, this.transform);
+                moveInsideButton.SetActive(false);
+                moveInsideButton.GetComponentInChildren<Text>().text = $"Move inside";
+                moveInsideButton.GetComponent<Button>().onClick.AddListener(() => {
+                    NetworkManager.Instance.Room(item.id);
+                });
+                buttons.Add(moveInsideButton);
+                break;
+            case 5:
+                var sleepButton = Instantiate(buttonPrefab, new Vector3(130, 270, 0), Quaternion.identity, this.transform);
+                sleepButton.SetActive(false);
+                sleepButton.GetComponentInChildren<Text>().text = $"Sleep";
+                sleepButton.GetComponent<Button>().onClick.AddListener(() => {
+                    NetworkManager.Instance.Tasks(GameManager.Instance.currentCitizen.location_id);
+                });
+                buttons.Add(sleepButton);
                 break;
         }
     }

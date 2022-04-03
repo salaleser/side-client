@@ -192,8 +192,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1883963983578971085}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.55, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: -0.3788, z: 0}
+  m_LocalScale: {x: 1, y: 1.3423, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9040041545605410616}
@@ -227,7 +227,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 13f1fa88de425471e9b503d343994fe2, type: 2}
+  - {fileID: 2100000, guid: 30fb50eaedade485dbdfc003938903c8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -759,7 +759,7 @@ GameObject:
   - component: {fileID: 6339760826222529971}
   - component: {fileID: 6432805631788093170}
   m_Layer: 0
-  m_Name: Address
+  m_Name: BlockAddress
   m_TagString: Side
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -825,8 +825,16 @@ MonoBehaviour:
     title: 
     type_id: 0
     parent_id: 0
-    type_emoji: 
-    locations: []
+    location:
+      id: 0
+      title: 
+      type_id: 0
+      owner_id: 
+      parent_id: 0
+      address_id: 0
+      address_parent_id: 0
+      entry_room_id: 0
+      floors: []
 --- !u!1 &9040041546069332437
 GameObject:
   m_ObjectHideFlags: 0

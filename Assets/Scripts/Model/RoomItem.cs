@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class RoomItem
 {
-    public int id;
+    public int? id;
     public int type_id;
     public int x;
     public int y;

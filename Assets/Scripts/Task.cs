@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class Task : Entity
 {
-    public TaskItem item;
+    new public TaskItem item;
 
     private void Start()
     {
         if (item.is_free)
         {
-            var acceptTaskButton = Instantiate(buttonPrefab, new Vector3(130, 30, 0), Quaternion.identity, NetworkManager.Instance.tasksCanvas.transform);
+            var acceptTaskButton = Instantiate(buttonPrefab, new Vector3(130, 300, 0), Quaternion.identity, NetworkManager.Instance.tasksCanvas.transform);
             acceptTaskButton.SetActive(false);
             acceptTaskButton.GetComponentInChildren<Text>().text = $"Accept {item.title}";
             acceptTaskButton.GetComponent<Button>().onClick.AddListener(() => {
@@ -20,11 +20,4 @@ public class Task : Entity
             buttons.Add(acceptTaskButton);
         }
     }
-
-    public void Handler()
-    {
-        NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{item}";
-        ShowButtons();
-    }   
 }

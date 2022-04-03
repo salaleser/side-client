@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class Entity : MonoBehaviour
 {
+    public object item;
     public GameObject buttonPrefab;
     public List<GameObject> buttons = new();
 
@@ -21,5 +22,12 @@ public class Entity : MonoBehaviour
         {
             b.SetActive(false);
         }
+    }
+
+    public void Handler()
+    {
+        NetworkManager.Instance.HideAllButtons();
+        NetworkManager.Instance.text.text = $"{item}";
+        ShowButtons();
     }
 }

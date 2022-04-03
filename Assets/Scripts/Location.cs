@@ -4,19 +4,44 @@ using UnityEngine.UI;
 
 public class Location : Entity
 {
-    public LocationItem item;
+    new public LocationItem item;
 
     private void Start()
     {
-		if (item.floors_count > 0)
+		if (item.floors.Count > 0)
         {
-            var floorButton = Instantiate(buttonPrefab, new Vector3(130, 330, 0), Quaternion.identity, this.transform);
-            floorButton.SetActive(false);
-            floorButton.GetComponentInChildren<Text>().text = $"Move inside {item.title}";
-            floorButton.GetComponent<Button>().onClick.AddListener(() => {
-                NetworkManager.Instance.Floor(item.id, 0);
-            });
-            buttons.Add(floorButton);
+            if (item.id == GameManager.Instance.currentCitizen.location_id || item.owner_id == GameManager.Instance.currentCitizen.id)
+            {
+                var zoomInButton = Instantiate(buttonPrefab, new Vector3(130, 330, 0), Quaternion.identity, this.transform);
+                zoomInButton.SetActive(false);
+                zoomInButton.GetComponentInChildren<Text>().text = $"Zoom in";
+                zoomInButton.GetComponent<Button>().onClick.AddListener(() => {
+                    NetworkManager.Instance.Location(item.id);
+                });
+                buttons.Add(zoomInButton);
+            }
+            else
+            {
+                var moveInsideButton = Instantiate(buttonPrefab, new Vector3(130, 330, 0), Quaternion.identity, this.transform);
+                moveInsideButton.SetActive(false);
+                moveInsideButton.GetComponentInChildren<Text>().text = $"Move inside";
+                moveInsideButton.GetComponent<Button>().onClick.AddListener(() => {
+                    foreach(var f in item.floors)
+                    {
+                        if (f.number == 0)
+                        {
+                            foreach(var r in f.rooms)
+                            {
+                                if (r.type_id == 3)
+                                {
+                                    NetworkManager.Instance.Room(r.id);
+                                }
+                            }
+                        }
+                    }
+                });
+                buttons.Add(moveInsideButton);
+            }
         }
     }
 }

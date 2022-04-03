@@ -5,11 +5,11 @@ using UnityEngine.UI;
 
 public class Item : Entity
 {
-    public ItemItem item;
+    new public ItemItem item;
 
     private void Start()
     {
-        var marketButton = Instantiate(buttonPrefab, new Vector3(130, 60, 0), Quaternion.identity, NetworkManager.Instance.inventoryCanvas.transform);
+        var marketButton = Instantiate(buttonPrefab, new Vector3(130, 300, 0), Quaternion.identity, NetworkManager.Instance.inventoryCanvas.transform);
         marketButton.SetActive(false);
         marketButton.GetComponentInChildren<Text>().text = "Market";
         marketButton.GetComponent<Button>().onClick.AddListener(() => {
@@ -17,7 +17,7 @@ public class Item : Entity
         });
         buttons.Add(marketButton);
 
-        var openButton = Instantiate(buttonPrefab, new Vector3(130, 120, 0), Quaternion.identity, NetworkManager.Instance.inventoryCanvas.transform);
+        var openButton = Instantiate(buttonPrefab, new Vector3(130, 270, 0), Quaternion.identity, NetworkManager.Instance.inventoryCanvas.transform);
         openButton.SetActive(false);
         openButton.GetComponentInChildren<Text>().text = "Open";
         openButton.GetComponent<Button>().onClick.AddListener(() => {
@@ -25,11 +25,4 @@ public class Item : Entity
         });
         buttons.Add(openButton);
     }
-
-    public void Handler()
-    {
-        NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{item}";
-        ShowButtons();
-    }   
 }
