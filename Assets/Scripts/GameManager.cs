@@ -9,12 +9,11 @@ public class GameManager : MonoBehaviour
 	public const int Market = 3;
 	public const int Inventory = 4;
 
-	public CitizenItem currentCitizen;
 	public int state;
-	public int mapLocationId;
-	public int? mapAddressId;
-	public int mapAddressParentId;
-	public int mapFloorId;
+	public AddressItem address;
+	public LocationItem location;
+	public FloorItem floor;
+	public CitizenItem citizen;
 
 	public static GameManager Instance { get; private set; }
 

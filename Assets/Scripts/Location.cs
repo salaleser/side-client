@@ -10,9 +10,9 @@ public class Location : Entity
     {
 		if (item.floors.Count > 0)
         {
-            if (item.id == GameManager.Instance.currentCitizen.location_id || item.owner_id == GameManager.Instance.currentCitizen.id)
+            if (item.owner_id == GameManager.Instance.citizen.id)
             {
-                var zoomInButton = Instantiate(buttonPrefab, new Vector3(130, 330, 0), Quaternion.identity, this.transform);
+                var zoomInButton = Instantiate(buttonPrefab, new Vector3(130, 300, 0), Quaternion.identity, this.transform);
                 zoomInButton.SetActive(false);
                 zoomInButton.GetComponentInChildren<Text>().text = $"Zoom in";
                 zoomInButton.GetComponent<Button>().onClick.AddListener(() => {

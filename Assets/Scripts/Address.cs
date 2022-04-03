@@ -39,7 +39,7 @@ public class Address : Entity
             registerAddressButton.SetActive(false);
             registerAddressButton.GetComponentInChildren<Text>().text = $"Build Address";
             registerAddressButton.GetComponent<Button>().onClick.AddListener(() => {
-                NetworkManager.Instance.RegisterAddress(GameManager.Instance.mapAddressId, item.x, item.y, "");
+                NetworkManager.Instance.RegisterAddress(GameManager.Instance.address.id, item.x, item.y, "");
             });
             buttons.Add(registerAddressButton);
         }

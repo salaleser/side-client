@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class AddressItem
 {
-    public int? id;
+    public int id;
     public int x;
     public int y;
     public string title;

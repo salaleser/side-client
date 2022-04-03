@@ -15,7 +15,7 @@ public class Task : Entity
             acceptTaskButton.SetActive(false);
             acceptTaskButton.GetComponentInChildren<Text>().text = $"Accept {item.title}";
             acceptTaskButton.GetComponent<Button>().onClick.AddListener(() => {
-                NetworkManager.Instance.TaskAccept(GameManager.Instance.currentCitizen.id, item.id);
+                NetworkManager.Instance.TaskAccept(GameManager.Instance.citizen.id, item.id);
             });
             buttons.Add(acceptTaskButton);
         }

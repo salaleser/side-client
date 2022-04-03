@@ -146,7 +146,7 @@ public class NetworkManager : Manager
         citizenButton.GetComponentInChildren<Text>().text = "Show Floor";
         citizenButton.GetComponent<Button>().onClick.AddListener(() => {
             HideAllButtons();
-			Floor(GameManager.Instance.currentCitizen.floor_id);
+			Floor(GameManager.Instance.citizen.floor_id);
         });
 
 		zoomOutButton = Instantiate(mainButtonPrefab, new Vector3(840, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
@@ -155,11 +155,11 @@ public class NetworkManager : Manager
             HideAllButtons();
 			if (GameManager.Instance.state == GameManager.Floor)
 			{
-				Address(GameManager.Instance.currentCitizen.address_parent_id);
+				Address(GameManager.Instance.citizen.address_parent_id);
 			}
 			else if (GameManager.Instance.state == GameManager.Map)
 			{
-				Address(GameManager.Instance.mapAddressParentId);
+				Address(GameManager.Instance.address.parent_id);
 			}
         });
 
@@ -167,7 +167,7 @@ public class NetworkManager : Manager
         inventoryButton.GetComponentInChildren<Text>().text = "Inventory";
         inventoryButton.GetComponent<Button>().onClick.AddListener(() => {
             HideAllButtons();
-			Inventory(GameManager.Instance.currentCitizen.root_item_id);
+			Inventory(GameManager.Instance.citizen.root_item_id);
         });
 	}
 
@@ -290,7 +290,7 @@ public class NetworkManager : Manager
 		}));
 	}
 
-	public void Address(int? addressId)
+	public void Address(int addressId)
     {
 		var query = $"address_id={addressId}";
 		
@@ -302,7 +302,7 @@ public class NetworkManager : Manager
 		GameManager.Instance.state = GameManager.Map;
 	}
 
-	public void RegisterAddress(int? parentId, int x, int y, string title)
+	public void RegisterAddress(int parentId, int x, int y, string title)
     {
 		var query = $"parent_id={parentId}&x={x}&y={y}&title={title}";
 		
@@ -314,7 +314,7 @@ public class NetworkManager : Manager
 
 	public void RegisterLocation(int addressId, int locationTypeId)
     {
-		var query = $"address_id={addressId}&location_type_id={locationTypeId}&citizen_id={GameManager.Instance.currentCitizen.id}";
+		var query = $"address_id={addressId}&location_type_id={locationTypeId}&citizen_id={GameManager.Instance.citizen.id}";
 		
 		StartCoroutine(Request("location-register", query, (result) =>
 		{
@@ -346,9 +346,9 @@ public class NetworkManager : Manager
 		GameManager.Instance.state = GameManager.Floor;
 	}
 
-	public void Room(int? roomId)
+	public void Room(int roomId)
     {
-		var query = $"citizen_id={GameManager.Instance.currentCitizen.id}&room_id={roomId}";
+		var query = $"citizen_id={GameManager.Instance.citizen.id}&room_id={roomId}";
 		
 		StartCoroutine(Request("room", query, (result) =>
 		{
@@ -368,7 +368,7 @@ public class NetworkManager : Manager
 		}));
 	}
 
-	public void Build(int? addressId)
+	public void Build(int addressId)
 	{
 		shading.SetActive(true);
 
@@ -423,7 +423,7 @@ public class NetworkManager : Manager
 			return;
 		}
 
-		GameManager.Instance.currentCitizen = response.citizen;
+		GameManager.Instance.citizen = response.citizen;
 		ProcessLocation(json);
 	}
 
@@ -435,11 +435,12 @@ public class NetworkManager : Manager
 			return;
 		}
 
-		GameManager.Instance.mapAddressId = response.address.id;
-		GameManager.Instance.mapAddressParentId = response.address.parent_id;
+		var address = response.address;
+		GameManager.Instance.address = address;
+		title.text = $"{response.address.type_title} {response.address.title}";
 
 		// FIXME: исключение для региона Side
-		zoomOutButton.SetActive(GameManager.Instance.mapAddressId != 1);
+		zoomOutButton.SetActive(GameManager.Instance.address.id != 1);
 
 		DestroyAll<Room>();
 		DestroyAll<Address>();
@@ -449,8 +450,6 @@ public class NetworkManager : Manager
 		DestroyAll<Task>();
 		DestroyAll<LocationType>();
 		shading.SetActive(false);
-
-		title.text = $"{response.address.type_title} {response.address.title}";
 
 		var addressMap = new AddressItem[Width, Height];
 		foreach(var a in response.addresses)
@@ -479,11 +478,11 @@ public class NetworkManager : Manager
 				{
 					var emptyAddressPrefabInstance = Instantiate(emptyAddressPrefab,
 						new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
-					var address = emptyAddressPrefabInstance.GetComponent<Address>();
+					var a = emptyAddressPrefabInstance.GetComponent<Address>();
 					var item = new AddressItem();
 					item.x = i+1;
 					item.y = j+1;
-					address.item = item;
+					a.item = item;
 				}
 				else
 				{
@@ -556,10 +555,11 @@ public class NetworkManager : Manager
 			return;
 		}
 
-		title.text = $"{response.location.type_title}";
+		var location = response.location;
+		GameManager.Instance.location = location;
 
 		var floorResponse = new FloorResponse();
-		foreach(var f in response.location.floors)
+		foreach(var f in location.floors)
 		{
 			if (f.number == 0)
 			{
@@ -589,7 +589,8 @@ public class NetworkManager : Manager
 		shading.SetActive(false);
 
 		var floor = response.floor;
-		GameManager.Instance.mapFloorId = floor.id;
+		GameManager.Instance.floor = floor;
+		title.text = $"{GameManager.Instance.location.type_title}, {floor.number} этаж";
 		
 		var floorMap = new RoomItem[Width, Height];
 		foreach(var r in floor.rooms)
@@ -623,7 +624,7 @@ public class NetworkManager : Manager
 
 		foreach(var r in floor.rooms)
 		{
-			if (r.id != GameManager.Instance.currentCitizen.room_id)
+			if (r.id != GameManager.Instance.citizen.room_id)
 			{
 				continue;
 			}
@@ -634,7 +635,7 @@ public class NetworkManager : Manager
 			for (var i = 0; i < r.citizens.Count; i++)
 			{
 				var c = r.citizens[i];
-				if (c.id == GameManager.Instance.currentCitizen.id)
+				if (c.id == GameManager.Instance.citizen.id)
 				{
 					prefab = userPrefab;
 				}
@@ -655,7 +656,7 @@ public class NetworkManager : Manager
 		GameObject roomPrefab = null;
 		if (r.type_id == 1)
 		{
-			if (r.id == GameManager.Instance.currentCitizen.room_id)
+			if (r.id == GameManager.Instance.citizen.room_id)
 			{
 				roomPrefab = hrDepartmentRoomPrefab;
 			}
@@ -666,7 +667,7 @@ public class NetworkManager : Manager
 		}
 		else if (r.type_id == 2)
 		{
-			if (r.id == GameManager.Instance.currentCitizen.room_id)
+			if (r.id == GameManager.Instance.citizen.room_id)
 			{
 				roomPrefab = workshopRoomPrefab;
 			}
@@ -677,7 +678,7 @@ public class NetworkManager : Manager
 		}
 		else if (r.type_id == 3)
 		{
-			if (r.id == GameManager.Instance.currentCitizen.room_id)
+			if (r.id == GameManager.Instance.citizen.room_id)
 			{
 				roomPrefab = lobbyRoomPrefab;
 			}
@@ -688,7 +689,7 @@ public class NetworkManager : Manager
 		}
 		else if (r.type_id == 4)
 		{
-			if (r.id == GameManager.Instance.currentCitizen.room_id)
+			if (r.id == GameManager.Instance.citizen.room_id)
 			{
 				roomPrefab = storageRoomPrefab;
 			}
@@ -699,7 +700,7 @@ public class NetworkManager : Manager
 		}
 		else if (r.type_id == 5)
 		{
-			if (r.id == GameManager.Instance.currentCitizen.room_id)
+			if (r.id == GameManager.Instance.citizen.room_id)
 			{
 				roomPrefab = bedroomRoomPrefab;
 			}
@@ -710,7 +711,7 @@ public class NetworkManager : Manager
 		}
 		else
 		{
-			if (r.id == GameManager.Instance.currentCitizen.room_id)
+			if (r.id == GameManager.Instance.citizen.room_id)
 			{
 				roomPrefab = defaultRoomPrefab;
 			}
@@ -766,7 +767,7 @@ public class NetworkManager : Manager
             return;
         }
 
-		GameManager.Instance.currentCitizen = response.citizen;
+		GameManager.Instance.citizen = response.citizen;
 	}
 
     private void ProcessInventory(string json)
@@ -855,7 +856,7 @@ public class NetworkManager : Manager
 
 		DestroyAll<Task>();
 
-        title.text = $"Tasks (Location ID {GameManager.Instance.currentCitizen.location_id})";
+        title.text = $"Tasks (Location ID {GameManager.Instance.citizen.location_id})";
 
         var col = 0;
         var row = 0;
