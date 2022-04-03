@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 	public const int Inventory = 4;
 
 	public int state;
+	
 	public AddressItem address;
 	public LocationItem location;
 	public FloorItem floor;
