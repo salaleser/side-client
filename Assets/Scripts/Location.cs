@@ -12,18 +12,18 @@ public class Location : Entity
         {
             if (item.owner_id == GameManager.Instance.citizen.id)
             {
-                AddButton("Zoom in", () => NetworkManager.Instance.Location(item.id));
+                AddButton($"Zoom in {item.type_title}", () => NetworkManager.Instance.Location(item.id));
             }
             else
             {
-                AddButton("Move inside", () => {
+                AddButton($"Move inside {item.type_title}", () => {
                     foreach(var f in item.floors)
                     {
                         if (f.number == 0)
                         {
                             foreach(var r in f.rooms)
                             {
-                                if (r.type_id == RoomTypes.Lobbys)
+                                if (r.type_id == RoomType.Lobby)
                                 {
                                     NetworkManager.Instance.Room(r.id);
                                 }

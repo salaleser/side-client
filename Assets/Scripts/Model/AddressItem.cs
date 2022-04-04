@@ -8,7 +8,7 @@ public class AddressItem
     public int x;
     public int y;
     public string title;
-    public int type_id;
+    public AddressType type_id;
     public string type_title;
     public int parent_id;
     public LocationItem location;

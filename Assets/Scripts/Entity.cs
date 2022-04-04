@@ -16,8 +16,9 @@ public class Entity : MonoBehaviour
     public void AddButton(string text, UnityAction action)
     {
         var rect = buttonPrefab.transform.GetComponent<RectTransform>().rect;
-        var pos = new Vector3(X, Y - rect.height * buttons.Count, 0);
+        var pos = new Vector3(X + rect.height * buttons.Count, Y - rect.height * buttons.Count, 0);
         var button = Instantiate(buttonPrefab, pos, Quaternion.identity, this.transform);
+        button.name = $"Button.{buttons.Count} ({text})";
         button.SetActive(false);
         button.GetComponentInChildren<Text>().text = text;
         button.GetComponent<Button>().onClick.AddListener(action);

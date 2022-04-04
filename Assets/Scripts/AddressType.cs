@@ -1,4 +1,4 @@
-public enum AddressTypes {
+public enum AddressType {
     World = -1,
     Region = 0,
     City = 1,

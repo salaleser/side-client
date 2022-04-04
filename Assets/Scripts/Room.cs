@@ -28,7 +28,7 @@ public class Room : Entity
                 AddButton($"Go to {item.title}", () => NetworkManager.Instance.Room(item.id));
             }
         }
-        else if (item.type_id == RoomTypes.Lobby)
+        else if (item.type_id == RoomType.Lobby)
         {
             AddButton("Move inside", () => NetworkManager.Instance.Room(item.id));
         }
@@ -37,10 +37,10 @@ public class Room : Entity
         {
             switch (item.type_id)
             {
-                case RoomTypes.HrDepartment:
+                case RoomType.HrDepartment:
                     AddButton("Get Tasks", () => NetworkManager.Instance.Tasks(GameManager.Instance.citizen.location_id));
                     break;
-                case RoomTypes.Bedroom:
+                case RoomType.Bedroom:
                     AddButton("Sleep", () => Debug.LogWarning("Sleep"));
                     break;
             }

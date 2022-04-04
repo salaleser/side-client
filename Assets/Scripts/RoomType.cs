@@ -1,4 +1,4 @@
-public enum RoomTypes {
+public enum RoomType {
     HrDepartment = 1,
     Workshop = 2,
     Lobby = 3,

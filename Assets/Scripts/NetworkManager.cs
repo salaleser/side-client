@@ -41,12 +41,19 @@ public class NetworkManager : Manager
 	public GameObject lotPrefab;
 	public GameObject locationTypePrefab;
 	
-	public GameObject emptyAddressPrefab;
+	public GameObject defaultGroundPrefab;
+	public GameObject regionGroundPrefab;
+	public GameObject cityGroundPrefab;
+	public GameObject blockGroundPrefab;
+	public GameObject landLotGroundPrefab;
+	public GameObject facilityGroundPrefab;
+
 	public GameObject defaultAddressPrefab;
 	public GameObject regionAddressPrefab;
 	public GameObject cityAddressPrefab;
 	public GameObject blockAddressPrefab;
 	public GameObject landLotAddressPrefab;
+	public GameObject facilityAddressPrefab;
 
 	public GameObject defaultLocationPrefab;
 	public GameObject coalMineLocationPrefab;
@@ -159,7 +166,7 @@ public class NetworkManager : Manager
         });
 	}
 
-	void Update() {  
+	void Update() {
 		if (Input.GetMouseButtonDown(0)) {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -178,6 +185,11 @@ public class NetworkManager : Manager
 	{
 		HideAllButtons();
 		text.text = "";
+		foreach(var ground in transform.GetComponentsInChildren<Ground>())
+		{
+			text.text += $"{ground.item}";
+			ground.ShowButtons();
+		}
 		foreach(var address in transform.GetComponentsInChildren<Address>())
 		{
 			text.text += $"{address.item}";
@@ -430,8 +442,10 @@ public class NetworkManager : Manager
 		// FIXME: исключение для региона Side
 		zoomOutButton.SetActive(GameManager.Instance.address.id != 1);
 
-		DestroyAll<Room>();
+		DestroyAll<Ground>();
 		DestroyAll<Address>();
+		DestroyAll<Location>();
+		DestroyAll<Room>();
 		DestroyAll<Citizen>();
 		DestroyAll<Item>();
 		DestroyAll<Lot>();
@@ -462,17 +476,8 @@ public class NetworkManager : Manager
 		{
 			for (var j = 0; j < Height; j++)
 			{
-				if (addressMap[i, j] == null)
-				{
-					var emptyAddressPrefabInstance = Instantiate(emptyAddressPrefab,
-						new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
-					var a = emptyAddressPrefabInstance.GetComponent<Address>();
-					var item = new AddressItem();
-					item.x = i+1;
-					item.y = j+1;
-					a.item = item;
-				}
-				else
+				InstantiateGround(addressMap[i, j], i+1, j+1);
+				if (addressMap[i, j] != null)
 				{
 					InstantiateAddress(addressMap[i, j], i+1, j+1);
 				}
@@ -480,22 +485,67 @@ public class NetworkManager : Manager
 		}
 	}
 
+	private void InstantiateGround(AddressItem a, int x, int y)
+	{
+		GameObject groundPrefab = null;
+		GroundType typeId;
+		switch (GameManager.Instance.address.type_id)
+		{
+			case AddressType.World:
+				typeId = GroundType.Region;
+				groundPrefab = regionGroundPrefab;
+				break;
+			case AddressType.Region:
+				typeId = GroundType.City;
+				groundPrefab = cityGroundPrefab;
+				break;
+			case AddressType.City:
+				typeId = GroundType.Block;
+				groundPrefab = blockGroundPrefab;
+				break;
+			case AddressType.Block:
+				typeId = GroundType.LandLot;
+				groundPrefab = landLotGroundPrefab;
+				break;
+			case AddressType.LandLot:
+				typeId = GroundType.Facility;
+				groundPrefab = facilityGroundPrefab;
+				break;
+			default:
+				typeId = GroundType.Undefined;
+				groundPrefab = defaultGroundPrefab;
+				break;
+		}
+		
+		var groundPrefabInstance = Instantiate(groundPrefab, new Vector3(x, 0, y), Quaternion.identity, entitiesCanvas.transform);
+		groundPrefabInstance.name = $"Ground.{typeId} ({x}/{y})";
+		var ground = groundPrefabInstance.GetComponent<Ground>();
+
+		ground.item.x = x;
+		ground.item.y = y;
+		ground.item.type_id = typeId;
+		ground.item.address = a;
+	}
+
 	private void InstantiateAddress(AddressItem a, int x, int y)
 	{
 		GameObject addressPrefab = null;
-		switch (a.type_id)
+		switch (GameManager.Instance.address.type_id)
 		{
-			case AddressTypes.Region:
+			case AddressType.World:
 				addressPrefab = regionAddressPrefab;
 				break;
-			case AddressTypes.City:
+			case AddressType.Region:
 				addressPrefab = cityAddressPrefab;
 				break;
-			case AddressTypes.Block:
+			case AddressType.City:
 				addressPrefab = blockAddressPrefab;
 				break;
-			case AddressTypes.LandLot:
+			case AddressType.Block:
 				addressPrefab = landLotAddressPrefab;
+				break;
+			case AddressType.LandLot:
+				addressPrefab = facilityAddressPrefab;
 				break;
 			default:
 				addressPrefab = defaultAddressPrefab;
@@ -503,6 +553,7 @@ public class NetworkManager : Manager
 		}
 		
 		var addressPrefabInstance = Instantiate(addressPrefab, new Vector3(x, 0, y), Quaternion.identity, entitiesCanvas.transform);
+		addressPrefabInstance.name = $"Address.{a.type_id} ({x}/{y})";
 		var address = addressPrefabInstance.GetComponent<Address>();
 
 		address.item = a;
@@ -530,6 +581,7 @@ public class NetworkManager : Manager
 		}
 
 		var locationPrefabInstance = Instantiate(locationPrefab, addressPrefabInstance.transform);
+		locationPrefabInstance.name = $"Location.{a.location.type_id} ({x}/{y})";
 		var location = locationPrefabInstance.GetComponent<Location>();
 
 		location.item = a.location;
@@ -567,8 +619,10 @@ public class NetworkManager : Manager
 			return;
 		}
 
-		DestroyAll<Room>();
+		DestroyAll<Ground>();
 		DestroyAll<Address>();
+		DestroyAll<Location>();
+		DestroyAll<Room>();
 		DestroyAll<Citizen>();
 		DestroyAll<Item>();
 		DestroyAll<Lot>();
@@ -641,27 +695,27 @@ public class NetworkManager : Manager
 		var room = roomPrefabInstance.GetComponent<Room>();
 
 		Color color = Color.white;
-		if (r.type_id == RoomTypes.HrDepartment)
+		if (r.type_id == RoomType.HrDepartment)
 		{
 			color = Color.blue;
 		}
-		else if (r.type_id == RoomTypes.Workshop)
+		else if (r.type_id == RoomType.Workshop)
 		{
 			color = Color.red;
 		}
-		else if (r.type_id == RoomTypes.Lobby)
+		else if (r.type_id == RoomType.Lobby)
 		{
 			color = Color.yellow;
 		}
-		else if (r.type_id == RoomTypes.Storage)
+		else if (r.type_id == RoomType.Storage)
 		{
 			color = Color.gray;
 		}
-		else if (r.type_id == RoomTypes.Bedroom)
+		else if (r.type_id == RoomType.Bedroom)
 		{
 			color = Color.cyan;
 		}
-		else if (r.type_id == RoomTypes.Reception)
+		else if (r.type_id == RoomType.Reception)
 		{
 			color = Color.magenta;
 		}
