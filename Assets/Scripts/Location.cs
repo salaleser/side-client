@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class Location : Entity
 {
-    new public LocationItem item;
+    public LocationItem item;
 
     private void Start()
     {

@@ -8,8 +8,6 @@ public class Entity : MonoBehaviour
     public GameObject buttonPrefab;
     public List<GameObject> buttons = new();
 
-    protected object item;
-
     private const int X = 130;
     private const int Y = 300;
 
@@ -39,12 +37,5 @@ public class Entity : MonoBehaviour
         {
             b.SetActive(false);
         }
-    }
-
-    public void Handler()
-    {
-        NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{item}";
-        ShowButtons();
     }
 }

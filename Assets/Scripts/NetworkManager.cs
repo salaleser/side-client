@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using Models;
 
 public class NetworkManager : Manager
 {
@@ -23,6 +24,8 @@ public class NetworkManager : Manager
 	private GameObject mapButton;
 	private GameObject citizenButton;
 	private GameObject zoomOutButton;
+	private GameObject buildModeButton;
+	private GameObject closeWindowButton;
 
 	public GameObject marketCanvas;
 	public GameObject inventoryCanvas;
@@ -30,14 +33,13 @@ public class NetworkManager : Manager
 	public GameObject tasksCanvas;
 	public GameObject entitiesCanvas;
 	public GameObject shading;
-	public GameObject cursor;
-	private GameObject _cursor;
 
 	public TMP_Text title;
 	public Text text;
 	public side.ChatController chatController;
 	public GameObject itemPrefab;
 	public GameObject taskPrefab;
+	public GameObject positionPrefab;
 	public GameObject lotPrefab;
 	public GameObject locationTypePrefab;
 	
@@ -164,22 +166,29 @@ public class NetworkManager : Manager
             HideAllButtons();
 			Inventory(GameManager.Instance.citizen.root_item_id);
         });
-	}
 
-	void Update() {
-		if (Input.GetMouseButtonDown(0)) {
-			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit)) {
-                ShowButtons(hit.transform);
-				Destroy(_cursor);
-				_cursor = Instantiate(cursor, hit.transform);
-            } else {
-				Destroy(_cursor);
-				text.text = "—";
-			}
-        }
-    }
+		buildModeButton = Instantiate(mainButtonPrefab, new Vector3(960, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+		buildModeButton.SetActive(false);
+        buildModeButton.GetComponentInChildren<Text>().text = "Build Mode";
+        buildModeButton.GetComponent<Button>().onClick.AddListener(() => {
+            HideAllButtons();
+			BuildMode();
+        });
+
+		closeWindowButton = Instantiate(mainButtonPrefab, new Vector3(1020, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+		closeWindowButton.SetActive(false);
+        closeWindowButton.GetComponentInChildren<Text>().text = "Close Window";
+        closeWindowButton.GetComponent<Button>().onClick.AddListener(() => {
+            HideAllButtons();
+			DestroyAll<Item>();
+			DestroyAll<Lot>();
+			DestroyAll<Task>();
+			DestroyAll<Position>();
+			DestroyAll<LocationType>();
+			shading.SetActive(false);
+			closeWindowButton.SetActive(shading.activeSelf);
+        });
+	}
 
 	public void ShowButtons(Transform transform)
 	{
@@ -270,9 +279,15 @@ public class NetworkManager : Manager
 		}
 	}
 
+	public void BuildMode()
+	{
+		Debug.Log("Build Mode");
+	}
+
 	public void Market()
 	{
 		shading.SetActive(true);
+		closeWindowButton.SetActive(shading.activeSelf);
 
 		StartCoroutine(Request("market", "", (result) =>
 		{
@@ -359,6 +374,7 @@ public class NetworkManager : Manager
 	public void Inventory(int rootItemId)
     {
 		shading.SetActive(true);
+		closeWindowButton.SetActive(shading.activeSelf);
 
 		var query = $"root_item_id={rootItemId}";
 		
@@ -371,6 +387,7 @@ public class NetworkManager : Manager
 	public void Build(int addressId)
 	{
 		shading.SetActive(true);
+		closeWindowButton.SetActive(shading.activeSelf);
 
 		var query = $"address_id={addressId}";
 		
@@ -396,6 +413,7 @@ public class NetworkManager : Manager
 	public void Tasks(int locationId)
 	{
 		shading.SetActive(true);
+		closeWindowButton.SetActive(shading.activeSelf);
 
 		var query = $"location_id={locationId}";
 		
@@ -410,6 +428,16 @@ public class NetworkManager : Manager
 		var query = $"citizen_id={citizenId}&task_id={taskId}";
 		
 		StartCoroutine(Request("task-accept", query, (result) =>
+		{
+			ProcessTasks(result);
+		}));
+	}
+
+	public void PositionRequest(int citizenId, int positionId)
+	{
+		var query = $"citizen_id={citizenId}&position_id={positionId}";
+		
+		StartCoroutine(Request("position-request", query, (result) =>
 		{
 			ProcessTasks(result);
 		}));
@@ -441,6 +469,7 @@ public class NetworkManager : Manager
 
 		// FIXME: исключение для региона Side
 		zoomOutButton.SetActive(GameManager.Instance.address.id != 1);
+		buildModeButton.SetActive(false);
 
 		DestroyAll<Ground>();
 		DestroyAll<Address>();
@@ -450,8 +479,10 @@ public class NetworkManager : Manager
 		DestroyAll<Item>();
 		DestroyAll<Lot>();
 		DestroyAll<Task>();
+		DestroyAll<Position>();
 		DestroyAll<LocationType>();
 		shading.SetActive(false);
+		closeWindowButton.SetActive(shading.activeSelf);
 
 		var addressMap = new AddressItem[Width, Height];
 		foreach(var a in response.addresses)
@@ -627,12 +658,16 @@ public class NetworkManager : Manager
 		DestroyAll<Item>();
 		DestroyAll<Lot>();
 		DestroyAll<Task>();
+		DestroyAll<Position>();
 		DestroyAll<LocationType>();
 		shading.SetActive(false);
+		closeWindowButton.SetActive(shading.activeSelf);
 
 		var floor = response.floor;
 		GameManager.Instance.floor = floor;
 		title.text = $"{GameManager.Instance.location.type_title}, {floor.number} этаж";
+
+		buildModeButton.SetActive(GameManager.Instance.citizen.id == GameManager.Instance.location.owner_id);
 		
 		var floorMap = new RoomItem[Width, Height];
 		foreach(var r in floor.rooms)
@@ -737,6 +772,7 @@ public class NetworkManager : Manager
 		DestroyAll<Item>();
 		DestroyAll<Lot>();
 		DestroyAll<Task>();
+		DestroyAll<Position>();
 		DestroyAll<LocationType>();
 
         var col = 0;
@@ -779,6 +815,7 @@ public class NetworkManager : Manager
 		DestroyAll<Item>();
 		DestroyAll<Lot>();
 		DestroyAll<Task>();
+		DestroyAll<Position>();
 		DestroyAll<LocationType>();
 
         if (response.title != null)
@@ -833,7 +870,7 @@ public class NetworkManager : Manager
         }
 	}
 
-	private T InstantiateObject<T>(GameObject prefab, GameObject parent, string title, int x, int y, int col, int row) where T : Entity
+	private T InstantiateObject<T>(GameObject prefab, GameObject parent, string title, int x, int y, int col, int row) where T : IItem
 	{
 		var rect = prefab.transform.GetComponent<RectTransform>().rect;
 		var instance = Instantiate(prefab, new Vector3(x + rect.width * col, y - rect.height * row, 0), Quaternion.identity, parent.transform);
@@ -853,8 +890,9 @@ public class NetworkManager : Manager
         }
 
 		DestroyAll<Task>();
+		DestroyAll<Position>();
 
-        title.text = $"Tasks (Location ID {GameManager.Instance.citizen.location_id})";
+        title.text = $"{GameManager.Instance.location.type_title}: HR Department";
 
         var col = 0;
         var row = 0;
@@ -869,6 +907,23 @@ public class NetworkManager : Manager
 			var task = InstantiateObject<Task>(taskPrefab, tasksCanvas,
 				$"{response.tasks[i].title} ({(response.tasks[i].is_free ? "free" : "busy")})", 100, 700, col, row);
 			task.item = response.tasks[i];
+
+            row++;
+        }
+
+		col = 0;
+        row = 0;
+		for (var i = 0; i < response.positions.Count; i++)
+        {
+            if (i % 5 == 0)
+            {
+                col++;
+                row = 0;
+            }
+
+			var position = InstantiateObject<Position>(positionPrefab, tasksCanvas,
+				$"{response.positions[i].title} ({(response.positions[i].is_free ? "free" : "busy")})", 500, 700, col, row);
+			position.item = response.positions[i];
 
             row++;
         }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Ground : Entity
 {
-    new public GroundItem item;
+    public GroundItem item;
 
     private void Start()
     {

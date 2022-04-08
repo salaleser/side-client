@@ -3,13 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Item : Entity
+public class Item : Entity, IItem
 {
-    new public ItemItem item;
+    public ItemItem item;
 
     private void Start()
     {
         AddButton("Market", () => NetworkManager.Instance.Market());
         AddButton("Open", () => NetworkManager.Instance.Inventory(item.id));
+    }
+
+    public void Handler()
+    {
+        NetworkManager.Instance.HideAllButtons();
+        NetworkManager.Instance.text.text = $"{item}";
+        ShowButtons();
     }
 }

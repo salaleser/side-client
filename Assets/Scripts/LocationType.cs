@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LocationType : Entity
+public class LocationType : Entity, IItem
 {
-    new public LocationTypeItem item;
+    public LocationTypeItem item;
 
     private void Start()
     {
         AddButton($"Build {item.title}", () => NetworkManager.Instance.RegisterLocation(item.address_id, item.id));
+    }
+
+    public void Handler()
+    {
+        NetworkManager.Instance.HideAllButtons();
+        NetworkManager.Instance.text.text = $"{item}";
+        ShowButtons();
     }
 }

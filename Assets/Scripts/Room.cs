@@ -5,22 +5,10 @@ using UnityEngine.UI;
 
 public class Room : Entity
 {
-    new public RoomItem item;
+    public RoomItem item;
 
     private void Start()
     {
-        if (GameManager.Instance.citizen.id == GameManager.Instance.location.owner_id)
-        {
-            if (item.id == 0)
-            {
-                AddButton("Bulid Room", () => Debug.LogWarning("Build Room"));
-            }
-            else
-            {
-                AddButton("Change Room", () => Debug.LogWarning("Change Room"));
-            }
-        }
-        
         if (GameManager.Instance.citizen.floor_id == GameManager.Instance.floor.id)
         {
             if (item.id != 0 && GameManager.Instance.citizen.room_id != item.id)

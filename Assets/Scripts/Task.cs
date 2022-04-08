@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Models;
 
-public class Task : Entity
+public class Task : Entity, IItem
 {
-    new public TaskItem item;
+    public TaskItem item;
 
     private void Start()
     {
@@ -13,5 +14,12 @@ public class Task : Entity
         {
             AddButton($"Accept {item.title}", () => NetworkManager.Instance.TaskAccept(GameManager.Instance.citizen.id, item.id));
         }
+    }
+
+    public void Handler()
+    {
+        NetworkManager.Instance.HideAllButtons();
+        NetworkManager.Instance.text.text = $"{item}";
+        ShowButtons();
     }
 }

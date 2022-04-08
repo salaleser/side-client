@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Models;
 
 public class Address : Entity
 {
-    new public AddressItem item;
+    public AddressItem item;
 
     private void Start()
     {
