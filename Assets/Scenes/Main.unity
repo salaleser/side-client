@@ -1431,6 +1431,7 @@ MonoBehaviour:
   positionPrefab: {fileID: 5523004236194669490, guid: 47db7b05eff6440c682f2e80333de2df, type: 3}
   lotPrefab: {fileID: 5523004236194669490, guid: cc0fbf3735c1b4e3ba91b46db6ec0cfd, type: 3}
   locationTypePrefab: {fileID: 5523004236194669490, guid: 9f1ed22b7328b4c8289ea7f5c97cd319, type: 3}
+  roomTypePrefab: {fileID: 5523004236194669490, guid: 4e39da44a664f4e5da60ec30b6c9484a, type: 3}
   defaultGroundPrefab: {fileID: 9040041545605410619, guid: 8e3c632f175fb40cba6a587f86dd24d6, type: 3}
   regionGroundPrefab: {fileID: 9040041545605410619, guid: 05b46d2ef939248e880cae71f55e567a, type: 3}
   cityGroundPrefab: {fileID: 9040041545605410619, guid: 9f38388f3323d4a4eac3a1e735b7b7f8, type: 3}

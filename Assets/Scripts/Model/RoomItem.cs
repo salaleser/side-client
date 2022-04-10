@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class RoomItem
 {
     public int id;
-    public RoomType type_id;
+    public RoomTypes type_id;
     public int x;
     public int y;
     public int w;

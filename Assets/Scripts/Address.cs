@@ -10,11 +10,11 @@ public class Address : Entity
 
     private void Start()
     {
-        if (item.type_id == AddressType.Facility && item.location == null)
+        if (item.type_id == AddressTypes.Facility && item.location == null)
         {
-            AddButton("Build Location", () => NetworkManager.Instance.Build(item.id));
+            AddButton("Build Location", () => NetworkManager.Instance.BuildLocation(item.id));
         }
-        else if (item.type_id != AddressType.Facility)
+        else if (item.type_id != AddressTypes.Facility)
         {
             AddButton($"Zoom in {item.type_id}", () => NetworkManager.Instance.Address(item.id));
         }

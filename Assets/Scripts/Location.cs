@@ -23,7 +23,7 @@ public class Location : Entity
                         {
                             foreach(var r in f.rooms)
                             {
-                                if (r.type_id == RoomType.Lobby)
+                                if (r.type_id == RoomTypes.Lobby)
                                 {
                                     NetworkManager.Instance.Room(r.id);
                                 }

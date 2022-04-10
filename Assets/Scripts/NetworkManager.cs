@@ -42,6 +42,7 @@ public class NetworkManager : Manager
 	public GameObject positionPrefab;
 	public GameObject lotPrefab;
 	public GameObject locationTypePrefab;
+	public GameObject roomTypePrefab;
 	
 	public GameObject defaultGroundPrefab;
 	public GameObject regionGroundPrefab;
@@ -172,7 +173,7 @@ public class NetworkManager : Manager
         buildModeButton.GetComponentInChildren<Text>().text = "Build Mode";
         buildModeButton.GetComponent<Button>().onClick.AddListener(() => {
             HideAllButtons();
-			BuildMode();
+			BuildRoom(GameManager.Instance.floor.id);
         });
 
 		closeWindowButton = Instantiate(mainButtonPrefab, new Vector3(1020, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
@@ -185,6 +186,7 @@ public class NetworkManager : Manager
 			DestroyAll<Task>();
 			DestroyAll<Position>();
 			DestroyAll<LocationType>();
+			DestroyAll<RoomType>();
 			shading.SetActive(false);
 			closeWindowButton.SetActive(shading.activeSelf);
         });
@@ -279,11 +281,6 @@ public class NetworkManager : Manager
 		}
 	}
 
-	public void BuildMode()
-	{
-		Debug.Log("Build Mode");
-	}
-
 	public void Market()
 	{
 		shading.SetActive(true);
@@ -337,6 +334,16 @@ public class NetworkManager : Manager
 		}));
 	}
 
+	public void RegisterRoom(int floorId, int roomTypeId)
+    {
+		var query = $"floor_id={floorId}&room_type_id={roomTypeId}";
+		
+		StartCoroutine(Request("room-register", query, (result) =>
+		{
+			ProcessFloor(result);
+		}));
+	}
+
 	public void Location(int locationId)
     {
 		var query = $"location_id={locationId}";
@@ -384,16 +391,29 @@ public class NetworkManager : Manager
 		}));
 	}
 
-	public void Build(int addressId)
+	public void BuildLocation(int addressId)
 	{
 		shading.SetActive(true);
 		closeWindowButton.SetActive(shading.activeSelf);
 
 		var query = $"address_id={addressId}";
 		
-		StartCoroutine(Request("build", query, (result) =>
+		StartCoroutine(Request("build-location", query, (result) =>
 		{
-			ProcessBuild(result);
+			ProcessBuildLocation(result);
+		}));
+	}
+
+	public void BuildRoom(int floorId)
+	{
+		shading.SetActive(true);
+		closeWindowButton.SetActive(shading.activeSelf);
+
+		var query = $"floor_id={floorId}";
+		
+		StartCoroutine(Request("build-room", query, (result) =>
+		{
+			ProcessBuildRoom(result);
 		}));
 	}
 
@@ -481,6 +501,7 @@ public class NetworkManager : Manager
 		DestroyAll<Task>();
 		DestroyAll<Position>();
 		DestroyAll<LocationType>();
+		DestroyAll<RoomType>();
 		shading.SetActive(false);
 		closeWindowButton.SetActive(shading.activeSelf);
 
@@ -522,23 +543,23 @@ public class NetworkManager : Manager
 		GroundType typeId;
 		switch (GameManager.Instance.address.type_id)
 		{
-			case AddressType.World:
+			case AddressTypes.World:
 				typeId = GroundType.Region;
 				groundPrefab = regionGroundPrefab;
 				break;
-			case AddressType.Region:
+			case AddressTypes.Region:
 				typeId = GroundType.City;
 				groundPrefab = cityGroundPrefab;
 				break;
-			case AddressType.City:
+			case AddressTypes.City:
 				typeId = GroundType.Block;
 				groundPrefab = blockGroundPrefab;
 				break;
-			case AddressType.Block:
+			case AddressTypes.Block:
 				typeId = GroundType.LandLot;
 				groundPrefab = landLotGroundPrefab;
 				break;
-			case AddressType.LandLot:
+			case AddressTypes.LandLot:
 				typeId = GroundType.Facility;
 				groundPrefab = facilityGroundPrefab;
 				break;
@@ -563,19 +584,19 @@ public class NetworkManager : Manager
 		GameObject addressPrefab = null;
 		switch (GameManager.Instance.address.type_id)
 		{
-			case AddressType.World:
+			case AddressTypes.World:
 				addressPrefab = regionAddressPrefab;
 				break;
-			case AddressType.Region:
+			case AddressTypes.Region:
 				addressPrefab = cityAddressPrefab;
 				break;
-			case AddressType.City:
+			case AddressTypes.City:
 				addressPrefab = blockAddressPrefab;
 				break;
-			case AddressType.Block:
+			case AddressTypes.Block:
 				addressPrefab = landLotAddressPrefab;
 				break;
-			case AddressType.LandLot:
+			case AddressTypes.LandLot:
 				addressPrefab = facilityAddressPrefab;
 				break;
 			default:
@@ -660,6 +681,7 @@ public class NetworkManager : Manager
 		DestroyAll<Task>();
 		DestroyAll<Position>();
 		DestroyAll<LocationType>();
+		DestroyAll<RoomType>();
 		shading.SetActive(false);
 		closeWindowButton.SetActive(shading.activeSelf);
 
@@ -730,27 +752,31 @@ public class NetworkManager : Manager
 		var room = roomPrefabInstance.GetComponent<Room>();
 
 		Color color = Color.white;
-		if (r.type_id == RoomType.HrDepartment)
+		if (r.type_id == RoomTypes.HrDepartment)
 		{
 			color = Color.blue;
 		}
-		else if (r.type_id == RoomType.Workshop)
+		else if (r.type_id == RoomTypes.Workshop)
 		{
 			color = Color.red;
 		}
-		else if (r.type_id == RoomType.Lobby)
+		else if (r.type_id == RoomTypes.Lobby)
 		{
 			color = Color.yellow;
 		}
-		else if (r.type_id == RoomType.Storage)
+		else if (r.type_id == RoomTypes.Storage)
 		{
 			color = Color.gray;
 		}
-		else if (r.type_id == RoomType.Bedroom)
+		else if (r.type_id == RoomTypes.Bedroom)
 		{
 			color = Color.cyan;
 		}
-		else if (r.type_id == RoomType.Reception)
+		else if (r.type_id == RoomTypes.Office)
+		{
+			color = Color.black;
+		}
+		else if (r.type_id == RoomTypes.Reception)
 		{
 			color = Color.magenta;
 		}
@@ -774,6 +800,7 @@ public class NetworkManager : Manager
 		DestroyAll<Task>();
 		DestroyAll<Position>();
 		DestroyAll<LocationType>();
+		DestroyAll<RoomType>();
 
         var col = 0;
         var row = 0;
@@ -817,6 +844,7 @@ public class NetworkManager : Manager
 		DestroyAll<Task>();
 		DestroyAll<Position>();
 		DestroyAll<LocationType>();
+		DestroyAll<RoomType>();
 
         if (response.title != null)
         {
@@ -841,9 +869,9 @@ public class NetworkManager : Manager
         }
 	}
 
-	private void ProcessBuild(string json)
+	private void ProcessBuildLocation(string json)
 	{
-		var response = JsonUtility.FromJson<BuildResponse>(json);
+		var response = JsonUtility.FromJson<BuildLocationResponse>(json);
         if (response == null)
         {
             return;
@@ -865,6 +893,35 @@ public class NetworkManager : Manager
 				response.location_types[i].title,
 				100, 700, col, row);
 			locationType.item = response.location_types[i];
+
+            row++;
+        }
+	}
+
+	private void ProcessBuildRoom(string json)
+	{
+		var response = JsonUtility.FromJson<BuildRoomResponse>(json);
+        if (response == null)
+        {
+            return;
+        }
+
+		DestroyAll<RoomType>();
+
+        var col = 0;
+        var row = 0;
+		for (var i = 0; i < response.room_types.Count; i++)
+        {
+            if (i % 5 == 0)
+            {
+                col++;
+                row = 0;
+            }
+
+            var roomType = InstantiateObject<RoomType>(roomTypePrefab, buildCanvas,
+				response.room_types[i].title,
+				100, 700, col, row);
+			roomType.item = response.room_types[i];
 
             row++;
         }
