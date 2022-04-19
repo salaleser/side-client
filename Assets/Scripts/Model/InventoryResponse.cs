@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class InventoryResponse
+namespace Models
 {
-    public List<ItemItem> items = new();
-    public string title;
+    [System.Serializable]
+    public class InventoryResponse
+    {
+        public List<ItemItem> items = new();
+        public string title;
+    }
 }

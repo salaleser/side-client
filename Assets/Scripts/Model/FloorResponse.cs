@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class FloorResponse
+namespace Models
 {
-    public FloorItem floor;
+    [System.Serializable]
+    public class FloorResponse
+    {
+        public FloorItem floor;
+    }
 }

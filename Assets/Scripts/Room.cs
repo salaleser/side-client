@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Models;
 
 public class Room : Entity
 {
@@ -30,6 +31,14 @@ public class Room : Entity
                     break;
                 case RoomTypes.Bedroom:
                     AddButton("Sleep", () => Debug.LogWarning("Sleep"));
+                    break;
+                case RoomTypes.Office:
+                    switch (item.location_type_id)
+                    {
+                        case LocationTypes.CityHall:
+                        AddButton("Test", () => Debug.LogWarning("test"));
+                        break;
+                    }
                     break;
             }
         }

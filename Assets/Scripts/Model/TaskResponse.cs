@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Models {
+namespace Models
+{
     [System.Serializable]
     public class TaskResponse
     {

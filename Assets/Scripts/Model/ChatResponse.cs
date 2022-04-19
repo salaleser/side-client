@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class ChatResponse
+namespace Models
 {
-    public List<MessageItem> messages = new();
+    [System.Serializable]
+    public class ChatResponse
+    {
+        public List<MessageItem> messages = new();
+    }
 }

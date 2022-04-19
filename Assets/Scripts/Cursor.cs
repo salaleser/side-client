@@ -18,17 +18,37 @@ public class Cursor : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit)) {
                 NetworkManager.Instance.ShowButtons(hit.transform);
-                var address = hit.transform.GetComponent<Address>();
                 var ground = hit.transform.GetComponent<Ground>();
-                var room = hit.transform.GetComponent<Room>();
-                if (address != null)
-                {
-                    Move(address.item.x, address.item.y);
-                }
                 if (ground != null)
                 {
                     Move(ground.item.x, ground.item.y);
                 }
+                
+                var region = hit.transform.GetComponent<Region>();
+				if (region != null)
+                {
+                    Move(region.regionItem.x, region.regionItem.y);
+                }
+
+                var city = hit.transform.GetComponent<City>();
+                if (city != null)
+                {
+                    Move(city.cityItem.x, city.cityItem.y);
+                }
+
+                var block = hit.transform.GetComponent<Block>();
+                if (block != null)
+                {
+                    Move(block.blockItem.x, block.blockItem.y);
+                }
+
+                var parcel = hit.transform.GetComponent<Parcel>();
+                if (parcel != null)
+                {
+                    Move(parcel.parcelItem.x, parcel.parcelItem.y);
+                }
+
+                var room = hit.transform.GetComponent<Room>();
                 if (room != null)
                 {
                     Move(room.item.x, room.item.y);

@@ -48,15 +48,15 @@ public class NetworkManager : Manager
 	public GameObject regionGroundPrefab;
 	public GameObject cityGroundPrefab;
 	public GameObject blockGroundPrefab;
-	public GameObject landLotGroundPrefab;
-	public GameObject facilityGroundPrefab;
+	public GameObject parcelGroundPrefab;
+	public GameObject floorGroundPrefab;
 
 	public GameObject defaultAddressPrefab;
 	public GameObject regionAddressPrefab;
-	public GameObject cityAddressPrefab;
-	public GameObject blockAddressPrefab;
-	public GameObject landLotAddressPrefab;
-	public GameObject facilityAddressPrefab;
+	public GameObject cityPrefab;
+	public GameObject blockPrefab;
+	public GameObject parcelPrefab;
+	public GameObject floorPrefab;
 
 	public GameObject defaultLocationPrefab;
 	public GameObject coalMineLocationPrefab;
@@ -118,7 +118,7 @@ public class NetworkManager : Manager
 		LoadConfig();
 
 		Citizen(263);
-		Address(13);
+		Region(1);
 
 		marketButton = Instantiate(mainButtonPrefab, new Vector3(600, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
         marketButton.GetComponentInChildren<Text>().text = "Market";
@@ -137,7 +137,7 @@ public class NetworkManager : Manager
         mapButton.GetComponentInChildren<Text>().text = "Show Map";
         mapButton.GetComponent<Button>().onClick.AddListener(() => {
             HideAllButtons();
-			Address(1);
+			Region(1);
         });
 
 		citizenButton = Instantiate(mainButtonPrefab, new Vector3(780, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
@@ -147,19 +147,19 @@ public class NetworkManager : Manager
 			Floor(GameManager.Instance.citizen.floor_id);
         });
 
-		zoomOutButton = Instantiate(mainButtonPrefab, new Vector3(840, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        zoomOutButton.GetComponentInChildren<Text>().text = "Zoom Out";
-        zoomOutButton.GetComponent<Button>().onClick.AddListener(() => {
-            HideAllButtons();
-			if (GameManager.Instance.state == GameManager.Floor)
-			{
-				Address(GameManager.Instance.citizen.address_parent_id);
-			}
-			else if (GameManager.Instance.state == GameManager.Map)
-			{
-				Address(GameManager.Instance.address.parent_id);
-			}
-        });
+		// zoomOutButton = Instantiate(mainButtonPrefab, new Vector3(840, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        // zoomOutButton.GetComponentInChildren<Text>().text = "Zoom Out";
+        // zoomOutButton.GetComponent<Button>().onClick.AddListener(() => {
+        //     HideAllButtons();
+		// 	if (GameManager.Instance.state == GameManager.Floor)
+		// 	{
+		// 		Address(GameManager.Instance.citizen.address_parent_id);
+		// 	}
+		// 	else if (GameManager.Instance.state == GameManager.Map)
+		// 	{
+		// 		Address(GameManager.Instance.address.parent_id);
+		// 	}
+        // });
 
 		inventoryButton = Instantiate(mainButtonPrefab, new Vector3(900, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
         inventoryButton.GetComponentInChildren<Text>().text = "Inventory";
@@ -201,15 +201,25 @@ public class NetworkManager : Manager
 			text.text += $"{ground.item}";
 			ground.ShowButtons();
 		}
-		foreach(var address in transform.GetComponentsInChildren<Address>())
+		foreach(var region in transform.GetComponentsInChildren<Region>())
 		{
-			text.text += $"{address.item}";
-			address.ShowButtons();
+			text.text += $"{region.regionItem}";
+			region.ShowButtons();
 		}
-		foreach(var location in transform.GetComponentsInChildren<Location>())
+		foreach(var city in transform.GetComponentsInChildren<City>())
 		{
-			text.text += $"\n\n{location.item}";
-			location.ShowButtons();
+			text.text += $"{city.cityItem}";
+			city.ShowButtons();
+		}
+		foreach(var block in transform.GetComponentsInChildren<Block>())
+		{
+			text.text += $"{block.blockItem}";
+			block.ShowButtons();
+		}
+		foreach(var parcel in transform.GetComponentsInChildren<Parcel>())
+		{
+			text.text += $"{parcel.parcelItem}";
+			parcel.ShowButtons();
 		}
 		foreach(var citizen in transform.GetComponentsInChildren<Citizen>())
 		{
@@ -230,6 +240,23 @@ public class NetworkManager : Manager
 		{
 			o.SetActive(false);
 		}
+	}
+
+	private void DestroyAll()
+	{
+		DestroyAll<Ground>();
+		DestroyAll<Region>();
+		DestroyAll<City>();
+		DestroyAll<Block>();
+		DestroyAll<Parcel>();
+		DestroyAll<Room>();
+		DestroyAll<Citizen>();
+		DestroyAll<Item>();
+		DestroyAll<Lot>();
+		DestroyAll<Task>();
+		DestroyAll<Position>();
+		DestroyAll<LocationType>();
+		DestroyAll<RoomType>();
 	}
 
 	private void DestroyAll<T>() where T : Entity
@@ -321,6 +348,94 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("address-register", query, (result) =>
 		{
 			ProcessAddress(result);
+		}));
+	}
+
+	public void Region(int regionId)
+    {
+		var query = $"region_id={regionId}";
+		
+		StartCoroutine(Request("region", query, (result) =>
+		{
+			ProcessRegion(result);
+		}));
+		
+		GameManager.Instance.state = GameManager.Map;
+	}
+
+	public void RegisterRegion(int continentId, int x, int y, string title)
+    {
+		var query = $"continent_id={continentId}&x={x}&y={y}&title={title}";
+		
+		StartCoroutine(Request("region-register", query, (result) =>
+		{
+			// ProcessRegion(result);
+		}));
+	}
+
+	public void City(int cityId)
+    {
+		var query = $"city_id={cityId}";
+		
+		StartCoroutine(Request("city", query, (result) =>
+		{
+			ProcessCity(result);
+		}));
+		
+		GameManager.Instance.state = GameManager.Map;
+	}
+
+	public void RegisterCity(int regionId, int x, int y, string title)
+    {
+		var query = $"region_id={regionId}&x={x}&y={y}&title={title}";
+		
+		StartCoroutine(Request("region-register", query, (result) =>
+		{
+			ProcessRegion(result);
+		}));
+	}
+
+	public void Block(int blockId)
+    {
+		var query = $"block_id={blockId}";
+		
+		StartCoroutine(Request("block", query, (result) =>
+		{
+			ProcessBlock(result);
+		}));
+		
+		GameManager.Instance.state = GameManager.Map;
+	}
+
+	public void RegisterBlock(int cityId, int x, int y, string title)
+    {
+		var query = $"city_id={cityId}&x={x}&y={y}&title={title}";
+		
+		StartCoroutine(Request("block-register", query, (result) =>
+		{
+			ProcessCity(result);
+		}));
+	}
+
+	public void Parcel(int parcelId)
+    {
+		var query = $"parcel_id={parcelId}";
+		
+		StartCoroutine(Request("parcel", query, (result) =>
+		{
+			ProcessParcel(result);
+		}));
+		
+		GameManager.Instance.state = GameManager.Map;
+	}
+
+	public void RegisterParcel(int blockId, int x, int y)
+    {
+		var query = $"block_id={blockId}&x={x}&y={y}";
+		
+		StartCoroutine(Request("parcel-register", query, (result) =>
+		{
+			ProcessBlock(result);
 		}));
 	}
 
@@ -528,7 +643,7 @@ public class NetworkManager : Manager
 		{
 			for (var j = 0; j < Height; j++)
 			{
-				InstantiateGround(addressMap[i, j], i+1, j+1);
+				InstantiateGround2(addressMap[i, j], i+1, j+1);
 				if (addressMap[i, j] != null)
 				{
 					InstantiateAddress(addressMap[i, j], i+1, j+1);
@@ -537,7 +652,22 @@ public class NetworkManager : Manager
 		}
 	}
 
-	private void InstantiateGround(AddressItem a, int x, int y)
+	private void InstantiateGround(GameObject prefab)
+	{
+		for (var i = 0; i < Width; i++)
+		{
+			for (var j = 0; j < Height; j++)
+			{
+				var instance = Instantiate(prefab, new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
+				instance.name = $"Ground ({i+1}/{j+1})";
+				var ground = instance.GetComponent<Ground>();
+				ground.item.x = i+1;
+				ground.item.y = j+1;
+			}
+		}
+	}
+
+	private void InstantiateGround2(AddressItem a, int x, int y)
 	{
 		GameObject groundPrefab = null;
 		GroundType typeId;
@@ -557,11 +687,11 @@ public class NetworkManager : Manager
 				break;
 			case AddressTypes.Block:
 				typeId = GroundType.LandLot;
-				groundPrefab = landLotGroundPrefab;
+				groundPrefab = parcelGroundPrefab;
 				break;
 			case AddressTypes.LandLot:
 				typeId = GroundType.Facility;
-				groundPrefab = facilityGroundPrefab;
+				groundPrefab = floorGroundPrefab;
 				break;
 			default:
 				typeId = GroundType.Undefined;
@@ -588,16 +718,16 @@ public class NetworkManager : Manager
 				addressPrefab = regionAddressPrefab;
 				break;
 			case AddressTypes.Region:
-				addressPrefab = cityAddressPrefab;
+				addressPrefab = cityPrefab;
 				break;
 			case AddressTypes.City:
-				addressPrefab = blockAddressPrefab;
+				addressPrefab = blockPrefab;
 				break;
 			case AddressTypes.Block:
-				addressPrefab = landLotAddressPrefab;
+				addressPrefab = parcelPrefab;
 				break;
 			case AddressTypes.LandLot:
-				addressPrefab = facilityAddressPrefab;
+				addressPrefab = floorPrefab;
 				break;
 			default:
 				addressPrefab = defaultAddressPrefab;
@@ -637,6 +767,110 @@ public class NetworkManager : Manager
 		var location = locationPrefabInstance.GetComponent<Location>();
 
 		location.item = a.location;
+	}
+
+	private void ProcessRegion(string json)
+	{
+		var response = JsonUtility.FromJson<RegionResponse>(json);
+		if (response == null)
+		{
+			return;
+		}
+
+		var region = response.region;
+		GameManager.Instance.region = region;
+		title.text = $"Region \"{region.title}\"";
+
+		DestroyAll();
+		shading.SetActive(false);
+		closeWindowButton.SetActive(shading.activeSelf);
+
+		foreach(var city in region.cities)
+		{
+			var instance = Instantiate(cityPrefab, new Vector3(city.x, 0, city.y), Quaternion.identity, entitiesCanvas.transform);
+			instance.name = $"City#{city.id} ({city.x}/{city.y})";
+			instance.GetComponent<City>().cityItem = city;
+		}
+
+		InstantiateGround(regionGroundPrefab);
+	}
+
+	private void ProcessCity(string json)
+	{
+		var response = JsonUtility.FromJson<CityResponse>(json);
+		if (response == null)
+		{
+			return;
+		}
+
+		var city = response.city;
+		GameManager.Instance.city = city;
+		title.text = $"City \"{city.title}\"";
+
+		DestroyAll();
+		shading.SetActive(false);
+		closeWindowButton.SetActive(shading.activeSelf);
+
+		foreach(var block in city.blocks)
+		{
+			var instance = Instantiate(blockPrefab, new Vector3(block.x, 0, block.y), Quaternion.identity, entitiesCanvas.transform);
+			instance.name = $"Block#{block.id} ({block.x}/{block.y})";
+			instance.GetComponent<Block>().blockItem = block;
+		}
+
+		InstantiateGround(cityGroundPrefab);
+	}
+
+	private void ProcessBlock(string json)
+	{
+		var response = JsonUtility.FromJson<BlockResponse>(json);
+		if (response == null)
+		{
+			return;
+		}
+
+		var block = response.block;
+		GameManager.Instance.block = block;
+		title.text = $"Block \"{block.title}\"";
+
+		DestroyAll();
+		shading.SetActive(false);
+		closeWindowButton.SetActive(shading.activeSelf);
+
+		foreach(var parcel in block.parcels)
+		{
+			var instance = Instantiate(parcelPrefab, new Vector3(parcel.x, 0, parcel.y), Quaternion.identity, entitiesCanvas.transform);
+			instance.name = $"Parcel#{parcel.id} ({parcel.x}/{parcel.y})";
+			instance.GetComponent<Parcel>().parcelItem = parcel;
+		}
+
+		InstantiateGround(blockGroundPrefab);
+	}
+
+	private void ProcessParcel(string json)
+	{
+		var response = JsonUtility.FromJson<ParcelResponse>(json);
+		if (response == null)
+		{
+			return;
+		}
+
+		var parcel = response.parcel;
+		GameManager.Instance.parcel = parcel;
+		title.text = $"Parcel \"{parcel.title}\"";
+
+		DestroyAll();
+		shading.SetActive(false);
+		closeWindowButton.SetActive(shading.activeSelf);
+
+		foreach(var floor in parcel.floors)
+		{
+			var instance = Instantiate(floorPrefab, new Vector3(floor.x, 0, floor.y), Quaternion.identity, entitiesCanvas.transform);
+			instance.name = $"Floor#{floor.id} ({floor.x}/{floor.y})";
+			instance.GetComponent<Floor>().floorItem = floor;
+		}
+
+		InstantiateGround(floorGroundPrefab);
 	}
 
 	private void ProcessLocation(string json)

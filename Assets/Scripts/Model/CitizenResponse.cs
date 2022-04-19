@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class CitizenResponse
+namespace Models
 {
-    public CitizenItem citizen;
+    [System.Serializable]
+    public class CitizenResponse
+    {
+        public CitizenItem citizen;
+    }
 }

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class MarketResponse
+namespace Models
 {
-    public List<LotItem> lots = new();
+    [System.Serializable]
+    public class MarketResponse
+    {
+        public List<LotItem> lots = new();
+    }
 }

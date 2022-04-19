@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Models;
 
-[System.Serializable]
-public class RoomResponse
+namespace Models
 {
-    public CitizenItem citizen;
-    public LocationItem location;
+    [System.Serializable]
+    public class RoomResponse
+    {
+        public CitizenItem citizen;
+        public LocationItem location;
+    }
 }

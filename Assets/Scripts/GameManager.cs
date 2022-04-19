@@ -12,9 +12,13 @@ public class GameManager : MonoBehaviour
 
 	public int state;
 	
-	public AddressItem address;
-	public LocationItem location;
+	public RegionItem region;
+	public CityItem city;
+	public BlockItem block;
+	public ParcelItem parcel;
 	public FloorItem floor;
+	public LocationItem location;
+	public AddressItem address;
 	public CitizenItem citizen;
 
 	public static GameManager Instance { get; private set; }
