@@ -5,10 +5,10 @@ using Models;
 
 public class Citizen : Entity
 {
-    public CitizenItem item;
+    public CitizenItem citizenItem;
 
     private void Start()
     {
-        AddButton($"Inventory ({item.name})", () => NetworkManager.Instance.Inventory(item.root_item_id));
+        AddButton($"Inventory ({citizenItem.name})", () => NetworkManager.Instance.Inventory(citizenItem.root_item_id));
     }
 }

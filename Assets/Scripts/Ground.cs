@@ -6,13 +6,9 @@ using Models;
 
 public class Ground : Entity
 {
-    public GroundItem item;
+    public GroundItem groundItem;
 
     private void Start()
     {
-        if (item.address == null)
-        {
-            AddButton("Build Address", () => NetworkManager.Instance.RegisterAddress(GameManager.Instance.address.id, item.x, item.y, ""));
-        }
     }
 }

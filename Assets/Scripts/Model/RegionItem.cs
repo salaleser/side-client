@@ -7,15 +7,13 @@ namespace Models
     public class RegionItem : Item
     {
         public int id;
-        public int continent_id;
         public int x;
         public int y;
-        public List<CityItem> cities = new();
+        public List<CityItem> cities;
 
         public override string ToString() => @$"Region:
         ID: {id}
         Title: {title}
-        Continent ID: {continent_id}
         Cities Count: {cities.Count}";
     }
 }

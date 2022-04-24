@@ -6,6 +6,6 @@ namespace Models
     [System.Serializable]
     public class ChatResponse
     {
-        public List<MessageItem> messages = new();
+        public List<MessageItem> messages;
     }
 }

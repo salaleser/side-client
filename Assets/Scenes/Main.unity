@@ -479,22 +479,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
-  address:
-    title: 
-    id: 0
-    x: 0
-    y: 0
-    type_id: 0
-    type_title: 
-    parent_id: 0
-    location:
-      id: 0
-      type_id: 0
-      type_title: 
-      owner_id: 0
-      address_id: 0
-      address_parent_id: 0
-      floors: []
   region:
     title: 
     id: 0
@@ -516,6 +500,22 @@ MonoBehaviour:
     x: 0
     y: 0
     parcels: []
+  parcel:
+    title: 
+    id: 0
+    block_id: 0
+    x: 0
+    y: 0
+    floors: []
+  floor:
+    title: 
+    id: 0
+    x: 0
+    y: 0
+    w: 0
+    h: 0
+    number: 0
+    rooms: []
   location:
     id: 0
     type_id: 0
@@ -524,10 +524,22 @@ MonoBehaviour:
     address_id: 0
     address_parent_id: 0
     floors: []
-  floor:
+  address:
+    title: 
     id: 0
-    number: 0
-    rooms: []
+    x: 0
+    y: 0
+    type_id: 0
+    type_title: 
+    parent_id: 0
+    location:
+      id: 0
+      type_id: 0
+      type_title: 
+      owner_id: 0
+      address_id: 0
+      address_parent_id: 0
+      floors: []
   citizen:
     id: 0
     name: 
@@ -1458,13 +1470,13 @@ MonoBehaviour:
   cityGroundPrefab: {fileID: 9040041545605410619, guid: 9f38388f3323d4a4eac3a1e735b7b7f8, type: 3}
   blockGroundPrefab: {fileID: 9040041545605410619, guid: 0c156edaa9a0044d983546744f103e49, type: 3}
   parcelGroundPrefab: {fileID: 9040041545605410619, guid: 9d5266acacc214b859e66d40c8ab19b0, type: 3}
-  facilityGroundPrefab: {fileID: 9040041545605410619, guid: 842f10b2fdc3d4f18aad8f7cea1b902e, type: 3}
+  floorGroundPrefab: {fileID: 9040041545605410619, guid: 842f10b2fdc3d4f18aad8f7cea1b902e, type: 3}
   defaultAddressPrefab: {fileID: 9040041545605410619, guid: bd352a1f5da4c4da2a6b3139f4f75e89, type: 3}
   regionAddressPrefab: {fileID: 9040041545605410619, guid: 061421cb3c2194f50bd996d7e1850895, type: 3}
   cityPrefab: {fileID: 9040041545605410619, guid: 85c0717c8239b4537af30ce1ce0d1976, type: 3}
   blockPrefab: {fileID: 9040041545605410619, guid: 1bcabffc3c0e54c648ab19a8da652197, type: 3}
   parcelPrefab: {fileID: 9040041545605410619, guid: 0085963bd0acf4dfeb1574ee5f06e2ff, type: 3}
-  facilityAddressPrefab: {fileID: 9040041545605410619, guid: 66780b5603f30497abfa4fac4363e38c, type: 3}
+  floorPrefab: {fileID: 9040041545605410619, guid: 66780b5603f30497abfa4fac4363e38c, type: 3}
   defaultLocationPrefab: {fileID: 9040041545605410619, guid: 44cc231d1763a4f29a77ead82e2eb7f1, type: 3}
   coalMineLocationPrefab: {fileID: 9040041545605410619, guid: b42ff8781d0c740a9a9a42d3b3954d0a, type: 3}
   copperMineLocationPrefab: {fileID: 9040041545605410619, guid: e4203b1a9d3b94f059d7f5a67691f2d1, type: 3}

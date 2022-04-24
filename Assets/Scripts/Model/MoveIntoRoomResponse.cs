@@ -5,9 +5,9 @@ using Models;
 namespace Models
 {
     [System.Serializable]
-    public class AddressResponse
+    public class MoveIntoRoomResponse
     {
-        public AddressItem address;
-        public List<AddressItem> addresses = new();
+        public CitizenItem citizen;
+        public FloorItem floor;
     }
 }

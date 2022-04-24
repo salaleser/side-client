@@ -10,18 +10,16 @@ namespace Models
         public string name;
         public int account_id;
         public int active_task_id;
+        public int organization_id;
         public int room_id;
-        public int address_id;
-        public int address_type_id;
-        public int address_parent_id;
-        public int location_id;
+        public int parcel_id;
         public int floor_id;
         public int floor_number;
         public string action_type_emoji;
         public int root_item_id;
-        public List<ItemItem> items = new();
-        public List<StatusItem> statuses = new();
-        public List<CharacteristicItem> characteristics = new();
+        public List<ItemItem> items;
+        public List<StatusItem> statuses;
+        public List<CharacteristicItem> characteristics;
 
         private string Characteristics()
         {

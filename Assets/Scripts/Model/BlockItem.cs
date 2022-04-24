@@ -7,15 +7,13 @@ namespace Models
     public class BlockItem : Item
     {
         public int id;
-        public int city_id;
         public int x;
         public int y;
-        public List<ParcelItem> parcels = new();
+        public List<ParcelItem> parcels;
 
         public override string ToString() => @$"Block:
         ID: {id}
         Title: {title}
-        City ID: {city_id}
         Parcels Count: {parcels.Count}";
     }
 }

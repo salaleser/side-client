@@ -1,4 +1,6 @@
 using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Models;
@@ -17,9 +19,10 @@ public class GameManager : MonoBehaviour
 	public BlockItem block;
 	public ParcelItem parcel;
 	public FloorItem floor;
-	public LocationItem location;
-	public AddressItem address;
-	public CitizenItem citizen;
+	public CitizenItem citizen = new();
+
+	public int cursorX;
+	public int cursorY;
 
 	public static GameManager Instance { get; private set; }
 
@@ -27,6 +30,9 @@ public class GameManager : MonoBehaviour
 	{
 		if (Instance == null)
 		{
+			citizen.id = 263; // FIXME
+			citizen.parcel_id = 1; // FIXME
+
 			Instance = this;
 			DontDestroyOnLoad(gameObject);
 		}

@@ -21,7 +21,7 @@ public class Cursor : MonoBehaviour
                 var ground = hit.transform.GetComponent<Ground>();
                 if (ground != null)
                 {
-                    Move(ground.item.x, ground.item.y);
+                    Move(ground.groundItem.x, ground.groundItem.y);
                 }
                 
                 var region = hit.transform.GetComponent<Region>();
@@ -48,10 +48,16 @@ public class Cursor : MonoBehaviour
                     Move(parcel.parcelItem.x, parcel.parcelItem.y);
                 }
 
+				var floor = hit.transform.GetComponent<Floor>();
+                if (floor != null)
+                {
+                    Move(floor.floorItem.x, floor.floorItem.y);
+                }
+
                 var room = hit.transform.GetComponent<Room>();
                 if (room != null)
                 {
-                    Move(room.item.x, room.item.y);
+                    Move(room.roomItem.x, room.roomItem.y);
                 }
             }
         }
@@ -196,6 +202,8 @@ public class Cursor : MonoBehaviour
     private void Move(int x, int y)
     {
         this.transform.SetPositionAndRotation(new Vector3(x, 0, y), Quaternion.identity);
+		GameManager.Instance.cursorX = x;
+		GameManager.Instance.cursorY = y;
     }
 
     private void OnCollisionEnter(Collision collision)

@@ -6,41 +6,29 @@ using Models;
 
 public class Room : Entity
 {
-    public RoomItem item;
+    public RoomItem roomItem;
 
     private void Start()
     {
-        if (GameManager.Instance.citizen.floor_id == GameManager.Instance.floor.id)
+        if (roomItem.id == 0)
         {
-            if (item.id != 0 && GameManager.Instance.citizen.room_id != item.id)
+            AddButton($"Build Room", () => NetworkManager.Instance.RoomTypes());
+        }
+        else if (GameManager.Instance.citizen.room_id == roomItem.id)
+        {
+            switch (roomItem.type_id)
             {
-                AddButton($"Go to {item.title}", () => NetworkManager.Instance.Room(item.id));
+                case 1:
+                    AddButton("Get Tasks", () => NetworkManager.Instance.Tasks(GameManager.Instance.citizen.organization_id));
+                    break;
+                case 7: // office
+                    AddButton("Manage", () => NetworkManager.Instance.Manage(roomItem.organization_id));
+                    break;
             }
         }
-        else if (item.type_id == RoomTypes.Lobby)
+        else if (roomItem.id > 0)
         {
-            AddButton("Move inside", () => NetworkManager.Instance.Room(item.id));
-        }
-
-        if (GameManager.Instance.citizen.room_id == item.id)
-        {
-            switch (item.type_id)
-            {
-                case RoomTypes.HrDepartment:
-                    AddButton("Get Tasks", () => NetworkManager.Instance.Tasks(GameManager.Instance.citizen.location_id));
-                    break;
-                case RoomTypes.Bedroom:
-                    AddButton("Sleep", () => Debug.LogWarning("Sleep"));
-                    break;
-                case RoomTypes.Office:
-                    switch (item.location_type_id)
-                    {
-                        case LocationTypes.CityHall:
-                        AddButton("Test", () => Debug.LogWarning("test"));
-                        break;
-                    }
-                    break;
-            }
+            AddButton($"Go to {roomItem.title}", () => NetworkManager.Instance.MoveIntoRoom(roomItem.id));
         }
     }
 }

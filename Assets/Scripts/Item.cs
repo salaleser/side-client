@@ -6,18 +6,18 @@ using Models;
 
 public class Item : Entity, IItem
 {
-    public ItemItem item;
+    public ItemItem itemItem;
 
     private void Start()
     {
         AddButton("Market", () => NetworkManager.Instance.Market());
-        AddButton("Open", () => NetworkManager.Instance.Inventory(item.id));
+        AddButton("Open", () => NetworkManager.Instance.Inventory(itemItem.id));
     }
 
     public void Handler()
     {
         NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{item}";
+        NetworkManager.Instance.text.text = $"{itemItem}";
         ShowButtons();
     }
 }

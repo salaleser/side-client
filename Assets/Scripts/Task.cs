@@ -6,20 +6,20 @@ using Models;
 
 public class Task : Entity, IItem
 {
-    public TaskItem item;
+    public TaskItem taskItem;
 
     private void Start()
     {
-        if (item.is_free)
+        if (taskItem.is_free)
         {
-            AddButton($"Accept {item.title}", () => NetworkManager.Instance.TaskAccept(GameManager.Instance.citizen.id, item.id));
+            AddButton($"Accept {taskItem.title}", () => NetworkManager.Instance.TaskAccept(GameManager.Instance.citizen.id, taskItem.id));
         }
     }
 
     public void Handler()
     {
         NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{item}";
+        NetworkManager.Instance.text.text = $"{taskItem}";
         ShowButtons();
     }
 }

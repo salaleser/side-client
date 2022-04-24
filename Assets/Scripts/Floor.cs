@@ -10,6 +10,6 @@ public class Floor : Entity
 
     private void Start()
     {
-        AddButton($"Zoom in \"{floorItem.title}\"", () => NetworkManager.Instance.Floor(floorItem.id));
+        AddButton($"Move inside \"{floorItem.title}\"", () => NetworkManager.Instance.MoveIntoRoom(floorItem.entrance_room_id));
     }
 }

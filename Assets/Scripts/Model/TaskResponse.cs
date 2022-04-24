@@ -6,7 +6,7 @@ namespace Models
     [System.Serializable]
     public class TaskResponse
     {
-        public List<TaskItem> tasks = new();
-        public List<PositionItem> positions = new();
+        public List<TaskItem> tasks;
+        public List<PositionItem> positions;
     }
 }

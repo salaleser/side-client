@@ -6,6 +6,6 @@ namespace Models
     [System.Serializable]
     public class MarketResponse
     {
-        public List<LotItem> lots = new();
+        public List<LotItem> lots;
     }
 }

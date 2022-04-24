@@ -6,7 +6,7 @@ using Models;
 
 public class Lot : Entity, IItem
 {
-    public LotItem item;
+    public LotItem lotItem;
 
     private void Start()
     {
@@ -15,7 +15,7 @@ public class Lot : Entity, IItem
     public void Handler()
     {
         NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{item}";
+        NetworkManager.Instance.text.text = $"{lotItem}";
         ShowButtons();
     }
 }

@@ -26,6 +26,7 @@ public class NetworkManager : Manager
 	private GameObject zoomOutButton;
 	private GameObject buildModeButton;
 	private GameObject closeWindowButton;
+	private GameObject createOrganizationButton;
 
 	public GameObject marketCanvas;
 	public GameObject inventoryCanvas;
@@ -41,27 +42,19 @@ public class NetworkManager : Manager
 	public GameObject taskPrefab;
 	public GameObject positionPrefab;
 	public GameObject lotPrefab;
-	public GameObject locationTypePrefab;
+	public GameObject organizationTypePrefab;
 	public GameObject roomTypePrefab;
 	
-	public GameObject defaultGroundPrefab;
 	public GameObject regionGroundPrefab;
 	public GameObject cityGroundPrefab;
 	public GameObject blockGroundPrefab;
 	public GameObject parcelGroundPrefab;
 	public GameObject floorGroundPrefab;
 
-	public GameObject defaultAddressPrefab;
-	public GameObject regionAddressPrefab;
 	public GameObject cityPrefab;
 	public GameObject blockPrefab;
 	public GameObject parcelPrefab;
 	public GameObject floorPrefab;
-
-	public GameObject defaultLocationPrefab;
-	public GameObject coalMineLocationPrefab;
-	public GameObject copperMineLocationPrefab;
-	public GameObject furnitureFactoryLocationPrefab;
 
 	public GameObject openRoomPrefab;
 	public GameObject closedRoomPrefab;
@@ -117,8 +110,8 @@ public class NetworkManager : Manager
 	{
 		LoadConfig();
 
-		Citizen(263);
-		Region(1);
+		Citizen(GameManager.Instance.citizen.id);
+		Parcel(GameManager.Instance.citizen.parcel_id);
 
 		marketButton = Instantiate(mainButtonPrefab, new Vector3(600, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
         marketButton.GetComponentInChildren<Text>().text = "Market";
@@ -168,28 +161,39 @@ public class NetworkManager : Manager
 			Inventory(GameManager.Instance.citizen.root_item_id);
         });
 
-		buildModeButton = Instantiate(mainButtonPrefab, new Vector3(960, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-		buildModeButton.SetActive(false);
-        buildModeButton.GetComponentInChildren<Text>().text = "Build Mode";
-        buildModeButton.GetComponent<Button>().onClick.AddListener(() => {
-            HideAllButtons();
-			BuildRoom(GameManager.Instance.floor.id);
-        });
+		// buildModeButton = Instantiate(mainButtonPrefab, new Vector3(960, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+		// buildModeButton.SetActive(false);
+        // buildModeButton.GetComponentInChildren<Text>().text = "Build Mode";
+        // buildModeButton.GetComponent<Button>().onClick.AddListener(() => {
+        //     HideAllButtons();
+		// 	RoomTypes(GameManager.Instance.floor.id);
+        // });
 
 		closeWindowButton = Instantiate(mainButtonPrefab, new Vector3(1020, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
 		closeWindowButton.SetActive(false);
         closeWindowButton.GetComponentInChildren<Text>().text = "Close Window";
         closeWindowButton.GetComponent<Button>().onClick.AddListener(() => {
-            HideAllButtons();
-			DestroyAll<Item>();
-			DestroyAll<Lot>();
-			DestroyAll<Task>();
-			DestroyAll<Position>();
-			DestroyAll<LocationType>();
-			DestroyAll<RoomType>();
-			shading.SetActive(false);
-			closeWindowButton.SetActive(shading.activeSelf);
+            CloseWindow();
         });
+
+		createOrganizationButton = Instantiate(mainButtonPrefab, new Vector3(1080, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        createOrganizationButton.GetComponentInChildren<Text>().text = "Create Organization";
+        createOrganizationButton.GetComponent<Button>().onClick.AddListener(() => {
+			OrganizationTypes();
+        });
+	}
+
+	private void CloseWindow()
+	{
+		HideAllButtons();
+		DestroyAll<Item>();
+		DestroyAll<Lot>();
+		DestroyAll<Task>();
+		DestroyAll<Position>();
+		DestroyAll<RoomType>();
+		DestroyAll<OrganizationType>();
+		shading.SetActive(false);
+		closeWindowButton.SetActive(shading.activeSelf);
 	}
 
 	public void ShowButtons(Transform transform)
@@ -198,7 +202,7 @@ public class NetworkManager : Manager
 		text.text = "";
 		foreach(var ground in transform.GetComponentsInChildren<Ground>())
 		{
-			text.text += $"{ground.item}";
+			text.text += $"{ground.groundItem}";
 			ground.ShowButtons();
 		}
 		foreach(var region in transform.GetComponentsInChildren<Region>())
@@ -221,15 +225,20 @@ public class NetworkManager : Manager
 			text.text += $"{parcel.parcelItem}";
 			parcel.ShowButtons();
 		}
-		foreach(var citizen in transform.GetComponentsInChildren<Citizen>())
+		foreach(var floor in transform.GetComponentsInChildren<Floor>())
 		{
-			text.text += $"\n\n{citizen.item}";
-			citizen.ShowButtons();
+			text.text += $"{floor.floorItem}";
+			floor.ShowButtons();
 		}
 		foreach(var room in transform.GetComponentsInChildren<Room>())
 		{
-			text.text += $"\n\n{room.item}";
+			text.text += $"{room.roomItem}";
 			room.ShowButtons();
+		}
+		foreach(var citizen in transform.GetComponentsInChildren<Citizen>())
+		{
+			text.text += $"{citizen.citizenItem}";
+			citizen.ShowButtons();
 		}
 	}
 
@@ -244,19 +253,20 @@ public class NetworkManager : Manager
 
 	private void DestroyAll()
 	{
-		DestroyAll<Ground>();
 		DestroyAll<Region>();
 		DestroyAll<City>();
 		DestroyAll<Block>();
 		DestroyAll<Parcel>();
+		DestroyAll<Floor>();
+		DestroyAll<Ground>();
 		DestroyAll<Room>();
 		DestroyAll<Citizen>();
 		DestroyAll<Item>();
 		DestroyAll<Lot>();
 		DestroyAll<Task>();
 		DestroyAll<Position>();
-		DestroyAll<LocationType>();
 		DestroyAll<RoomType>();
+		DestroyAll<OrganizationType>();
 	}
 
 	private void DestroyAll<T>() where T : Entity
@@ -326,28 +336,6 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("citizen", query, (result) =>
 		{
 			ProcessCitizen(result);
-		}));
-	}
-
-	public void Address(int addressId)
-    {
-		var query = $"address_id={addressId}";
-		
-		StartCoroutine(Request("address", query, (result) =>
-		{
-			ProcessAddress(result);
-		}));
-		
-		GameManager.Instance.state = GameManager.Map;
-	}
-
-	public void RegisterAddress(int parentId, int x, int y, string title)
-    {
-		var query = $"parent_id={parentId}&x={x}&y={y}&title={title}";
-		
-		StartCoroutine(Request("address-register", query, (result) =>
-		{
-			ProcessAddress(result);
 		}));
 	}
 
@@ -439,36 +427,14 @@ public class NetworkManager : Manager
 		}));
 	}
 
-	public void RegisterLocation(int addressId, int locationTypeId)
+	public void CreateRoom(int floorId, int roomTypeId, int x, int y, int w, int h)
     {
-		var query = $"address_id={addressId}&location_type_id={locationTypeId}&citizen_id={GameManager.Instance.citizen.id}";
+		var query = $"floor_id={floorId}&room_type_id={roomTypeId}&x={x}&y={y}&w={w}&h={h}";
 		
-		StartCoroutine(Request("location-register", query, (result) =>
-		{
-			ProcessAddress(result);
-		}));
-	}
-
-	public void RegisterRoom(int floorId, int roomTypeId)
-    {
-		var query = $"floor_id={floorId}&room_type_id={roomTypeId}";
-		
-		StartCoroutine(Request("room-register", query, (result) =>
+		StartCoroutine(Request("create-room", query, (result) =>
 		{
 			ProcessFloor(result);
 		}));
-	}
-
-	public void Location(int locationId)
-    {
-		var query = $"location_id={locationId}";
-		
-		StartCoroutine(Request("location", query, (result) =>
-		{
-			ProcessLocation(result);
-		}));
-	
-		GameManager.Instance.state = GameManager.Floor;
 	}
 
 	public void Floor(int floorId)
@@ -483,13 +449,13 @@ public class NetworkManager : Manager
 		GameManager.Instance.state = GameManager.Floor;
 	}
 
-	public void Room(int roomId)
+	public void MoveIntoRoom(int roomId)
     {
 		var query = $"citizen_id={GameManager.Instance.citizen.id}&room_id={roomId}";
 		
-		StartCoroutine(Request("room", query, (result) =>
+		StartCoroutine(Request("move-into-room", query, (result) =>
 		{
-			ProcessRoom(result);
+			ProcessMoveIntoRoom(result);
 		}));
 	}
 
@@ -506,29 +472,38 @@ public class NetworkManager : Manager
 		}));
 	}
 
-	public void BuildLocation(int addressId)
+	public void RoomTypes()
 	{
 		shading.SetActive(true);
 		closeWindowButton.SetActive(shading.activeSelf);
 
-		var query = $"address_id={addressId}";
-		
-		StartCoroutine(Request("build-location", query, (result) =>
+		StartCoroutine(Request("room-types", "", (result) =>
 		{
-			ProcessBuildLocation(result);
+			ProcessRoomTypes(result);
 		}));
 	}
 
-	public void BuildRoom(int floorId)
+	public void OrganizationTypes()
 	{
 		shading.SetActive(true);
 		closeWindowButton.SetActive(shading.activeSelf);
 
-		var query = $"floor_id={floorId}";
-		
-		StartCoroutine(Request("build-room", query, (result) =>
+		StartCoroutine(Request("organization-types", "", (result) =>
 		{
-			ProcessBuildRoom(result);
+			ProcessOrganizationTypes(result);
+		}));
+	}
+
+	public void CreateOrganization(int organizationTypeId)
+	{
+		shading.SetActive(true);
+		closeWindowButton.SetActive(shading.activeSelf);
+
+		var query = $"organization_type_id={organizationTypeId}&owner_id={GameManager.Instance.citizen.id}";
+
+		StartCoroutine(Request("create-organization", query, (result) =>
+		{
+			CloseWindow();
 		}));
 	}
 
@@ -545,12 +520,12 @@ public class NetworkManager : Manager
 		}));
 	}
 
-	public void Tasks(int locationId)
+	public void Tasks(int organizationId)
 	{
 		shading.SetActive(true);
 		closeWindowButton.SetActive(shading.activeSelf);
 
-		var query = $"location_id={locationId}";
+		var query = $"organization_id={organizationId}";
 		
 		StartCoroutine(Request("tasks", query, (result) =>
 		{
@@ -568,6 +543,16 @@ public class NetworkManager : Manager
 		}));
 	}
 
+	public void Manage(int organizationId)
+	{
+		var query = $"organization_id={organizationId}";
+		
+		StartCoroutine(Request("manage", query, (result) =>
+		{
+			ProcessManage(result);
+		}));
+	}
+
 	public void PositionRequest(int citizenId, int positionId)
 	{
 		var query = $"citizen_id={citizenId}&position_id={positionId}";
@@ -578,78 +563,21 @@ public class NetworkManager : Manager
 		}));
 	}
 
-	private void ProcessRoom(string json)
+	private void ProcessMoveIntoRoom(string json)
 	{
-		var response = JsonUtility.FromJson<RoomResponse>(json);
+		var response = JsonUtility.FromJson<MoveIntoRoomResponse>(json);
 		if (response == null)
 		{
 			return;
 		}
 
 		GameManager.Instance.citizen = response.citizen;
-		ProcessLocation(json);
+		ProcessFloor(json);
 	}
 
-	private void ProcessAddress(string json)
+	private void ProcessManage(string json)
 	{
-		var response = JsonUtility.FromJson<AddressResponse>(json);
-		if (response == null)
-		{
-			return;
-		}
-
-		var address = response.address;
-		GameManager.Instance.address = address;
-		title.text = $"{response.address.type_title} {response.address.title}";
-
-		// FIXME: исключение для региона Side
-		zoomOutButton.SetActive(GameManager.Instance.address.id != 1);
-		buildModeButton.SetActive(false);
-
-		DestroyAll<Ground>();
-		DestroyAll<Address>();
-		DestroyAll<Location>();
-		DestroyAll<Room>();
-		DestroyAll<Citizen>();
-		DestroyAll<Item>();
-		DestroyAll<Lot>();
-		DestroyAll<Task>();
-		DestroyAll<Position>();
-		DestroyAll<LocationType>();
-		DestroyAll<RoomType>();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
-
-		var addressMap = new AddressItem[Width, Height];
-		foreach(var a in response.addresses)
-		{
-			if (a.location.id == 0)
-			{
-				a.location = null;
-			}
-			for (var i = 0; i < Width; i++)
-			{
-				for (var j = 0; j < Height; j++)
-				{
-					if (i+1 == a.x && j+1 == a.y)
-					{
-						addressMap[i, j] = a;
-					}
-				}
-			}
-		}
-
-		for (var i = 0; i < Width; i++)
-		{
-			for (var j = 0; j < Height; j++)
-			{
-				InstantiateGround2(addressMap[i, j], i+1, j+1);
-				if (addressMap[i, j] != null)
-				{
-					InstantiateAddress(addressMap[i, j], i+1, j+1);
-				}
-			}
-		}
+		// TODO
 	}
 
 	private void InstantiateGround(GameObject prefab)
@@ -661,112 +589,10 @@ public class NetworkManager : Manager
 				var instance = Instantiate(prefab, new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
 				instance.name = $"Ground ({i+1}/{j+1})";
 				var ground = instance.GetComponent<Ground>();
-				ground.item.x = i+1;
-				ground.item.y = j+1;
+				ground.groundItem.x = i+1;
+				ground.groundItem.y = j+1;
 			}
 		}
-	}
-
-	private void InstantiateGround2(AddressItem a, int x, int y)
-	{
-		GameObject groundPrefab = null;
-		GroundType typeId;
-		switch (GameManager.Instance.address.type_id)
-		{
-			case AddressTypes.World:
-				typeId = GroundType.Region;
-				groundPrefab = regionGroundPrefab;
-				break;
-			case AddressTypes.Region:
-				typeId = GroundType.City;
-				groundPrefab = cityGroundPrefab;
-				break;
-			case AddressTypes.City:
-				typeId = GroundType.Block;
-				groundPrefab = blockGroundPrefab;
-				break;
-			case AddressTypes.Block:
-				typeId = GroundType.LandLot;
-				groundPrefab = parcelGroundPrefab;
-				break;
-			case AddressTypes.LandLot:
-				typeId = GroundType.Facility;
-				groundPrefab = floorGroundPrefab;
-				break;
-			default:
-				typeId = GroundType.Undefined;
-				groundPrefab = defaultGroundPrefab;
-				break;
-		}
-		
-		var groundPrefabInstance = Instantiate(groundPrefab, new Vector3(x, 0, y), Quaternion.identity, entitiesCanvas.transform);
-		groundPrefabInstance.name = $"Ground.{typeId} ({x}/{y})";
-		var ground = groundPrefabInstance.GetComponent<Ground>();
-
-		ground.item.x = x;
-		ground.item.y = y;
-		ground.item.type_id = typeId;
-		ground.item.address = a;
-	}
-
-	private void InstantiateAddress(AddressItem a, int x, int y)
-	{
-		GameObject addressPrefab = null;
-		switch (GameManager.Instance.address.type_id)
-		{
-			case AddressTypes.World:
-				addressPrefab = regionAddressPrefab;
-				break;
-			case AddressTypes.Region:
-				addressPrefab = cityPrefab;
-				break;
-			case AddressTypes.City:
-				addressPrefab = blockPrefab;
-				break;
-			case AddressTypes.Block:
-				addressPrefab = parcelPrefab;
-				break;
-			case AddressTypes.LandLot:
-				addressPrefab = floorPrefab;
-				break;
-			default:
-				addressPrefab = defaultAddressPrefab;
-				break;
-		}
-		
-		var addressPrefabInstance = Instantiate(addressPrefab, new Vector3(x, 0, y), Quaternion.identity, entitiesCanvas.transform);
-		addressPrefabInstance.name = $"Address.{a.type_id} ({x}/{y})";
-		var address = addressPrefabInstance.GetComponent<Address>();
-
-		address.item = a;
-
-		if (a.location == null)
-		{
-			return;
-		}
-
-		GameObject locationPrefab = null;
-		switch (a.location.type_id)
-		{
-			case 1:
-				locationPrefab = coalMineLocationPrefab;
-				break;
-			case 2:
-				locationPrefab = copperMineLocationPrefab;
-				break;
-			case 3:
-				locationPrefab = furnitureFactoryLocationPrefab;
-				break;
-			default:
-				locationPrefab = defaultLocationPrefab;
-				break;
-		}
-
-		var locationPrefabInstance = Instantiate(locationPrefab, addressPrefabInstance.transform);
-		locationPrefabInstance.name = $"Location.{a.location.type_id} ({x}/{y})";
-		var location = locationPrefabInstance.GetComponent<Location>();
-
-		location.item = a.location;
 	}
 
 	private void ProcessRegion(string json)
@@ -792,7 +618,7 @@ public class NetworkManager : Manager
 			instance.GetComponent<City>().cityItem = city;
 		}
 
-		InstantiateGround(regionGroundPrefab);
+		InstantiateGround(cityGroundPrefab);
 	}
 
 	private void ProcessCity(string json)
@@ -818,7 +644,7 @@ public class NetworkManager : Manager
 			instance.GetComponent<Block>().blockItem = block;
 		}
 
-		InstantiateGround(cityGroundPrefab);
+		InstantiateGround(blockGroundPrefab);
 	}
 
 	private void ProcessBlock(string json)
@@ -844,7 +670,7 @@ public class NetworkManager : Manager
 			instance.GetComponent<Parcel>().parcelItem = parcel;
 		}
 
-		InstantiateGround(blockGroundPrefab);
+		InstantiateGround(parcelGroundPrefab);
 	}
 
 	private void ProcessParcel(string json)
@@ -863,38 +689,39 @@ public class NetworkManager : Manager
 		shading.SetActive(false);
 		closeWindowButton.SetActive(shading.activeSelf);
 
+		var parcelMap = new FloorItem[Width, Height];
 		foreach(var floor in parcel.floors)
 		{
-			var instance = Instantiate(floorPrefab, new Vector3(floor.x, 0, floor.y), Quaternion.identity, entitiesCanvas.transform);
-			instance.name = $"Floor#{floor.id} ({floor.x}/{floor.y})";
-			instance.GetComponent<Floor>().floorItem = floor;
-		}
-
-		InstantiateGround(floorGroundPrefab);
-	}
-
-	private void ProcessLocation(string json)
-	{
-		var response = JsonUtility.FromJson<LocationResponse>(json);
-		if (response == null)
-		{
-			return;
-		}
-
-		var location = response.location;
-		GameManager.Instance.location = location;
-
-		var floorResponse = new FloorResponse();
-		foreach(var f in location.floors)
-		{
-			if (f.number == 0)
+			for (var i = 0; i < Width; i++)
 			{
-				floorResponse.floor = f;
-				break;
+				for (var j = 0; j < Height; j++)
+				{
+					if (i+1 >= floor.x
+						&& i+1 < floor.x + floor.w
+						&& j+1 <= floor.y
+						&& j+1 > floor.y - floor.h)
+					{
+						parcelMap[i, j] = floor;
+					}
+				}
 			}
 		}
 
-		ProcessFloor(JsonUtility.ToJson(floorResponse));
+		for (var i = 0; i < Width; i++)
+		{
+			for (var j = 0; j < Height; j++)
+			{
+				var floor = parcelMap[i, j];
+				if (floor != null)
+				{
+					var instance = Instantiate(floorPrefab, new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
+					instance.name = $"Floor#{floor.id} ({floor.x}/{floor.y})";
+					instance.GetComponent<Floor>().floorItem = floor;
+				}
+			}
+		}
+
+		InstantiateGround(floorGroundPrefab);
 	}
 
 	private void ProcessFloor(string json)
@@ -905,26 +732,14 @@ public class NetworkManager : Manager
 			return;
 		}
 
-		DestroyAll<Ground>();
-		DestroyAll<Address>();
-		DestroyAll<Location>();
-		DestroyAll<Room>();
-		DestroyAll<Citizen>();
-		DestroyAll<Item>();
-		DestroyAll<Lot>();
-		DestroyAll<Task>();
-		DestroyAll<Position>();
-		DestroyAll<LocationType>();
-		DestroyAll<RoomType>();
+		DestroyAll();
 		shading.SetActive(false);
 		closeWindowButton.SetActive(shading.activeSelf);
 
 		var floor = response.floor;
 		GameManager.Instance.floor = floor;
-		title.text = $"{GameManager.Instance.location.type_title}, {floor.number} этаж";
+		title.text = $"\"{floor.title}\", {floor.number} этаж";
 
-		buildModeButton.SetActive(GameManager.Instance.citizen.id == GameManager.Instance.location.owner_id);
-		
 		var floorMap = new RoomItem[Width, Height];
 		foreach(var r in floor.rooms)
 		{
@@ -944,13 +759,26 @@ public class NetworkManager : Manager
 		{
 			for (var j = 0; j < Height; j++)
 			{
-				if (floorMap[i, j] == null)
+				var r = floorMap[i, j];
+				if (r != null)
 				{
-					Instantiate(openRoomPrefab, new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
+					var instance = Instantiate(r.id == GameManager.Instance.citizen.room_id ? openRoomPrefab : closedRoomPrefab,
+						new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
+					var room = instance.GetComponent<Room>();
+					room.GetComponentInChildren<Renderer>().material.color = new Color(r.r, r.g, r.b, r.a);
+					room.roomItem = r;
 				}
 				else
 				{
-					InstantiateRoom(floorMap[i, j], i+1, j+1);
+					var instance = Instantiate(openRoomPrefab,
+						new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
+					var room = instance.GetComponent<Room>();
+					room.GetComponentInChildren<Renderer>().material.color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+					room.roomItem = new RoomItem();
+					room.roomItem.x = i+1;
+					room.roomItem.y = j+1;
+					room.roomItem.w = 1;
+					room.roomItem.h = 1;
 				}
 			}
 		}
@@ -974,50 +802,9 @@ public class NetworkManager : Manager
 					citizen.GetComponentInChildren<Renderer>().material.color = Color.green;
 				}
 
-				citizen.item = r.citizens[i];
+				citizen.citizenItem = r.citizens[i];
 			}
 		}
-	}
-
-	private void InstantiateRoom(RoomItem r, int x, int y)
-	{
-		var roomPrefabInstance = Instantiate(r.id == GameManager.Instance.citizen.room_id ? openRoomPrefab : closedRoomPrefab,
-			new Vector3(x, 0, y), Quaternion.identity, entitiesCanvas.transform);
-		var room = roomPrefabInstance.GetComponent<Room>();
-
-		Color color = Color.white;
-		if (r.type_id == RoomTypes.HrDepartment)
-		{
-			color = Color.blue;
-		}
-		else if (r.type_id == RoomTypes.Workshop)
-		{
-			color = Color.red;
-		}
-		else if (r.type_id == RoomTypes.Lobby)
-		{
-			color = Color.yellow;
-		}
-		else if (r.type_id == RoomTypes.Storage)
-		{
-			color = Color.gray;
-		}
-		else if (r.type_id == RoomTypes.Bedroom)
-		{
-			color = Color.cyan;
-		}
-		else if (r.type_id == RoomTypes.Office)
-		{
-			color = Color.black;
-		}
-		else if (r.type_id == RoomTypes.Reception)
-		{
-			color = Color.magenta;
-		}
-
-		room.GetComponentInChildren<Renderer>().material.color = color;
-
-		room.item = r;
 	}
 
     private void ProcessMarket(string json)
@@ -1033,7 +820,6 @@ public class NetworkManager : Manager
 		DestroyAll<Lot>();
 		DestroyAll<Task>();
 		DestroyAll<Position>();
-		DestroyAll<LocationType>();
 		DestroyAll<RoomType>();
 
         var col = 0;
@@ -1048,7 +834,41 @@ public class NetworkManager : Manager
 
 			var lot = InstantiateObject<Lot>(lotPrefab, marketCanvas,
 				$"{response.lots[i].item_type_title}: {response.lots[i].quantity}x{response.lots[i].price}₷ ({response.lots[i].owner_id})", 100, 700, col, row);
-			lot.item = response.lots[i];
+			lot.lotItem = response.lots[i];
+
+            row++;
+        }
+	}
+
+	private void ProcessOrganizationTypes(string json)
+	{
+		var response = JsonUtility.FromJson<OrganizationTypesResponse>(json);
+        if (response == null)
+        {
+            return;
+        }
+
+		title.text = "Choose organization type";
+		DestroyAll<Item>();
+		DestroyAll<Lot>();
+		DestroyAll<Task>();
+		DestroyAll<Position>();
+		DestroyAll<RoomType>();
+		DestroyAll<OrganizationType>();
+
+        var col = 0;
+        var row = 0;
+		for (var i = 0; i < response.organization_types.Count; i++)
+        {
+            if (i % 5 == 0)
+            {
+                col++;
+                row = 0;
+            }
+
+			var organizationType = InstantiateObject<OrganizationType>(organizationTypePrefab, marketCanvas,
+				$"{response.organization_types[i].title}", 100, 700, col, row);
+			organizationType.organizationTypeItem = response.organization_types[i];
 
             row++;
         }
@@ -1077,8 +897,8 @@ public class NetworkManager : Manager
 		DestroyAll<Lot>();
 		DestroyAll<Task>();
 		DestroyAll<Position>();
-		DestroyAll<LocationType>();
 		DestroyAll<RoomType>();
+		DestroyAll<OrganizationType>();
 
         if (response.title != null)
         {
@@ -1097,44 +917,15 @@ public class NetworkManager : Manager
 
             var item = InstantiateObject<Item>(itemPrefab, inventoryCanvas,
 				response.items[i].type_title, 100, 700, col, row);
-			item.item = response.items[i];
+			item.itemItem = response.items[i];
 
             row++;
         }
 	}
 
-	private void ProcessBuildLocation(string json)
+	private void ProcessRoomTypes(string json)
 	{
-		var response = JsonUtility.FromJson<BuildLocationResponse>(json);
-        if (response == null)
-        {
-            return;
-        }
-
-		DestroyAll<LocationType>();
-
-        var col = 0;
-        var row = 0;
-		for (var i = 0; i < response.location_types.Count; i++)
-        {
-            if (i % 5 == 0)
-            {
-                col++;
-                row = 0;
-            }
-
-            var locationType = InstantiateObject<LocationType>(locationTypePrefab, buildCanvas,
-				response.location_types[i].title,
-				100, 700, col, row);
-			locationType.item = response.location_types[i];
-
-            row++;
-        }
-	}
-
-	private void ProcessBuildRoom(string json)
-	{
-		var response = JsonUtility.FromJson<BuildRoomResponse>(json);
+		var response = JsonUtility.FromJson<RoomTypesResponse>(json);
         if (response == null)
         {
             return;
@@ -1155,7 +946,7 @@ public class NetworkManager : Manager
             var roomType = InstantiateObject<RoomType>(roomTypePrefab, buildCanvas,
 				response.room_types[i].title,
 				100, 700, col, row);
-			roomType.item = response.room_types[i];
+			roomType.roomTypeItem = response.room_types[i];
 
             row++;
         }
@@ -1183,7 +974,7 @@ public class NetworkManager : Manager
 		DestroyAll<Task>();
 		DestroyAll<Position>();
 
-        title.text = $"{GameManager.Instance.location.type_title}: HR Department";
+        title.text = $"Tasks and positions";
 
         var col = 0;
         var row = 0;
@@ -1197,7 +988,7 @@ public class NetworkManager : Manager
 
 			var task = InstantiateObject<Task>(taskPrefab, tasksCanvas,
 				$"{response.tasks[i].title} ({(response.tasks[i].is_free ? "free" : "busy")})", 100, 700, col, row);
-			task.item = response.tasks[i];
+			task.taskItem = response.tasks[i];
 
             row++;
         }
@@ -1214,7 +1005,30 @@ public class NetworkManager : Manager
 
 			var position = InstantiateObject<Position>(positionPrefab, tasksCanvas,
 				$"{response.positions[i].title} ({(response.positions[i].is_free ? "free" : "busy")})", 500, 700, col, row);
-			position.item = response.positions[i];
+			position.positionItem = response.positions[i];
+
+            row++;
+        }
+	}
+
+	public void InstantiateRequiredRooms(List<RoomTypeItem> roomTypes)
+	{
+		DestroyAll<OrganizationType>();
+
+        var col = 0;
+        var row = 0;
+		for (var i = 0; i < roomTypes.Count; i++)
+        {
+            if (i % 5 == 0)
+            {
+                col++;
+                row = 0;
+            }
+
+            var roomType = NetworkManager.Instance.InstantiateObject<RoomType>(roomTypePrefab, buildCanvas,
+				roomTypes[i].title,
+				100, 700, col, row);
+			roomType.roomTypeItem = roomTypes[i];
 
             row++;
         }
