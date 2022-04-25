@@ -139,28 +139,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 9040041545605410619}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec135726b9c164a5cac92a48341e2132, type: 3}
+  m_Script: {fileID: 11500000, guid: ee9abbb22cba8410097286dba000c0c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   buttonPrefab: {fileID: 1343136061256876229, guid: fe8725bef40a6477495944cb5e24647a, type: 3}
   buttons: []
-  item:
+  groundItem:
+    title: 
     x: 0
     y: 0
-    address:
-      id: 0
-      x: 0
-      y: 0
-      title: 
-      type_id: 0
-      type_title: 
-      parent_id: 0
-      location:
-        id: 0
-        type_id: 0
-        type_title: 
-        owner_id: 0
-        address_id: 0
-        address_parent_id: 0
-        floors: []
-    type_id: 0

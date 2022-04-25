@@ -16,7 +16,7 @@ namespace Models
         public int renter_id;
         public int organization_id;
 
-        public override string ToString() => @$"Room:
+        public override string ToString() => @$"Rented Room:
         ID: {id}
         Type ID: {type_id}
         Description: {description}

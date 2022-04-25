@@ -13,12 +13,13 @@ namespace Models
         public override string ToString() => @$"Organization Type:
         ID: {id}
         Title: {title}
-        Requirements: Room Types Count: {requirements.room_types.Count}";
+        Required Room Types Count: {requirements.room_types.Count}";
     }
 
     [System.Serializable]
     public class OrganizationRequirements
     {
-        public List<RoomTypeItem> room_types;
+        public List<RequiredRoomTypeItem> room_types;
+        public List<int> room_type_ids;
     }
 }

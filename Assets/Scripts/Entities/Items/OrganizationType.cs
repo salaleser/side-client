@@ -4,19 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class OrganizationType : Entity, IItem
+namespace Entities.Items
 {
-    public OrganizationTypeItem organizationTypeItem;
-
-    private void Start()
+    public class OrganizationType : Entity, IItem
     {
-        AddButton($"Start \"{organizationTypeItem.title}\"", () => NetworkManager.Instance.CreateOrganization(organizationTypeItem.id));
-    }
+        public OrganizationTypeItem organizationTypeItem;
 
-    public void Handler()
-    {
-        NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{organizationTypeItem}";
-        ShowButtons();
+        private void Start()
+        {
+            AddButton($"Create \"{organizationTypeItem.title}\"", () => NetworkManager.Instance.CreateOrganization(organizationTypeItem.id));
+        }
+
+        public void Handler()
+        {
+            NetworkManager.Instance.HideAllButtons();
+            NetworkManager.Instance.text.text = $"{organizationTypeItem}";
+            ShowButtons();
+        }
     }
 }

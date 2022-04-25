@@ -4,19 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class Position : Entity, IItem
+namespace Entities.Items
 {
-    public PositionItem positionItem;
-
-    private void Start()
+    public class Position : Entity, IItem
     {
-        AddButton($"Request \"{positionItem.title}\"", () => NetworkManager.Instance.PositionRequest(GameManager.Instance.citizen.id, positionItem.id));
-    }
+        public PositionItem positionItem;
 
-    public void Handler()
-    {
-        NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{positionItem}";
-        ShowButtons();
+        private void Start()
+        {
+            AddButton($"Request \"{positionItem.title}\"", () => NetworkManager.Instance.PositionRequest(GameManager.Instance.citizen.id, positionItem.id));
+        }
+
+        public void Handler()
+        {
+            NetworkManager.Instance.HideAllButtons();
+            NetworkManager.Instance.text.text = $"{positionItem}";
+            ShowButtons();
+        }
     }
 }

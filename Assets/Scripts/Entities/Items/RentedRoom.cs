@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-namespace Items
+namespace Entities.Items
 {
     public class RentedRoom : Entity, IItem
     {
@@ -12,7 +12,7 @@ namespace Items
 
         private void Start()
         {
-            AddButton($"Attach \"{rentedRoomItem.title}\" to organization", () => NetworkManager.Instance.AttachRoomToOrganization(GameManager.Instance.newOrganization.id, rentedRoomItem.id));
+            AddButton($"Attach \"{rentedRoomItem.title}\" to organization", () => NetworkManager.Instance.AttachRoomToOrganization(GameManager.Instance.organization.id, rentedRoomItem.id));
         }
 
         public void Handler()

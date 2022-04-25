@@ -4,11 +4,23 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class Organization : Entity
+namespace Entities.Items
 {
-    public OrganizationItem organizationItem;
-
-    private void Start()
+    public class Organization : Entity, IItem
     {
+        public OrganizationItem organizationItem;
+
+        private void Start()
+        {
+            AddButton($"Manage rooms", () => NetworkManager.Instance.InstantiateRequiredRoomTypes(organizationItem));
+        }
+
+        public void Handler()
+        {
+            NetworkManager.Instance.HideAllButtons();
+            NetworkManager.Instance.text.text = $"{organizationItem}";
+            ShowButtons();
+            GameManager.Instance.organization = organizationItem;
+        }
     }
 }

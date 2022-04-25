@@ -4,18 +4,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class Lot : Entity, IItem
+namespace Entities.Items
 {
-    public LotItem lotItem;
-
-    private void Start()
+    public class Lot : Entity, IItem
     {
-    }
+        public LotItem lotItem;
 
-    public void Handler()
-    {
-        NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{lotItem}";
-        ShowButtons();
+        private void Start()
+        {
+        }
+
+        public void Handler()
+        {
+            NetworkManager.Instance.HideAllButtons();
+            NetworkManager.Instance.text.text = $"{lotItem}";
+            ShowButtons();
+        }
     }
 }

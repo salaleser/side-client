@@ -4,20 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class RoomType : Entity, IItem
+namespace Entities.Items
 {
-    public RoomTypeItem roomTypeItem;
-
-    private void Start()
+    public class RoomType : Entity, IItem
     {
-        AddButton($"Create \"{roomTypeItem.title}\"", () => NetworkManager.Instance.CreateRoom(GameManager.Instance.floor.id, roomTypeItem.id, GameManager.Instance.cursorX, GameManager.Instance.cursorY, roomTypeItem.w, roomTypeItem.h));
-        AddButton($"Attach...", () => NetworkManager.Instance.RentedRooms(roomTypeItem.id));
-    }
+        public RoomTypeItem roomTypeItem;
 
-    public void Handler()
-    {
-        NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{roomTypeItem}";
-        ShowButtons();
+        private void Start()
+        {
+            AddButton($"Create \"{roomTypeItem.title}\"", () => NetworkManager.Instance.CreateRoom(GameManager.Instance.floor.id, roomTypeItem.id, GameManager.Instance.cursorX, GameManager.Instance.cursorY, roomTypeItem.w, roomTypeItem.h));
+        }
+
+        public void Handler()
+        {
+            NetworkManager.Instance.HideAllButtons();
+            NetworkManager.Instance.text.text = $"{roomTypeItem}";
+            ShowButtons();
+        }
     }
 }

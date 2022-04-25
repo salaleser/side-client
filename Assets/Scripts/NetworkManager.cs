@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
-using Items;
+using Entities.Items;
 using Models;
 
 public class NetworkManager : Manager
@@ -28,6 +28,7 @@ public class NetworkManager : Manager
 	private GameObject buildModeButton;
 	private GameObject closeWindowButton;
 	private GameObject organizationsButton;
+	private GameObject createOrganizationButton;
 
 	public GameObject marketCanvas;
 	public GameObject inventoryCanvas;
@@ -45,8 +46,10 @@ public class NetworkManager : Manager
 	public GameObject positionPrefab;
 	public GameObject lotPrefab;
 	public GameObject organizationTypePrefab;
+	public GameObject organizationPrefab;
 	public GameObject roomTypePrefab;
-	public GameObject rentedRoomItemPrefab;
+	public GameObject rentedRoomPrefab;
+	public GameObject requiredRoomTypePrefab;
 	
 	public GameObject regionGroundPrefab;
 	public GameObject cityGroundPrefab;
@@ -180,21 +183,22 @@ public class NetworkManager : Manager
         });
 
 		organizationsButton = Instantiate(mainButtonPrefab, new Vector3(1080, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        organizationsButton.GetComponentInChildren<Text>().text = "Create Organization";
+        organizationsButton.GetComponentInChildren<Text>().text = "Organizations";
         organizationsButton.GetComponent<Button>().onClick.AddListener(() => {
-			Organizations();
+			Organizations(GameManager.Instance.citizen.id);
+        });
+
+		createOrganizationButton = Instantiate(mainButtonPrefab, new Vector3(1140, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        createOrganizationButton.GetComponentInChildren<Text>().text = "Create Organization";
+        createOrganizationButton.GetComponent<Button>().onClick.AddListener(() => {
+			OrganizationTypes();
         });
 	}
 
 	private void CloseWindow()
 	{
 		HideAllButtons();
-		DestroyAll<Item>();
-		DestroyAll<Lot>();
-		DestroyAll<Task>();
-		DestroyAll<Position>();
-		DestroyAll<RoomType>();
-		DestroyAll<OrganizationType>();
+		DestroyItems();
 		shading.SetActive(false);
 		closeWindowButton.SetActive(shading.activeSelf);
 	}
@@ -254,7 +258,20 @@ public class NetworkManager : Manager
 		}
 	}
 
-	private void DestroyAll()
+	private void DestroyItems()
+	{
+		DestroyAll<Entities.Items.Item>();
+		DestroyAll<Entities.Items.Lot>();
+		DestroyAll<Entities.Items.Task>();
+		DestroyAll<Entities.Items.Position>();
+		DestroyAll<Entities.Items.RoomType>();
+		DestroyAll<Entities.Items.RentedRoom>();
+		DestroyAll<Entities.Items.RequiredRoomType>();
+		DestroyAll<Entities.Items.Organization>();
+		DestroyAll<Entities.Items.OrganizationType>();
+	}
+
+	private void DestroyCells()
 	{
 		DestroyAll<Region>();
 		DestroyAll<City>();
@@ -264,12 +281,12 @@ public class NetworkManager : Manager
 		DestroyAll<Ground>();
 		DestroyAll<Room>();
 		DestroyAll<Citizen>();
-		DestroyAll<Item>();
-		DestroyAll<Lot>();
-		DestroyAll<Task>();
-		DestroyAll<Position>();
-		DestroyAll<RoomType>();
-		DestroyAll<OrganizationType>();
+	}
+
+	private void DestroyAll()
+	{
+		DestroyItems();
+		DestroyCells();
 	}
 
 	private void DestroyAll<T>() where T : Entity
@@ -440,6 +457,17 @@ public class NetworkManager : Manager
 		}));
 	}
 
+	public void AttachRoomToOrganization(int organizationId, int roomId)
+    {
+		var query = $"organization_id={organizationId}&room_id={roomId}";
+		
+		StartCoroutine(Request("attach-room-to-organization", query, (result) =>
+		{
+			var o = JsonUtility.FromJson<OrganizationResponse>(result);
+			NetworkManager.Instance.InstantiateRequiredRoomTypes(o.organization);
+		}));
+	}
+
 	public void Floor(int floorId)
     {
 		var query = $"floor_id={floorId}";
@@ -532,7 +560,7 @@ public class NetworkManager : Manager
 
 		StartCoroutine(Request("create-organization", query, (result) =>
 		{
-			ProcessOrganization(result);
+			ProcessOrganizations(result);
 		}));
 	}
 
@@ -572,16 +600,6 @@ public class NetworkManager : Manager
 		}));
 	}
 
-	public void ManageOrganization(int organizationId)
-	{
-		var query = $"organization_id={organizationId}";
-		
-		StartCoroutine(Request("manage", query, (result) =>
-		{
-			ProcessManage(result);
-		}));
-	}
-
 	public void PositionRequest(int citizenId, int positionId)
 	{
 		var query = $"citizen_id={citizenId}&position_id={positionId}";
@@ -602,11 +620,6 @@ public class NetworkManager : Manager
 
 		GameManager.Instance.citizen = response.citizen;
 		ProcessFloor(json);
-	}
-
-	private void ProcessManage(string json)
-	{
-		// TODO
 	}
 
 	private void InstantiateGround(GameObject prefab)
@@ -845,11 +858,7 @@ public class NetworkManager : Manager
         }
 
 		title.text = "Market";
-		DestroyAll<Item>();
-		DestroyAll<Lot>();
-		DestroyAll<Task>();
-		DestroyAll<Position>();
-		DestroyAll<RoomType>();
+		DestroyItems();
 
         var col = 0;
         var row = 0;
@@ -878,12 +887,7 @@ public class NetworkManager : Manager
         }
 
 		title.text = "Choose organization type";
-		DestroyAll<Item>();
-		DestroyAll<Lot>();
-		DestroyAll<Task>();
-		DestroyAll<Position>();
-		DestroyAll<RoomType>();
-		DestroyAll<OrganizationType>();
+		DestroyItems();
 
         var col = 0;
         var row = 0;
@@ -911,17 +915,12 @@ public class NetworkManager : Manager
             return;
         }
 
-		title.text = "Attach rooms";
-		DestroyAll<Item>();
-		DestroyAll<Lot>();
-		DestroyAll<Task>();
-		DestroyAll<Position>();
-		DestroyAll<RoomType>();
-		DestroyAll<OrganizationType>();
+		title.text = "Manage organizations";
+		DestroyItems();
 
         var col = 0;
         var row = 0;
-		for (var i = 0; i < response.organization.;.Count; i++)
+		for (var i = 0; i < response.organizations.Count; i++)
         {
             if (i % 5 == 0)
             {
@@ -929,43 +928,30 @@ public class NetworkManager : Manager
                 row = 0;
             }
 
-			var organizationType = InstantiateObject<OrganizationType>(organizationTypePrefab, marketCanvas,
-				$"{response.organization_types[i].title}", 100, 700, col, row);
-			organizationType.organizationTypeItem = response.organization_types[i];
+			foreach(var attachedRoom in response.organizations[i].attached_rooms)
+			{
+				foreach(var requiredRoomType in response.organizations[i].type.requirements.room_types)
+				{
+					if (requiredRoomType.id == attachedRoom.type_id)
+					{
+						requiredRoomType.is_attached = true;
+						break;
+					}
+				}
+			}
 
-            row++;
-        }
-	}
+			var requiredRoomTypeAttachedCount = 0;
+			foreach(var requiredRoomType in response.organizations[i].type.requirements.room_types)
+			{
+				if (requiredRoomType.is_attached)
+				{
+					requiredRoomTypeAttachedCount++;
+				}
+			}
 
-	private void ProcessOrganization(string json)
-	{
-		var response = JsonUtility.FromJson<OrganizationResponse>(json);
-        if (response == null)
-        {
-            return;
-        }
-
-		title.text = "Attach rooms";
-		DestroyAll<Item>();
-		DestroyAll<Lot>();
-		DestroyAll<Task>();
-		DestroyAll<Position>();
-		DestroyAll<RoomType>();
-		DestroyAll<OrganizationType>();
-
-        var col = 0;
-        var row = 0;
-		for (var i = 0; i < response.organization.;.Count; i++)
-        {
-            if (i % 5 == 0)
-            {
-                col++;
-                row = 0;
-            }
-
-			var organizationType = InstantiateObject<OrganizationType>(organizationTypePrefab, marketCanvas,
-				$"{response.organization_types[i].title}", 100, 700, col, row);
-			organizationType.organizationTypeItem = response.organization_types[i];
+			var organization = InstantiateObject<Organization>(organizationPrefab, buildCanvas,
+				$"{response.organizations[i].title} ({requiredRoomTypeAttachedCount == response.organizations[i].type.requirements.room_types.Count})", 100, 700, col, row);
+			organization.organizationItem = response.organizations[i];
 
             row++;
         }
@@ -980,12 +966,7 @@ public class NetworkManager : Manager
         }
 
 		title.text = "Choose a room to attach";
-		DestroyAll<Item>();
-		DestroyAll<Lot>();
-		DestroyAll<Task>();
-		DestroyAll<Position>();
-		DestroyAll<RoomType>();
-		DestroyAll<OrganizationType>();
+		DestroyItems();
 
 		InstantiateRentedRooms(response.rented_rooms);
 	}
@@ -1002,9 +983,45 @@ public class NetworkManager : Manager
                 row = 0;
             }
 
-			var rentedRoom = InstantiateObject<Items.RentedRoom>(rentedRoomItemPrefab, buildCanvas,
-				$"{rentedRooms[i].title}", 100, 700, col, row);
+			var rentedRoom = InstantiateObject<RentedRoom>(rentedRoomPrefab, buildCanvas,
+				$"{rentedRooms[i].x}/{rentedRooms[i].y}: \"{rentedRooms[i].description}\" ({rentedRooms[i].type_id})", 100, 700, col, row);
 			rentedRoom.rentedRoomItem = rentedRooms[i];
+
+            row++;
+        }
+	}
+
+	public void InstantiateRequiredRoomTypes(OrganizationItem organizationItem)
+	{
+		foreach(var attachedRoom in organizationItem.attached_rooms)
+		{
+			foreach(var requiredRoomType in organizationItem.type.requirements.room_types)
+			{
+				if (requiredRoomType.id == attachedRoom.type_id)
+				{
+					requiredRoomType.is_attached = true;
+					break;
+				}
+			}
+		}
+		var requiredRoomTypes = organizationItem.type.requirements.room_types;
+		
+		title.text = "Choose a required room";
+		DestroyItems();
+
+        var col = 0;
+        var row = 0;
+		for (var i = 0; i < requiredRoomTypes.Count; i++)
+        {
+            if (i % 5 == 0)
+            {
+                col++;
+                row = 0;
+            }
+
+			var requiredRoomType = InstantiateObject<RequiredRoomType>(requiredRoomTypePrefab, buildCanvas,
+				$"{requiredRoomTypes[i].title} ({requiredRoomTypes[i].is_attached})", 100, 700, col, row);
+			requiredRoomType.requiredRoomTypeItem = requiredRoomTypes[i];
 
             row++;
         }
@@ -1029,17 +1046,8 @@ public class NetworkManager : Manager
             return;
         }
 
-		DestroyAll<Item>();
-		DestroyAll<Lot>();
-		DestroyAll<Task>();
-		DestroyAll<Position>();
-		DestroyAll<RoomType>();
-		DestroyAll<OrganizationType>();
-
-        if (response.title != null)
-        {
-            title.text = $"{response.title}";
-        }
+        title.text = $"{response.title}";
+		DestroyItems();
 
         var col = 0;
         var row = 0;
@@ -1051,7 +1059,7 @@ public class NetworkManager : Manager
                 row = 0;
             }
 
-            var item = InstantiateObject<Item>(itemPrefab, inventoryCanvas,
+            var item = InstantiateObject<Entities.Items.Item>(itemPrefab, inventoryCanvas,
 				response.items[i].type_title, 100, 700, col, row);
 			item.itemItem = response.items[i];
 

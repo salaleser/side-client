@@ -4,20 +4,23 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class Item : Entity, IItem
+namespace Entities.Items
 {
-    public ItemItem itemItem;
-
-    private void Start()
+    public class Item : Entity, IItem
     {
-        AddButton("Market", () => NetworkManager.Instance.Market());
-        AddButton("Open", () => NetworkManager.Instance.Inventory(itemItem.id));
-    }
+        public ItemItem itemItem;
 
-    public void Handler()
-    {
-        NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{itemItem}";
-        ShowButtons();
+        private void Start()
+        {
+            AddButton("Market", () => NetworkManager.Instance.Market());
+            AddButton("Open", () => NetworkManager.Instance.Inventory(itemItem.id));
+        }
+
+        public void Handler()
+        {
+            NetworkManager.Instance.HideAllButtons();
+            NetworkManager.Instance.text.text = $"{itemItem}";
+            ShowButtons();
+        }
     }
 }

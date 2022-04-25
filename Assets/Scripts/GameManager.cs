@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
 	public ParcelItem parcel;
 	public FloorItem floor;
 	public CitizenItem citizen = new();
-    public Organization organization;
+    public OrganizationItem organization;
 
 	public int cursorX;
 	public int cursorY;

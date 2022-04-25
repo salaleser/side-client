@@ -729,20 +729,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 9040041545605410619}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c273cc49513744851a315ade24e04d1c, type: 3}
+  m_Script: {fileID: 11500000, guid: d25a74a073de14759bfac67b4ef6abf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   buttonPrefab: {fileID: 1343136061256876229, guid: fe8725bef40a6477495944cb5e24647a, type: 3}
   buttons: []
-  item:
+  roomItem:
+    title: 
     id: 0
     type_id: 0
+    description: empty
     x: 0
     y: 0
     w: 0
     h: 0
-    title: 0
-    room_item_id: 0
+    renter_id: 0
+    rentable: 0
+    organization_id: 0
+    r: 0
+    g: 0
+    b: 0
+    a: 0
     items: []
     citizens: []
     messages: []

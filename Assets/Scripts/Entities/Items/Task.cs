@@ -4,22 +4,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class Task : Entity, IItem
+namespace Entities.Items
 {
-    public TaskItem taskItem;
-
-    private void Start()
+    public class Task : Entity, IItem
     {
-        if (taskItem.is_free)
+        public TaskItem taskItem;
+
+        private void Start()
         {
-            AddButton($"Accept {taskItem.title}", () => NetworkManager.Instance.TaskAccept(GameManager.Instance.citizen.id, taskItem.id));
+            if (taskItem.is_free)
+            {
+                AddButton($"Accept {taskItem.title}", () => NetworkManager.Instance.TaskAccept(GameManager.Instance.citizen.id, taskItem.id));
+            }
         }
-    }
 
-    public void Handler()
-    {
-        NetworkManager.Instance.HideAllButtons();
-        NetworkManager.Instance.text.text = $"{taskItem}";
-        ShowButtons();
+        public void Handler()
+        {
+            NetworkManager.Instance.HideAllButtons();
+            NetworkManager.Instance.text.text = $"{taskItem}";
+            ShowButtons();
+        }
     }
 }
