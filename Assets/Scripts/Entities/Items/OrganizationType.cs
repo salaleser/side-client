@@ -10,7 +10,7 @@ public class OrganizationType : Entity, IItem
 
     private void Start()
     {
-        AddButton($"Start \"{organizationTypeItem.title}\"", () => NetworkManager.Instance.InstantiateRequiredRooms(organizationTypeItem.requirements.room_types));
+        AddButton($"Start \"{organizationTypeItem.title}\"", () => NetworkManager.Instance.CreateOrganization(organizationTypeItem.id));
     }
 
     public void Handler()

@@ -21,9 +21,6 @@ public class Room : Entity
                 case 1:
                     AddButton("Get Tasks", () => NetworkManager.Instance.Tasks(GameManager.Instance.citizen.organization_id));
                     break;
-                case 7: // office
-                    AddButton("Manage", () => NetworkManager.Instance.Manage(roomItem.organization_id));
-                    break;
             }
         }
         else if (roomItem.id > 0)
