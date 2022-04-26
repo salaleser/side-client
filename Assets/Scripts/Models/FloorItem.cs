@@ -9,16 +9,19 @@ namespace Models
         public int id;
         public int x;
         public int y;
+        public int z;
         public int w;
         public int h;
-        public int number;
-        public int owner_id;
         public int entrance_room_id;
         public List<RoomItem> rooms;
 
         public override string ToString() => @$"Floor:
         ID: {id}
-        Number: {number}
-        Rooms Count: {rooms.Count}";
+        X: {x}
+        Y: {y}
+        Z: {z}
+        Width: {w}
+        Height: {h}
+        Entrance Room ID: {entrance_room_id}";
     }
 }

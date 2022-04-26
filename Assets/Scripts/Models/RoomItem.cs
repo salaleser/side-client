@@ -29,6 +29,9 @@ namespace Models
         ID: {id}
         Type ID: {type_id}
         Description: {description}
+        Renter ID: {renter_id}
+        Rentable: {rentable}
+        Organization ID: {organization_id}
         Title: {title}
         Items Count: {items.Count}
         Citizens Count: {citizens.Count}

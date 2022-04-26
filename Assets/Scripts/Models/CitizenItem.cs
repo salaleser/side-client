@@ -14,7 +14,7 @@ namespace Models
         public int room_id;
         public int parcel_id;
         public int floor_id;
-        public int floor_number;
+        public int z;
         public string action_type_emoji;
         public int root_item_id;
         public List<ItemItem> items;

@@ -25,7 +25,7 @@ public class Room : Entity
         }
         else if (roomItem.id > 0)
         {
-            AddButton($"Go to {roomItem.title}", () => NetworkManager.Instance.MoveIntoRoom(roomItem.id));
+            AddButton($"Go to \"{roomItem.description}\"", () => NetworkManager.Instance.MoveIntoRoom(roomItem.id));
         }
     }
 }

@@ -275,7 +275,11 @@ MonoBehaviour:
   organizationItem:
     id: 0
     title: 
-    rooms: []
-    requirements:
-      room_types: []
-    is_active: 0
+    attached_rooms: []
+    type:
+      id: 0
+      title: 
+      requirements:
+        room_types: []
+        room_type_ids: 
+    owner_id: 0
