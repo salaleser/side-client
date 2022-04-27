@@ -356,20 +356,14 @@ public class NetworkManager : Manager
     {
 		var query = $"citizen_id={citizenId}";
 		
-		StartCoroutine(Request("citizen", query, (result) =>
-		{
-			ProcessCitizen(result);
-		}));
+		StartCoroutine(Request("citizen", query, ProcessCitizen));
 	}
 
 	public void Region(int regionId)
     {
 		var query = $"region_id={regionId}";
 		
-		StartCoroutine(Request("region", query, (result) =>
-		{
-			ProcessRegion(result);
-		}));
+		StartCoroutine(Request("region", query, ProcessRegion));
 		
 		GameManager.Instance.state = GameManager.Map;
 	}
@@ -388,10 +382,7 @@ public class NetworkManager : Manager
     {
 		var query = $"city_id={cityId}";
 		
-		StartCoroutine(Request("city", query, (result) =>
-		{
-			ProcessCity(result);
-		}));
+		StartCoroutine(Request("city", query, ProcessCity));
 		
 		GameManager.Instance.state = GameManager.Map;
 	}
@@ -400,20 +391,14 @@ public class NetworkManager : Manager
     {
 		var query = $"region_id={regionId}&x={x}&y={y}&title={title}";
 		
-		StartCoroutine(Request("region-register", query, (result) =>
-		{
-			ProcessRegion(result);
-		}));
+		StartCoroutine(Request("region-register", query, ProcessRegion));
 	}
 
 	public void Block(int blockId)
     {
 		var query = $"block_id={blockId}";
 		
-		StartCoroutine(Request("block", query, (result) =>
-		{
-			ProcessBlock(result);
-		}));
+		StartCoroutine(Request("block", query, ProcessBlock));
 		
 		GameManager.Instance.state = GameManager.Map;
 	}
@@ -422,20 +407,14 @@ public class NetworkManager : Manager
     {
 		var query = $"city_id={cityId}&x={x}&y={y}&title={title}";
 		
-		StartCoroutine(Request("block-register", query, (result) =>
-		{
-			ProcessCity(result);
-		}));
+		StartCoroutine(Request("block-register", query, ProcessCity));
 	}
 
 	public void Parcel(int parcelId)
     {
 		var query = $"parcel_id={parcelId}";
 		
-		StartCoroutine(Request("parcel", query, (result) =>
-		{
-			ProcessParcel(result);
-		}));
+		StartCoroutine(Request("parcel", query, ProcessParcel));
 		
 		GameManager.Instance.state = GameManager.Map;
 	}
@@ -444,30 +423,21 @@ public class NetworkManager : Manager
     {
 		var query = $"block_id={blockId}&x={x}&y={y}";
 		
-		StartCoroutine(Request("parcel-register", query, (result) =>
-		{
-			ProcessBlock(result);
-		}));
+		StartCoroutine(Request("parcel-register", query, ProcessBlock));
 	}
 
 	public void CreateRoom(int floorId, int roomTypeId, int x, int y, int w, int h)
     {
 		var query = $"floor_id={floorId}&room_type_id={roomTypeId}&x={x}&y={y}&w={w}&h={h}";
 		
-		StartCoroutine(Request("create-room", query, (result) =>
-		{
-			ProcessFloor(result);
-		}));
+		StartCoroutine(Request("create-room", query, ProcessFloor));
 	}
 
 	public void CreateFloor(int parcelId, int floorTypeId, int x, int y, int z, int w, int h)
     {
 		var query = $"parcel_id={parcelId}&floor_type_id={floorTypeId}&x={x}&y={y}&z={z}&w={w}&h={h}";
 		
-		StartCoroutine(Request("create-floor", query, (result) =>
-		{
-			ProcessParcel(result);
-		}));
+		StartCoroutine(Request("create-floor", query, ProcessParcel));
 	}
 
 	public void AttachRoomToOrganization(int organizationId, int roomId)
@@ -485,10 +455,7 @@ public class NetworkManager : Manager
     {
 		var query = $"floor_id={floorId}";
 		
-		StartCoroutine(Request("floor", query, (result) =>
-		{
-			ProcessFloor(result);
-		}));
+		StartCoroutine(Request("floor", query, ProcessFloor));
 	
 		GameManager.Instance.state = GameManager.Floor;
 	}
@@ -497,10 +464,7 @@ public class NetworkManager : Manager
     {
 		var query = $"citizen_id={GameManager.Instance.citizen.id}&room_id={roomId}";
 		
-		StartCoroutine(Request("move-into-room", query, (result) =>
-		{
-			ProcessMoveIntoRoom(result);
-		}));
+		StartCoroutine(Request("move-into-room", query, ProcessMoveIntoRoom));
 	}
 
 	public void Inventory(int rootItemId)
@@ -510,10 +474,7 @@ public class NetworkManager : Manager
 
 		var query = $"root_item_id={rootItemId}";
 		
-		StartCoroutine(Request("inventory", query, (result) =>
-		{
-			ProcessInventory(result);
-		}));
+		StartCoroutine(Request("inventory", query, ProcessInventory));
 	}
 
 	public void RoomTypes()
@@ -521,10 +482,7 @@ public class NetworkManager : Manager
 		shading.SetActive(true);
 		closeWindowButton.SetActive(shading.activeSelf);
 
-		StartCoroutine(Request("room-types", "", (result) =>
-		{
-			ProcessRoomTypes(result);
-		}));
+		StartCoroutine(Request("room-types", "", ProcessRoomTypes));
 	}
 
 	public void Organizations(int ownerId)
@@ -536,10 +494,7 @@ public class NetworkManager : Manager
 
 		var query = $"owner_id={ownerId}";
 
-		StartCoroutine(Request("organizations", query, (result) =>
-		{
-			ProcessOrganizations(result);
-		}));
+		StartCoroutine(Request("organizations", query, ProcessOrganizations));
 	}
 
 	public void OrganizationTypes()
@@ -548,10 +503,7 @@ public class NetworkManager : Manager
 		organizationsButton.SetActive(true);
 		closeWindowButton.SetActive(shading.activeSelf);
 
-		StartCoroutine(Request("organization-types", "", (result) =>
-		{
-			ProcessOrganizationTypes(result);
-		}));
+		StartCoroutine(Request("organization-types", "", ProcessOrganizationTypes));
 	}
 
 	public void RentedRooms(int roomTypeId)
@@ -561,10 +513,7 @@ public class NetworkManager : Manager
 
 		var query = $"renter_id={GameManager.Instance.citizen.id}&room_type_id={roomTypeId}";
 
-		StartCoroutine(Request("rented-rooms", query, (result) =>
-		{
-			ProcessRentedRooms(result);
-		}));
+		StartCoroutine(Request("rented-rooms", query, ProcessRentedRooms));
 	}
 
 	public void CreateOrganization(int organizationTypeId)
@@ -574,10 +523,7 @@ public class NetworkManager : Manager
 
 		var query = $"organization_type_id={organizationTypeId}&owner_id={GameManager.Instance.citizen.id}";
 
-		StartCoroutine(Request("create-organization", query, (result) =>
-		{
-			ProcessOrganizations(result);
-		}));
+		StartCoroutine(Request("create-organization", query, ProcessOrganizations));
 	}
 
 	public void Chat(int citizenId, int roomId, string text)
@@ -600,30 +546,21 @@ public class NetworkManager : Manager
 
 		var query = $"organization_id={organizationId}";
 		
-		StartCoroutine(Request("tasks", query, (result) =>
-		{
-			ProcessTasks(result);
-		}));
+		StartCoroutine(Request("tasks", query, ProcessTasks));
 	}
 
 	public void TaskAccept(int citizenId, int taskId)
 	{
 		var query = $"citizen_id={citizenId}&task_id={taskId}";
 		
-		StartCoroutine(Request("task-accept", query, (result) =>
-		{
-			ProcessTasks(result);
-		}));
+		StartCoroutine(Request("task-accept", query, ProcessTasks));
 	}
 
 	public void PositionRequest(int citizenId, int positionId)
 	{
 		var query = $"citizen_id={citizenId}&position_id={positionId}";
 		
-		StartCoroutine(Request("position-request", query, (result) =>
-		{
-			ProcessTasks(result);
-		}));
+		StartCoroutine(Request("position-request", query, ProcessTasks));
 	}
 
 	private void ProcessMoveIntoRoom(string json)
