@@ -12,7 +12,14 @@ namespace Entities.Items
 
         private void Start()
         {
-            AddButton($"Attach...", () => NetworkManager.Instance.RentedRooms(requiredRoomTypeItem.id));
+            if (requiredRoomTypeItem.is_attached)
+            {
+                AddButton($"Detach", () => NetworkManager.Instance.DetachRoom(requiredRoomTypeItem.attached_room_id));
+            }
+            else
+            {
+                AddButton($"Attach...", () => NetworkManager.Instance.RentedRooms(requiredRoomTypeItem.id));
+            }
         }
 
         public void Handler()

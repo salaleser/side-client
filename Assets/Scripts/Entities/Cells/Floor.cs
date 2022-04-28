@@ -10,6 +10,9 @@ public class Floor : Entity
 
     private void Start()
     {
-        AddButton($"Move inside \"{floorItem.title}\"", () => NetworkManager.Instance.MoveIntoRoom(floorItem.entrance_room_id));
+        if (floorItem.entrance_room_id != 0)
+        {
+            AddButton($"Move inside \"{floorItem.title}\"", () => NetworkManager.Instance.MoveIntoRoom(floorItem.entrance_room_id));
+        }
     }
 }

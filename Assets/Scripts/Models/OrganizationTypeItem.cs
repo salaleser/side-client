@@ -28,33 +28,40 @@ namespace Models
     [System.Serializable]
     public class OrganizationProperties
     {
-        public InOut @in;
-        public InOut @out;
+        public List<Items> in_items;
+        public List<Items> out_items;
         public List<Task> tasks;
 
         public override string ToString() => @$"Properties:
-            In: {@in}
-            Out: {@out}
-            Tasks: {Tasks()}";
+            In Items: {ListToString<Items>(in_items)}
+            Out Items: {ListToString<Items>(out_items)}
+            Tasks: {ListToString<Task>(tasks)}";
 
-        private string Tasks()
+        private string ListToString<T>(List<T> items)
         {
-            var result = "";
-            foreach(var task in tasks)
+            if (items.Count == 0)
             {
-                result += $"{task}, ";
+                return "—";
+            }
+
+            var result = "";
+            foreach(var item in items)
+            {
+                result += $"\n• {item}, ";
             }
             return result.Substring(0, result.Length-2);
         }
     }
 
     [System.Serializable]
-    public class InOut
+    public class Items
     {
-        public List<int> item_type_ids;
+        public ItemTypeItem type;
         public int quantity;
 
-        public override string ToString() => @$"{quantity}x{item_type_ids.Count}";
+        public override string ToString() => @$"
+        Quantity: {quantity}
+        {type}";
     }
 
     [System.Serializable]
@@ -63,6 +70,8 @@ namespace Models
         public int type_id;
         public int count;
 
-        public override string ToString() => @$"{count}x{type_id}";
+        public override string ToString() => @$"Task:
+        Count: {count}
+        Type ID: {type_id}";
     }
 }

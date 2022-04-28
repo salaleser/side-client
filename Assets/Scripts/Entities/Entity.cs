@@ -11,7 +11,7 @@ public class Entity : MonoBehaviour
     private const int X = 130;
     private const int Y = 300;
 
-    public void AddButton(string text, UnityAction action)
+    public void AddButton(string text, UnityAction action, bool interactable = true)
     {
         var rect = buttonPrefab.transform.GetComponent<RectTransform>().rect;
         var pos = new Vector3(X + rect.height * buttons.Count, Y - rect.height * buttons.Count, 0);
@@ -20,6 +20,7 @@ public class Entity : MonoBehaviour
         button.SetActive(false);
         button.GetComponentInChildren<Text>().text = text;
         button.GetComponent<Button>().onClick.AddListener(action);
+        button.GetComponent<Button>().interactable = interactable;
         buttons.Add(button);
     }
 

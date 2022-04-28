@@ -12,8 +12,8 @@ using Models;
 
 public class NetworkManager : Manager
 {
-	private const int Width = 8;
-	private const int Height = 8;
+	public const int Width = 8;
+	public const int Height = 8;
 
 	private string Host;
 	private string Port;
@@ -516,6 +516,17 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("rented-rooms", query, ProcessRentedRooms));
 	}
 
+	public void DetachRoom(int roomId)
+	{
+		var query = $"room_id={roomId}";
+
+		StartCoroutine(Request("detach-room", query, (result) =>
+		{
+			var o = JsonUtility.FromJson<OrganizationResponse>(result);
+			NetworkManager.Instance.InstantiateRequiredRoomTypes(o.organization);
+		}));
+	}
+
 	public void CreateOrganization(int organizationTypeId)
 	{
 		shading.SetActive(true);
@@ -736,12 +747,15 @@ public class NetworkManager : Manager
 		GameManager.Instance.floor = floor;
 		title.text = $"\"{floor.title}\", {floor.z} этаж";
 
-		var floorMap = new RoomItem[Width, Height];
+		var width = Width * floor.w;
+		var height = Height * floor.h;
+
+		var floorMap = new RoomItem[width, height];
 		foreach(var r in floor.rooms)
 		{
-			for (var i = 0; i < Width; i++)
+			for (var i = 0; i < width; i++)
 			{
-				for (var j = 0; j < Height; j++)
+				for (var j = 0; j < height; j++)
 				{
 					if (i+1 >= r.x && i+1 < r.x + r.w && j+1 <= r.y && j+1 > r.y - r.h)
 					{
@@ -751,9 +765,9 @@ public class NetworkManager : Manager
 			}
 		}
 
-		for (var i = 0; i < Width; i++)
+		for (var i = 0; i < width; i++)
 		{
-			for (var j = 0; j < Height; j++)
+			for (var j = 0; j < height; j++)
 			{
 				var r = floorMap[i, j];
 				if (r != null)
@@ -963,6 +977,7 @@ public class NetworkManager : Manager
 				if (requiredRoomType.id == attachedRoom.type_id)
 				{
 					requiredRoomType.is_attached = true;
+					requiredRoomType.attached_room_id = attachedRoom.id;
 					break;
 				}
 			}
@@ -1101,8 +1116,7 @@ public class NetworkManager : Manager
 
 	public void InstantiateRoomTypes(List<RoomTypeItem> roomTypes)
 	{
-		DestroyAll<RoomType>();
-		DestroyAll<OrganizationType>();
+		DestroyItems();
 
         var col = 0;
         var row = 0;
