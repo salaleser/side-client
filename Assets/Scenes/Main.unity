@@ -479,6 +479,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
+  continent:
+    title: 
+    id: 0
+    number: 0
+    planet_id: 0
+    regions: []
   region:
     title: 
     id: 0
@@ -509,10 +515,9 @@ MonoBehaviour:
     id: 0
     x: 0
     y: 0
+    z: 0
     w: 0
     h: 0
-    number: 0
-    owner_id: 0
     entrance_room_id: 0
     rooms: []
   citizen:
@@ -524,7 +529,7 @@ MonoBehaviour:
     room_id: 0
     parcel_id: 0
     floor_id: 0
-    floor_number: 0
+    z: 0
     action_type_emoji: 
     root_item_id: 0
     items: []
@@ -533,15 +538,18 @@ MonoBehaviour:
   organization:
     id: 0
     title: 
-    rooms: []
-    type_id: 0
+    attached_rooms: []
     type:
       id: 0
       title: 
       requirements:
         room_types: []
+        room_type_ids: 
+      properties:
+        in_items: []
+        out_items: []
+        tasks: []
     owner_id: 0
-    is_active: 0
   cursorX: 0
   cursorY: 0
 --- !u!4 &559488106
@@ -1460,6 +1468,7 @@ MonoBehaviour:
   blockGroundPrefab: {fileID: 9040041545605410619, guid: 0c156edaa9a0044d983546744f103e49, type: 3}
   parcelGroundPrefab: {fileID: 9040041545605410619, guid: 9d5266acacc214b859e66d40c8ab19b0, type: 3}
   floorGroundPrefab: {fileID: 9040041545605410619, guid: 842f10b2fdc3d4f18aad8f7cea1b902e, type: 3}
+  regionPrefab: {fileID: 9040041545605410619, guid: 061421cb3c2194f50bd996d7e1850895, type: 3}
   cityPrefab: {fileID: 9040041545605410619, guid: 85c0717c8239b4537af30ce1ce0d1976, type: 3}
   blockPrefab: {fileID: 9040041545605410619, guid: 1bcabffc3c0e54c648ab19a8da652197, type: 3}
   parcelPrefab: {fileID: 9040041545605410619, guid: 0085963bd0acf4dfeb1574ee5f06e2ff, type: 3}
@@ -2038,7 +2047,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.6039216}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.7372549}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

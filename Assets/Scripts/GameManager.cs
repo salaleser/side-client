@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
 
 	public int state;
 	
+	public ContinentItem continent;
 	public RegionItem region;
 	public CityItem city;
 	public BlockItem block;

@@ -10,7 +10,7 @@ public class Room : Entity
 
     private void Start()
     {
-        if (roomItem.id == 0)
+        if (roomItem.id == 0 && GameManager.Instance.parcel.owner_id == GameManager.Instance.citizen.id)
         {
             AddButton($"Build Room", () => NetworkManager.Instance.RoomTypes());
         }
