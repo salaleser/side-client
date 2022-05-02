@@ -12,8 +12,14 @@ namespace Entities.Cells
 
         private void Start()
         {
-            AddButton($"Zoom in \"{cityItem.title}\"", () => NetworkManager.Instance.City(cityItem.id));
-            AddButton($"Found City", () => NetworkManager.Instance.CreateCity(cityItem.region_id, cityItem.x, cityItem.y, ""));
+            if (cityItem.blocks.Count == 0)
+            {
+                AddButton($"Found City", () => NetworkManager.Instance.CityExplore(cityItem.id));
+            }
+            else
+            {
+                AddButton($"Zoom in \"{cityItem.title}\"", () => NetworkManager.Instance.City(cityItem.id));
+            }
         }
     }
 }

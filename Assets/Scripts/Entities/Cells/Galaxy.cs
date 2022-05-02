@@ -12,6 +12,14 @@ namespace Entities.Cells
 
         private void Start()
         {
+            if (galaxyItem.systems.Count == 0)
+            {
+                AddButton($"Explore \"{galaxyItem.title}\"", () => NetworkManager.Instance.GalaxyExplore(galaxyItem.id));
+            }
+            else
+            {
+                AddButton($"Zoom in \"{galaxyItem.title}\"", () => NetworkManager.Instance.Galaxy(galaxyItem.id));
+            }
         }
     }
 }

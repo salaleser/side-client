@@ -9,12 +9,14 @@ namespace Models
         public int id;
         public int x;
         public int y;
+        public int explorer_id;
         public int region_id;
         public List<BlockItem> blocks;
 
         public override string ToString() => @$"City:
         ID: {id}
         Title: {title}
+        Explorer ID: {explorer_id}
         Blocks Count: {blocks.Count}";
     }
 }

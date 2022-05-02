@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d041d6f6904104b73afb3f66276c19db, type: 2}
+  - {fileID: 2100000, guid: 829755ca39b254eca84e690a3223de7e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -93,8 +93,9 @@ GameObject:
   m_Component:
   - component: {fileID: 9040041545605410616}
   - component: {fileID: 6339760826222529971}
+  - component: {fileID: 567992813049238583}
   m_Layer: 0
-  m_Name: Planet
+  m_Name: ParcelUnknown
   m_TagString: Side
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -129,3 +130,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: -0.55, z: 0}
+--- !u!114 &567992813049238583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9040041545605410619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aee84686e53b2472ebdf354aae55a4b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonPrefab: {fileID: 1343136061256876229, guid: fe8725bef40a6477495944cb5e24647a, type: 3}
+  buttons: []
+  parcelItem:
+    title: 
+    id: 0
+    x: 0
+    y: 0
+    owner_id: 0
+    block_id: 0
+    floors: []

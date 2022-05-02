@@ -13,6 +13,7 @@ namespace Models
         public int w;
         public int h;
         public int entrance_room_id;
+        public int parcel_id;
         public List<RoomItem> rooms;
 
         public override string ToString() => @$"Floor:

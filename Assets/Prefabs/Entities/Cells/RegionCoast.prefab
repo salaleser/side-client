@@ -150,3 +150,5 @@ MonoBehaviour:
     x: 0
     y: 0
     z: 0
+    continent_id: 0
+    cities_count: 0

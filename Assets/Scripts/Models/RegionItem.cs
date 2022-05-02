@@ -11,10 +11,14 @@ namespace Models
         public int y;
         public int z;
         public int continent_id;
+        public int explorer_id;
         public int cities_count;
 
         public override string ToString() => @$"Region:
         ID: {id}
-        Title: {title}";
+        Title: {title}
+        Height: {z}
+        Explorer ID: {explorer_id}
+        Cities Count: {cities_count}";
     }
 }

@@ -12,6 +12,14 @@ namespace Entities.Cells
 
         private void Start()
         {
+            if (planetItem.continents.Count == 0)
+            {
+                AddButton($"Explore \"{planetItem.title}\"", () => NetworkManager.Instance.PlanetExplore(planetItem.id));
+            }
+            else
+            {
+                AddButton($"Zoom in \"{planetItem.title}\"", () => NetworkManager.Instance.Planet(planetItem.id));
+            }
         }
     }
 }

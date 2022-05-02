@@ -479,25 +479,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
+  universe:
+    title: 
+    id: 0
+    number: 0
+    galaxies: []
   galaxy:
     title: 
     id: 0
     number: 0
+    explorer_id: 0
     systems: []
   system:
     title: 
     id: 0
     number: 0
+    explorer_id: 0
+    galaxy_id: 0
     planets: []
   planet:
     title: 
     id: 0
     number: 0
+    explorer_id: 0
+    system_id: 0
+    size: 0
     continents: []
   continent:
     title: 
     id: 0
     number: 0
+    explorer_id: 0
     planet_id: 0
     regions: []
   region:
@@ -506,17 +518,24 @@ MonoBehaviour:
     x: 0
     y: 0
     z: 0
+    continent_id: 0
+    explorer_id: 0
+    cities_count: 0
   city:
     title: 
     id: 0
     x: 0
     y: 0
+    explorer_id: 0
+    region_id: 0
     blocks: []
   block:
     title: 
     id: 0
     x: 0
     y: 0
+    city_id: 0
+    explorer_id: 0
     parcels: []
   parcel:
     title: 
@@ -524,7 +543,11 @@ MonoBehaviour:
     x: 0
     y: 0
     owner_id: 0
+    explorer_id: 0
+    block_id: 0
     floors: []
+    properties:
+      resources: []
   floor:
     title: 
     id: 0
@@ -1477,17 +1500,25 @@ MonoBehaviour:
   roomTypePrefab: {fileID: 5523004236194669490, guid: 4e39da44a664f4e5da60ec30b6c9484a, type: 3}
   rentedRoomPrefab: {fileID: 5523004236194669490, guid: 9f404e5ecd3f44021abdec1bb04d978b, type: 3}
   requiredRoomTypePrefab: {fileID: 5523004236194669490, guid: 47539598142d147acb5920835b3a8bb3, type: 3}
-  galaxyPrefab: {fileID: 9040041545605410619, guid: d6646e7fd24f14301a4564be0f646d6b, type: 3}
-  systemPrefab: {fileID: 9040041545605410619, guid: 23351c5b865ed4e6f8b2c3913d0016a2, type: 3}
-  planetPrefab: {fileID: 9040041545605410619, guid: dc7663d76f43a4b7f8dac37093e18b1a, type: 3}
-  continentPrefab: {fileID: 9040041545605410619, guid: 1b91092905dfe4c2fa2dbf16123fca50, type: 3}
+  galaxyExploredPrefab: {fileID: 9040041545605410619, guid: d6646e7fd24f14301a4564be0f646d6b, type: 3}
+  galaxyUnknownPrefab: {fileID: 9040041545605410619, guid: 45475fbb4724549e19c5da2dda983889, type: 3}
+  systemExploredPrefab: {fileID: 9040041545605410619, guid: 7a743e356384b442f9f9896972b0ed01, type: 3}
+  systemUnknownPrefab: {fileID: 9040041545605410619, guid: 23351c5b865ed4e6f8b2c3913d0016a2, type: 3}
+  planetExploredPrefab: {fileID: 9040041545605410619, guid: 17fb62ee591bb48a1bbafe0cbd061348, type: 3}
+  planetUnknownPrefab: {fileID: 9040041545605410619, guid: dc7663d76f43a4b7f8dac37093e18b1a, type: 3}
+  continentExploredPrefab: {fileID: 9040041545605410619, guid: ace4241b412ad4e83bd999ac23421f6c, type: 3}
+  continentUnknownPrefab: {fileID: 9040041545605410619, guid: 1b91092905dfe4c2fa2dbf16123fca50, type: 3}
   regionOceanPrefab: {fileID: 9040041545605410619, guid: 05b46d2ef939248e880cae71f55e567a, type: 3}
   regionCoastPrefab: {fileID: 9040041545605410619, guid: c46065f456ff7438abfe23ffcefd9520, type: 3}
   regionPlainPrefab: {fileID: 9040041545605410619, guid: e55a2c5ceb52e4571be73413b2164ccc, type: 3}
   regionMountPrefab: {fileID: 9040041545605410619, guid: 1f8dc18e3bed64c9cac947805e437f40, type: 3}
-  cityPrefab: {fileID: 9040041545605410619, guid: 9f38388f3323d4a4eac3a1e735b7b7f8, type: 3}
-  blockPrefab: {fileID: 9040041545605410619, guid: 0c156edaa9a0044d983546744f103e49, type: 3}
-  parcelPrefab: {fileID: 9040041545605410619, guid: 9d5266acacc214b859e66d40c8ab19b0, type: 3}
+  regionUnknownPrefab: {fileID: 9040041545605410619, guid: f27d5439480d14a148c65d9b42579829, type: 3}
+  cityExploredPrefab: {fileID: 9040041545605410619, guid: 9f38388f3323d4a4eac3a1e735b7b7f8, type: 3}
+  cityUnknownPrefab: {fileID: 9040041545605410619, guid: c820d127cc37c4137bb128667d6df90d, type: 3}
+  blockExploredPrefab: {fileID: 9040041545605410619, guid: 0c156edaa9a0044d983546744f103e49, type: 3}
+  blockUnknownPrefab: {fileID: 9040041545605410619, guid: aefcb71dd1a734ecd80d9051271f1b2e, type: 3}
+  parcelExploredPrefab: {fileID: 9040041545605410619, guid: 21208443521d644769f2dcbfaeea662b, type: 3}
+  parcelUnknownPrefab: {fileID: 9040041545605410619, guid: 9d5266acacc214b859e66d40c8ab19b0, type: 3}
   floorGroundPrefab: {fileID: 9040041545605410619, guid: 842f10b2fdc3d4f18aad8f7cea1b902e, type: 3}
   floorPrefab: {fileID: 9040041545605410619, guid: 66780b5603f30497abfa4fac4363e38c, type: 3}
   openRoomPrefab: {fileID: 9040041545605410619, guid: 31e570a0693444af68b2610cbc4fd5da, type: 3}

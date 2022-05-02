@@ -8,6 +8,7 @@ namespace Models
     {
         public int id;
         public int number;
+        public int explorer_id;
         public int planet_id;
         public List<RegionItem> regions;
 
@@ -15,6 +16,7 @@ namespace Models
         ID: {id}
         Number: {number}
         Title: {title}
+        Explorer ID: {explorer_id}
         Regions Count: {regions.Count}";
     }
 }

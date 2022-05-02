@@ -12,8 +12,14 @@ namespace Entities.Cells
 
         private void Start()
         {
-            AddButton($"Zoom in \"{parcelItem.title}\"", () => NetworkManager.Instance.Parcel(parcelItem.id));
-            AddButton($"Claim Parcel", () => NetworkManager.Instance.CreateParcel(parcelItem.block_id, parcelItem.x, parcelItem.y));
+            if (parcelItem.owner_id == 0)
+            {
+                AddButton($"Claim Parcel", () => NetworkManager.Instance.ParcelClaim(parcelItem.id));
+            }
+            else
+            {
+                AddButton($"Zoom in \"{parcelItem.title}\"", () => NetworkManager.Instance.Parcel(parcelItem.id));
+            }
         }
     }
 }

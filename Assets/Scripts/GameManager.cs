@@ -7,13 +7,23 @@ using Models;
 
 public class GameManager : MonoBehaviour
 {
-	public const int Floor = 1;
-	public const int Map = 2;
-	public const int Market = 3;
-	public const int Inventory = 4;
+	public const int Market = -2;
+	public const int Inventory = -1;
+	public const int Universe = 1;
+	public const int Galaxy = 2;
+	public const int System = 3;
+	public const int Planet = 4;
+	public const int Continent = 5;
+	public const int Region = 6;
+	public const int City = 7;
+	public const int Block = 8;
+	public const int Parcel = 9;
+	public const int Floor = 10;
+	public const int Room = 11;
 
 	public int state;
 	
+	public UniverseItem universe;
 	public GalaxyItem galaxy;
 	public SystemItem system;
 	public PlanetItem planet;
