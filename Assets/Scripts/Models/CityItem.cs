@@ -9,6 +9,7 @@ namespace Models
         public int id;
         public int x;
         public int y;
+        public int region_id;
         public List<BlockItem> blocks;
 
         public override string ToString() => @$"City:

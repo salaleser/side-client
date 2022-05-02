@@ -10,6 +10,7 @@ namespace Models
         public int x;
         public int y;
         public int owner_id;
+        public int block_id;
         public List<FloorItem> floors;
 
         public override string ToString() => @$"Parcel:

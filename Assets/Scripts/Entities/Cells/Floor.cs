@@ -4,15 +4,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class Floor : Entity
+namespace Entities.Cells
 {
-    public FloorItem floorItem;
-
-    private void Start()
+    public class Floor : Entity
     {
-        if (floorItem.entrance_room_id != 0)
+        public FloorItem floorItem;
+
+        private void Start()
         {
-            AddButton($"Move inside \"{floorItem.title}\"", () => NetworkManager.Instance.MoveIntoRoom(floorItem.entrance_room_id));
+            if (floorItem.entrance_room_id != 0)
+            {
+                AddButton($"Move inside \"{floorItem.title}\"", () => NetworkManager.Instance.MoveIntoRoom(floorItem.entrance_room_id));
+            }
         }
     }
 }

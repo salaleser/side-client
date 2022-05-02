@@ -4,12 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class Parcel : Entity
+namespace Entities.Cells
 {
-    public ParcelItem parcelItem;
-
-    private void Start()
+    public class Parcel : Entity
     {
-        AddButton($"Zoom in \"{parcelItem.title}\"", () => NetworkManager.Instance.Parcel(parcelItem.id));
+        public ParcelItem parcelItem;
+
+        private void Start()
+        {
+            AddButton($"Zoom in \"{parcelItem.title}\"", () => NetworkManager.Instance.Parcel(parcelItem.id));
+            AddButton($"Claim Parcel", () => NetworkManager.Instance.CreateParcel(parcelItem.block_id, parcelItem.x, parcelItem.y));
+        }
     }
 }

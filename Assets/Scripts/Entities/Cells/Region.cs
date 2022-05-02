@@ -4,12 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class Region : Entity
+namespace Entities.Cells
 {
-    public RegionItem regionItem;
-
-    private void Start()
+    public class Region : Entity
     {
-        AddButton($"Zoom in \"{regionItem.title}\"", () => NetworkManager.Instance.Region(regionItem.id));
+        public RegionItem regionItem;
+
+        private void Start()
+        {
+            if (regionItem.cities_count == 0)
+            {
+                AddButton($"Explore \"{regionItem.title}\"", () => NetworkManager.Instance.RegionExplore(regionItem.id));
+            }
+            else
+            {
+                AddButton($"Zoom in \"{regionItem.title}\"", () => NetworkManager.Instance.Region(regionItem.id));
+            }
+        }
     }
 }

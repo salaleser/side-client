@@ -4,12 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class City : Entity
+namespace Entities.Cells
 {
-    public CityItem cityItem;
-
-    private void Start()
+    public class City : Entity
     {
-        AddButton($"Zoom in \"{cityItem.title}\"", () => NetworkManager.Instance.City(cityItem.id));
+        public CityItem cityItem;
+
+        private void Start()
+        {
+            AddButton($"Zoom in \"{cityItem.title}\"", () => NetworkManager.Instance.City(cityItem.id));
+            AddButton($"Found City", () => NetworkManager.Instance.CreateCity(cityItem.region_id, cityItem.x, cityItem.y, ""));
+        }
     }
 }

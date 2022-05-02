@@ -9,6 +9,7 @@ namespace Models
         public int id;
         public int x;
         public int y;
+        public int city_id;
         public List<ParcelItem> parcels;
 
         public override string ToString() => @$"Block:

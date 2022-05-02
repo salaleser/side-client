@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
 
 	public int state;
 	
+	public GalaxyItem galaxy;
+	public SystemItem system;
+	public PlanetItem planet;
 	public ContinentItem continent;
 	public RegionItem region;
 	public CityItem city;

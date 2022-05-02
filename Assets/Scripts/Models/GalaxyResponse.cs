@@ -5,9 +5,8 @@ using Models;
 namespace Models
 {
     [System.Serializable]
-    public class RegionResponse
+    public class GalaxyResponse
     {
-        public RegionItem region;
-        public List<CityItem> cities;
+        public GalaxyItem galaxy;
     }
 }

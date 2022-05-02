@@ -4,28 +4,31 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class Room : Entity
+namespace Entities.Cells
 {
-    public RoomItem roomItem;
-
-    private void Start()
+    public class Room : Entity
     {
-        if (roomItem.id == 0 && GameManager.Instance.parcel.owner_id == GameManager.Instance.citizen.id)
+        public RoomItem roomItem;
+
+        private void Start()
         {
-            AddButton($"Build Room", () => NetworkManager.Instance.RoomTypes());
-        }
-        else if (GameManager.Instance.citizen.room_id == roomItem.id)
-        {
-            switch (roomItem.type_id)
+            if (roomItem.id == 0 && GameManager.Instance.parcel.owner_id == GameManager.Instance.citizen.id)
             {
-                case 1:
-                    AddButton("Get Tasks", () => NetworkManager.Instance.Tasks(GameManager.Instance.citizen.organization_id));
-                    break;
+                AddButton($"Build Room", () => NetworkManager.Instance.RoomTypes());
             }
-        }
-        else if (roomItem.id > 0)
-        {
-            AddButton($"Go to \"{roomItem.description}\"", () => NetworkManager.Instance.MoveIntoRoom(roomItem.id));
+            else if (GameManager.Instance.citizen.room_id == roomItem.id)
+            {
+                switch (roomItem.type_id)
+                {
+                    case 1:
+                        AddButton("Get Tasks", () => NetworkManager.Instance.Tasks(GameManager.Instance.citizen.organization_id));
+                        break;
+                }
+            }
+            else if (roomItem.id > 0)
+            {
+                AddButton($"Go to \"{roomItem.description}\"", () => NetworkManager.Instance.MoveIntoRoom(roomItem.id));
+            }
         }
     }
 }

@@ -9,11 +9,12 @@ namespace Models
         public int id;
         public int x;
         public int y;
-        public List<CityItem> cities;
+        public int z;
+        public int continent_id;
+        public int cities_count;
 
         public override string ToString() => @$"Region:
         ID: {id}
-        Title: {title}
-        Cities Count: {cities.Count}";
+        Title: {title}";
     }
 }

@@ -3,12 +3,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using Models;
 
-public class Citizen : Entity
+namespace Entities
 {
-    public CitizenItem citizenItem;
-
-    private void Start()
+    public class Citizen : Entity
     {
-        AddButton($"Inventory ({citizenItem.name})", () => NetworkManager.Instance.Inventory(citizenItem.root_item_id));
+        public CitizenItem citizenItem;
+
+        private void Start()
+        {
+            AddButton($"Inventory ({citizenItem.name})", () => NetworkManager.Instance.Inventory(citizenItem.root_item_id));
+        }
     }
 }
