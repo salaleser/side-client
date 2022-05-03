@@ -14,7 +14,7 @@ namespace Entities.Items
         {
             if (taskItem.is_free)
             {
-                AddButton($"Accept {taskItem.title}", () => NetworkManager.Instance.TaskAccept(GameManager.Instance.citizen.id, taskItem.id));
+                AddButton($"Accept {taskItem.title}", () => NetworkManager.Instance.TaskAccept(GameManager.Instance.me.id, taskItem.id));
             }
         }
 

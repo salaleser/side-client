@@ -12,7 +12,7 @@ namespace Entities.Items
 
         private void Start()
         {
-            AddButton($"Request \"{positionItem.title}\"", () => NetworkManager.Instance.PositionRequest(GameManager.Instance.citizen.id, positionItem.id));
+            AddButton($"Request \"{positionItem.title}\"", () => NetworkManager.Instance.PositionRequest(GameManager.Instance.me.id, positionItem.id));
         }
 
         public void Handler()

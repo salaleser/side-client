@@ -14,7 +14,7 @@ namespace Entities.Items
         {
             var x = GameManager.Instance.cursorX;
             var y = GameManager.Instance.cursorY;
-            var floor = GameManager.Instance.floor;
+            var floor = GameManager.Instance.currentFloor;
             var w = NetworkManager.Width * floor.w;
             var h = NetworkManager.Height * floor.h;
             if (roomTypeItem.w + (x - 1) <= w &&

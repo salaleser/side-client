@@ -12,16 +12,16 @@ namespace Entities.Cells
 
         private void Start()
         {
-            if (roomItem.id == 0 && GameManager.Instance.parcel.owner_id == GameManager.Instance.citizen.id)
+            if (roomItem.id == 0 && GameManager.Instance.currentParcel.owner_id == GameManager.Instance.me.id)
             {
                 AddButton($"Build Room", () => NetworkManager.Instance.RoomTypes());
             }
-            else if (GameManager.Instance.citizen.room_id == roomItem.id)
+            else if (GameManager.Instance.me.room_id == roomItem.id)
             {
                 switch (roomItem.type_id)
                 {
                     case 1:
-                        AddButton("Get Tasks", () => NetworkManager.Instance.Tasks(GameManager.Instance.citizen.organization_id));
+                        AddButton("Get Tasks", () => NetworkManager.Instance.Tasks(GameManager.Instance.me.organization_id));
                         break;
                 }
             }

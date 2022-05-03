@@ -13,6 +13,15 @@ namespace Entities.Items
         private void Start()
         {
             AddButton($"Manage rooms", () => NetworkManager.Instance.InstantiateRequiredRoomTypes(organizationItem));
+            
+            foreach (var room in organizationItem.attached_rooms)
+            {
+                if (room.type_id == 4)
+                {
+                    AddButton($"Manage storage ({room.item_id})", () => NetworkManager.Instance.Inventory(room.item_id));
+                    break;
+                }
+            }
         }
 
         public void Handler()
@@ -20,7 +29,7 @@ namespace Entities.Items
             NetworkManager.Instance.HideAllButtons();
             NetworkManager.Instance.text.text = $"{organizationItem}";
             ShowButtons();
-            GameManager.Instance.organization = organizationItem;
+            GameManager.Instance.newOrganization = organizationItem;
         }
     }
 }

@@ -14,11 +14,13 @@ namespace Models
         public int h;
         public string description = "empty";
         public int renter_id;
+        public int item_id;
         public int organization_id;
 
         public override string ToString() => @$"Rented Room:
         ID: {id}
         Type ID: {type_id}
+        Title: {title}
         Description: {description}
         Renter ID: {renter_id}";
     }

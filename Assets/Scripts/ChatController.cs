@@ -33,7 +33,7 @@ namespace side
 
         public void Send(string text)
         {
-            NetworkManager.Instance.Chat(GameManager.Instance.citizen.id, GameManager.Instance.citizen.room_id, text);
+            NetworkManager.Instance.Chat(GameManager.Instance.me.id, GameManager.Instance.me.room_id, text);
 
             inputField.text = string.Empty;
         }

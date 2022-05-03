@@ -12,7 +12,7 @@ namespace Entities.Items
 
         private void Start()
         {
-            AddButton($"Create \"{organizationTypeItem.title}\"", () => NetworkManager.Instance.CreateOrganization(organizationTypeItem.id));
+            AddButton($"Create \"{organizationTypeItem.title}\"", () => NetworkManager.Instance.OrganizationCreate(organizationTypeItem.id));
         }
 
         public void Handler()

@@ -8,6 +8,7 @@ namespace Models
     {
         public int id;
         public int type_id;
+        public int owner_id;
         public string type_title;
         public int quantity;
 
@@ -15,6 +16,7 @@ namespace Models
         ID: {id}
         Type ID: {type_id}
         Type Title: {type_title}
+        Owner ID: {owner_id}
         Quantity: {quantity}";
     }
 }

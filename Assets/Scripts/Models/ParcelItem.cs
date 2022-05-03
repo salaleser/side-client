@@ -20,6 +20,7 @@ namespace Models
         Title: {title}
         Owner ID: {owner_id}
         Explorer ID: {explorer_id}
+        {properties}
         Floors Count: {floors.Count}";
     }
 
@@ -27,12 +28,28 @@ namespace Models
     public class ParcelProperties
     {
         public List<Resource> resources;
+
+        public override string ToString() => @$"Properties:
+        {Resources()}";
+
+        private string Resources()
+        {
+            var result = "Resources:";
+            foreach (var resource in resources)
+            {
+                result += $"\n        {resource}";
+            }
+            return result;
+        }
     }
 
     [System.Serializable]
     public class Resource
     {
-        public int type_id;
+        public ItemTypeItem type;
         public int quantity;
+
+        public override string ToString() => @$"{type}
+        Quantity: {quantity}";
     }
 }

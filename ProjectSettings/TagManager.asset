@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Side
   - EntityButton
+  - Window
   layers:
   - Default
   - TransparentFX

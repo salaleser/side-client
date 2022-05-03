@@ -14,7 +14,7 @@ namespace Entities.Cells
         {
             if (cityItem.blocks.Count == 0)
             {
-                AddButton($"Found City", () => NetworkManager.Instance.CityExplore(cityItem.id));
+                AddButton($"Explore City", () => NetworkManager.Instance.CityExplore(cityItem.id));
             }
             else
             {

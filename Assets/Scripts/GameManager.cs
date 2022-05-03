@@ -23,18 +23,19 @@ public class GameManager : MonoBehaviour
 
 	public int state;
 	
-	public UniverseItem universe;
-	public GalaxyItem galaxy;
-	public SystemItem system;
-	public PlanetItem planet;
-	public ContinentItem continent;
-	public RegionItem region;
-	public CityItem city;
-	public BlockItem block;
-	public ParcelItem parcel;
-	public FloorItem floor;
-	public CitizenItem citizen = new();
-    public OrganizationItem organization;
+	public UniverseItem currentUniverse;
+	public GalaxyItem currentGalaxy;
+	public SystemItem currentSystem;
+	public PlanetItem currentPlanet;
+	public ContinentItem currentContinent;
+	public RegionItem currentRegion;
+	public CityItem currentCity;
+	public BlockItem currentBlock;
+	public ParcelItem currentParcel;
+	public FloorItem currentFloor;
+	public CitizenItem me = new();
+    public OrganizationItem newOrganization;
+	public LotItem newLot;
 
 	public int cursorX;
 	public int cursorY;
@@ -45,8 +46,7 @@ public class GameManager : MonoBehaviour
 	{
 		if (Instance == null)
 		{
-			citizen.id = 263; // FIXME
-			citizen.parcel_id = 1; // FIXME
+			me.id = 263; // FIXME
 
 			Instance = this;
 			DontDestroyOnLoad(gameObject);

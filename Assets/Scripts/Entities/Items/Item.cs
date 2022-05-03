@@ -12,8 +12,8 @@ namespace Entities.Items
 
         private void Start()
         {
-            AddButton("Market", () => NetworkManager.Instance.Market());
-            AddButton("Open", () => NetworkManager.Instance.Inventory(itemItem.id));
+            AddButton($"Sell", () => NetworkManager.Instance.ItemSell(itemItem));
+            AddButton($"Open", () => NetworkManager.Instance.Inventory(itemItem.id));
         }
 
         public void Handler()
