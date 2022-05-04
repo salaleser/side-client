@@ -1250,25 +1250,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
-  universe:
+  currentUniverse:
     title: 
     id: 0
     number: 0
     galaxies: []
-  galaxy:
+  currentGalaxy:
     title: 
     id: 0
     number: 0
     explorer_id: 0
     systems: []
-  system:
+  currentSystem:
     title: 
     id: 0
     number: 0
     explorer_id: 0
     galaxy_id: 0
     planets: []
-  planet:
+  currentPlanet:
     title: 
     id: 0
     number: 0
@@ -1276,14 +1276,14 @@ MonoBehaviour:
     system_id: 0
     size: 0
     continents: []
-  continent:
+  currentContinent:
     title: 
     id: 0
     number: 0
     explorer_id: 0
     planet_id: 0
     regions: []
-  region:
+  currentRegion:
     title: 
     id: 0
     x: 0
@@ -1292,7 +1292,7 @@ MonoBehaviour:
     continent_id: 0
     explorer_id: 0
     cities_count: 0
-  city:
+  currentCity:
     title: 
     id: 0
     x: 0
@@ -1300,7 +1300,7 @@ MonoBehaviour:
     explorer_id: 0
     region_id: 0
     blocks: []
-  block:
+  currentBlock:
     title: 
     id: 0
     x: 0
@@ -1308,7 +1308,7 @@ MonoBehaviour:
     city_id: 0
     explorer_id: 0
     parcels: []
-  parcel:
+  currentParcel:
     title: 
     id: 0
     x: 0
@@ -1319,7 +1319,7 @@ MonoBehaviour:
     floors: []
     properties:
       resources: []
-  floor:
+  currentFloor:
     title: 
     id: 0
     x: 0
@@ -1330,7 +1330,7 @@ MonoBehaviour:
     entrance_room_id: 0
     parcel_id: 0
     rooms: []
-  citizen:
+  me:
     id: 0
     name: 
     account_id: 0
@@ -1344,7 +1344,7 @@ MonoBehaviour:
     items: []
     statuses: []
     characteristics: []
-  organization:
+  newOrganization:
     id: 0
     title: 
     attached_rooms: []
@@ -1359,7 +1359,7 @@ MonoBehaviour:
         out_items: []
         tasks: []
     owner_id: 0
-  lot:
+  newLot:
     lot_id: 0
     item_id: 0
     owner_id: 0
@@ -1874,7 +1874,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0050049, y: -416.59625}
+  m_AnchoredPosition: {x: 0.000000017229, y: -404}
   m_SizeDelta: {x: 1724, y: 74}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &873391788

@@ -132,7 +132,7 @@ public class NetworkManager : Manager
 
 		Citizen(GameManager.Instance.me.id);
 
-		marketButton = Instantiate(mainButtonPrefab, new Vector3(600, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+		marketButton = Instantiate(mainButtonPrefab, new Vector3(600, -230, 0), Quaternion.identity, mainButtonsPanel.transform);
         marketButton.GetComponentInChildren<Text>().text = "[A] Market";
         marketButton.GetComponent<Button>().onClick.AddListener(MarketButton);
 
@@ -328,62 +328,62 @@ public class NetworkManager : Manager
 		text.text = "";
 		foreach(var ground in transform.GetComponentsInChildren<Entities.Cells.Ground>())
 		{
-			text.text += $"{ground.groundItem}";
+			text.text += $"\n{ground.groundItem}";
 			ground.ShowButtons();
 		}
 		foreach(var galaxy in transform.GetComponentsInChildren<Entities.Cells.Galaxy>())
 		{
-			text.text += $"{galaxy.galaxyItem}";
+			text.text += $"\n{galaxy.galaxyItem}";
 			galaxy.ShowButtons();
 		}
 		foreach(var system in transform.GetComponentsInChildren<Entities.Cells.System>())
 		{
-			text.text += $"{system.systemItem}";
+			text.text += $"\n{system.systemItem}";
 			system.ShowButtons();
 		}
 		foreach(var planet in transform.GetComponentsInChildren<Entities.Cells.Planet>())
 		{
-			text.text += $"{planet.planetItem}";
+			text.text += $"\n{planet.planetItem}";
 			planet.ShowButtons();
 		}
 		foreach(var continent in transform.GetComponentsInChildren<Entities.Cells.Continent>())
 		{
-			text.text += $"{continent.continentItem}";
+			text.text += $"\n{continent.continentItem}";
 			continent.ShowButtons();
 		}
 		foreach(var region in transform.GetComponentsInChildren<Entities.Cells.Region>())
 		{
-			text.text += $"{region.regionItem}";
+			text.text += $"\n{region.regionItem}";
 			region.ShowButtons();
 		}
 		foreach(var city in transform.GetComponentsInChildren<Entities.Cells.City>())
 		{
-			text.text += $"{city.cityItem}";
+			text.text += $"\n{city.cityItem}";
 			city.ShowButtons();
 		}
 		foreach(var block in transform.GetComponentsInChildren<Entities.Cells.Block>())
 		{
-			text.text += $"{block.blockItem}";
+			text.text += $"\n{block.blockItem}";
 			block.ShowButtons();
 		}
 		foreach(var parcel in transform.GetComponentsInChildren<Entities.Cells.Parcel>())
 		{
-			text.text += $"{parcel.parcelItem}";
+			text.text += $"\n{parcel.parcelItem}";
 			parcel.ShowButtons();
 		}
 		foreach(var floor in transform.GetComponentsInChildren<Entities.Cells.Floor>())
 		{
-			text.text += $"{floor.floorItem}";
+			text.text += $"\n{floor.floorItem}";
 			floor.ShowButtons();
 		}
 		foreach(var room in transform.GetComponentsInChildren<Entities.Cells.Room>())
 		{
-			text.text += $"{room.roomItem}";
+			text.text += $"\n{room.roomItem}";
 			room.ShowButtons();
 		}
 		foreach(var citizen in transform.GetComponentsInChildren<Entities.Citizen>())
 		{
-			text.text += $"{citizen.citizenItem}";
+			text.text += $"\n{citizen.citizenItem}";
 			citizen.ShowButtons();
 		}
 	}
