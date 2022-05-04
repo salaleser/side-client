@@ -18,6 +18,7 @@ namespace Entities.Cells
             }
             else if (GameManager.Instance.me.room_id == roomItem.id)
             {
+                AddButton($"Inventory", () => NetworkManager.Instance.Inventory(roomItem.item_id));
                 switch (roomItem.type_id)
                 {
                     case 1:
