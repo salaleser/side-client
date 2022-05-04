@@ -638,11 +638,11 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("room-create", query, ProcessFloor));
 	}
 
-	public void AttachRoomToOrganization(int organizationId, int roomId)
+	public void OrganizationAttachRoom(int organizationId, int roomId)
     {
 		var query = $"organization_id={organizationId}&room_id={roomId}";
 		
-		StartCoroutine(Request("attach-room-to-organization", query, (result) =>
+		StartCoroutine(Request("organization-attach-room", query, (result) =>
 		{
 			var o = JsonUtility.FromJson<OrganizationResponse>(result);
 			NetworkManager.Instance.InstantiateRequiredRoomTypes(o.organization);
@@ -712,11 +712,11 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("rented-rooms", query, ProcessRentedRooms));
 	}
 
-	public void DetachRoom(int roomId)
+	public void OrganizationDetachRoom(int roomId, int organizationId)
 	{
-		var query = $"room_id={roomId}";
+		var query = $"organization_id={organizationId}&room_id={roomId}";
 
-		StartCoroutine(Request("detach-room", query, (result) =>
+		StartCoroutine(Request("organization-detach-room", query, (result) =>
 		{
 			var o = JsonUtility.FromJson<OrganizationResponse>(result);
 			NetworkManager.Instance.InstantiateRequiredRoomTypes(o.organization);

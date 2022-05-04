@@ -7,6 +7,7 @@ using Models;
 
 public class GameManager : MonoBehaviour
 {
+	public const int Organization = -3;
 	public const int Market = -2;
 	public const int Inventory = -1;
 	public const int Universe = 1;
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
 	public ParcelItem currentParcel;
 	public FloorItem currentFloor;
 	public CitizenItem me = new();
+    public OrganizationItem currentOrganization;
     public OrganizationItem newOrganization;
 	public LotItem newLot;
 

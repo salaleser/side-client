@@ -26,6 +26,8 @@ namespace Entities.Items
 
         public void Handler()
         {
+            GameManager.Instance.currentOrganization = organizationItem;
+            GameManager.Instance.state = GameManager.Organization;
             NetworkManager.Instance.HideAllButtons();
             NetworkManager.Instance.text.text = $"{organizationItem}";
             ShowButtons();

@@ -14,7 +14,7 @@ namespace Entities.Items
         {
             if (requiredRoomTypeItem.is_attached)
             {
-                AddButton($"Detach", () => NetworkManager.Instance.DetachRoom(requiredRoomTypeItem.attached_room_id));
+                AddButton($"Detach \"{requiredRoomTypeItem.title}\" from \"{GameManager.Instance.currentOrganization.title}\"", () => NetworkManager.Instance.OrganizationDetachRoom(requiredRoomTypeItem.attached_room_id, GameManager.Instance.currentOrganization.id));
             }
             else
             {

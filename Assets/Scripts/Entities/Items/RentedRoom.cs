@@ -12,7 +12,7 @@ namespace Entities.Items
 
         private void Start()
         {
-            AddButton($"Attach \"{rentedRoomItem.title}\" to organization", () => NetworkManager.Instance.AttachRoomToOrganization(GameManager.Instance.newOrganization.id, rentedRoomItem.id));
+            AddButton($"Attach \"{rentedRoomItem.title}\" to organization", () => NetworkManager.Instance.OrganizationAttachRoom(GameManager.Instance.newOrganization.id, rentedRoomItem.id));
         }
 
         public void Handler()
