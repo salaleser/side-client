@@ -118,6 +118,10 @@ public class NetworkManager : Manager
 					{
 						Port = value;
 					}
+					else if (key == "CitizenID")
+					{
+						GameManager.Instance.me.id = int.Parse(value);
+					}
 				}
 			}
 			catch (System.Exception e)

@@ -49,8 +49,6 @@ public class GameManager : MonoBehaviour
 	{
 		if (Instance == null)
 		{
-			me.id = 263; // FIXME
-
 			Instance = this;
 			DontDestroyOnLoad(gameObject);
 		}
