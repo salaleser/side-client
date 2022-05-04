@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
 	public ParcelItem currentParcel;
 	public FloorItem currentFloor;
 	public CitizenItem me = new();
+	public List<RentedRoomItem> rentedRooms;
     public OrganizationItem currentOrganization;
     public OrganizationItem newOrganization;
 	public LotItem newLot;

@@ -7,5 +7,6 @@ namespace Models
     public class CitizenResponse
     {
         public CitizenItem citizen;
+        public List<RentedRoomItem> rented_rooms;
     }
 }

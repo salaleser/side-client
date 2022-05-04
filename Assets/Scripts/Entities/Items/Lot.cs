@@ -12,6 +12,7 @@ namespace Entities.Items
 
         private void Start()
         {
+            AddButton($"Buy", () => NetworkManager.Instance.LotBuy(lotItem.lot_id, GameManager.Instance.me.storage_root_item_id));
         }
 
         public void Handler()

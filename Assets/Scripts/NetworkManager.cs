@@ -21,6 +21,7 @@ public class NetworkManager : Manager
 	public GameObject mainButtonsPanel;
 	public GameObject mainButtonPrefab;
 	private GameObject marketButton;
+	private GameObject selectStorageButton;
 	private GameObject inventoryButton;
 	private GameObject reloadButton;
 	private GameObject mapButton;
@@ -156,12 +157,9 @@ public class NetworkManager : Manager
         inventoryButton.GetComponentInChildren<Text>().text = "[I] Inventory";
         inventoryButton.GetComponent<Button>().onClick.AddListener(InventoryButton);
 
-		// buildModeButton = Instantiate(mainButtonPrefab, new Vector3(960, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-		// buildModeButton.SetActive(false);
-        // buildModeButton.GetComponentInChildren<Text>().text = "Build Mode";
-        // buildModeButton.GetComponent<Button>().onClick.AddListener(() => {
-		// 	RoomTypes(GameManager.Instance.floor.id);
-        // });
+		selectStorageButton = Instantiate(mainButtonPrefab, new Vector3(960, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
+        selectStorageButton.GetComponentInChildren<Text>().text = "Select Storage";
+        selectStorageButton.GetComponent<Button>().onClick.AddListener(SelectStorageButton);
 
 		closeWindowButton = Instantiate(mainButtonPrefab, new Vector3(1020, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
 		closeWindowButton.SetActive(false);
@@ -750,6 +748,28 @@ public class NetworkManager : Manager
 		GameManager.Instance.newLot.owner_id = item.owner_id;
         itemSellWindow.SetActive(true);
 	}
+
+	public void LotBuy(int lotId, int rootItemId)
+	{
+		var query = $"citizen_id={GameManager.Instance.me.id}&lot_id={lotId}&root_item_id={rootItemId}";
+
+		StartCoroutine(Request("lot-buy", query, ProcessMarket));
+	}
+
+	public void SelectStorageButton()
+	{
+		InstantiateRentedRooms(GameManager.Instance.rentedRooms);
+	}
+
+	public void SetStorageRoom(int id)
+	{
+		InstantiateRentedRooms(GameManager.Instance.rentedRooms);
+
+		GameManager.Instance.me.storage_root_item_id = id;
+		DestroyItems();
+		HideAllButtons();
+	}
+
 
 	public void LotCreate(LotItem lot)
 	{
@@ -1387,7 +1407,7 @@ HideWindows();
             return;
         }
 
-		title.text = "Choose a room to attach";
+		title.text = "Choose a room";
 		DestroyItems();
         HideWindows();
 
@@ -1461,6 +1481,7 @@ HideWindows();
         }
 
 		GameManager.Instance.me = response.citizen;
+		GameManager.Instance.rentedRooms = response.rented_rooms;
 	}
 
     private void ProcessInventory(string json)

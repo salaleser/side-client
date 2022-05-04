@@ -8,6 +8,7 @@ namespace Models
     {
         public int lot_id;
         public int item_id;
+        public int root_item_id;
         public int owner_id;
         public int item_type_id;
         public string item_type_title;
@@ -17,6 +18,7 @@ namespace Models
         public override string ToString() => @$"Lot:
         ID: {lot_id}
         Item ID: {item_id}
+        Root Item ID: {root_item_id}
         Owner ID: {owner_id}
         Type ID: {item_type_id}
         Type Title: {item_type_title}

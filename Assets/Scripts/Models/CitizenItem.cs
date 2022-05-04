@@ -12,6 +12,7 @@ namespace Models
         public int active_task_id;
         public int organization_id;
         public int room_id;
+        public int storage_root_item_id;
         public int parcel_id;
         public int floor_id;
         public int z;
