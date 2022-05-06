@@ -12,7 +12,8 @@ namespace Entities.Items
 
         private void Start()
         {
-            AddButton($"Manage rooms", () => NetworkManager.Instance.InstantiateRequiredRoomTypes(organizationItem));
+            AddButton($"Attached rooms", () => NetworkManager.Instance.InstantiateRequiredRoomTypes(organizationItem));
+            AddButton($"Pages", () => NetworkManager.Instance.OrganizationPage(organizationItem.page));
             
             foreach (var room in organizationItem.attached_rooms)
             {

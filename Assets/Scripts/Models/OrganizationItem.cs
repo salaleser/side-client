@@ -11,6 +11,7 @@ namespace Models
         public List<RentedRoomItem> attached_rooms;
         public OrganizationTypeItem type;
         public int owner_id;
+        public PageItem page;
 
         public override string ToString() => @$"Organization:
         ID: {id}

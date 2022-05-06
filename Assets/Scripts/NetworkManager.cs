@@ -18,6 +18,8 @@ public class NetworkManager : Manager
 	private string Host;
 	private string Port;
 
+	private bool shortcutsActive;
+
 	public GameObject mainButtonsPanel;
 	public GameObject mainButtonPrefab;
 	private GameObject marketButton;
@@ -34,6 +36,7 @@ public class NetworkManager : Manager
 
 	public GameObject itemSellWindow;
 	public GameObject webBrowserWindow;
+	public GameObject organizationPagesWindow;
 
 	public GameObject marketCanvas;
 	public GameObject inventoryCanvas;
@@ -185,41 +188,44 @@ public class NetworkManager : Manager
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.I))
+		if (shortcutsActive)
 		{
-			InventoryButton();
-		}
-		else if (Input.GetKeyDown(KeyCode.M))
-		{
-			MapButton();
-		}
-		else if (Input.GetKeyDown(KeyCode.Q))
-		{
-			CloseWindowButton();
-		}
-		else if (Input.GetKeyDown(KeyCode.A))
-		{
-			MarketButton();
-		}
-		else if (Input.GetKeyDown(KeyCode.O))
-		{
-			OrganizationsButton();
-		}
-		else if (Input.GetKeyDown(KeyCode.R))
-		{
-			ReloadButton();
-		}
-		else if (Input.GetKeyDown(KeyCode.Equals))
-		{
-			CitizenButton();
-		}
-		else if (Input.GetKeyDown(KeyCode.Minus))
-		{
-			ZoomOutButton();
-		}
-		else if (Input.GetKeyDown(KeyCode.W))
-		{
-			WebBrowserButton();
+			if (Input.GetKeyDown(KeyCode.I))
+			{
+				InventoryButton();
+			}
+			else if (Input.GetKeyDown(KeyCode.M))
+			{
+				MapButton();
+			}
+			else if (Input.GetKeyDown(KeyCode.Q))
+			{
+				CloseWindowButton();
+			}
+			else if (Input.GetKeyDown(KeyCode.A))
+			{
+				MarketButton();
+			}
+			else if (Input.GetKeyDown(KeyCode.O))
+			{
+				OrganizationsButton();
+			}
+			else if (Input.GetKeyDown(KeyCode.R))
+			{
+				ReloadButton();
+			}
+			else if (Input.GetKeyDown(KeyCode.Equals))
+			{
+				CitizenButton();
+			}
+			else if (Input.GetKeyDown(KeyCode.Minus))
+			{
+				ZoomOutButton();
+			}
+			else if (Input.GetKeyDown(KeyCode.W))
+			{
+				WebBrowserButton();
+			}
 		}
 	}
 
@@ -284,6 +290,7 @@ public class NetworkManager : Manager
 		HideAllButtons();
 		DestroyItems();
         HideWindows();
+		shortcutsActive = true;
 		shading.SetActive(false);
 		closeWindowButton.SetActive(shading.activeSelf);
 	}
@@ -522,6 +529,8 @@ public class NetworkManager : Manager
 			ProcessCitizen(result);
 			Floor(GameManager.Instance.me.floor_id);
 		}));
+
+		shortcutsActive = true;
 	}
 
 	public void Citizen(int citizenId)
@@ -699,6 +708,15 @@ public class NetworkManager : Manager
 		var query = $"organization_id={organizationId}&path={path}";
 		
 		StartCoroutine(Request("page", query, ProcessPage));
+	}
+
+	public void CreatePage(int organizationId, string content, string path)
+    {
+		content = UnityWebRequest.EscapeURL(content);
+		
+		var query = $"organization_id={organizationId}&content={content}&path={path}";
+
+		StartCoroutine(Request("page-create", query, (r) => CloseWindowButton()));
 	}
 
 	public void Inventory(int rootItemId)
@@ -890,13 +908,7 @@ public class NetworkManager : Manager
 	public void WebBrowserButton()
 	{
 		title.text = $"Web Browser";
-
-		HideAllButtons();
-		DestroyItems();
-        HideWindows();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
-
+		shortcutsActive = false;
         webBrowserWindow.SetActive(true);
 	}
 
@@ -1553,6 +1565,21 @@ HideWindows();
 
             row++;
         }
+	}
+
+	public void OrganizationPage(PageItem page)
+	{
+		shading.SetActive(true);
+		closeWindowButton.SetActive(shading.activeSelf);
+
+		title.text = $"Organization Pages";
+		HideAllButtons();
+		DestroyItems();
+        HideWindows();
+
+		shortcutsActive = false;
+		organizationPagesWindow.GetComponentInChildren<TMP_InputField>().text = page.content;
+        organizationPagesWindow.SetActive(true);
 	}
 
 	private void ProcessCitizen(string json)
