@@ -687,12 +687,12 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("move-into-room", query, ProcessMoveIntoRoom));
 	}
 
-	public void Page(string address)
+	public void Page(string address, string path)
     {
 		int organizationId;
 		if (!int.TryParse(address, out organizationId))
 		{
-			Debug.Log("Текстовые адреса пока не поддерживаются");
+			Debug.LogWarning("Текстовые адреса пока не поддерживаются");
 			return;
 		}
 

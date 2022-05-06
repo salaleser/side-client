@@ -23,7 +23,16 @@ namespace side
 
         public void LoadPage(string text)
         {
-            var (address, path) = text.Split(text, "/");
+            var a = text.Split("/");
+
+            var address = a[0];
+
+            var path = "";
+            if (a.Length > 1)
+            {
+                path = a[1];
+            }
+
             NetworkManager.Instance.Page(address, path);
         }
     }
