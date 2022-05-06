@@ -908,7 +908,13 @@ public class NetworkManager : Manager
 			return;
 		}
 
-		webBrowserContent.text = response.page.content;
+		var content = response.page.content;
+		if (content == "")
+		{
+			content = "Page not found";
+		}
+
+		webBrowserContent.text = content;
 	}
 
 	private void ProcessUniverse(string json)
