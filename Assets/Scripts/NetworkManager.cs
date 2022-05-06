@@ -696,7 +696,7 @@ public class NetworkManager : Manager
 			return;
 		}
 
-		var query = $"organization_id={organizationId}";
+		var query = $"organization_id={organizationId}&path={path}";
 		
 		StartCoroutine(Request("page", query, ProcessPage));
 	}

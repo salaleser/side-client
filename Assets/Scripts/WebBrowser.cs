@@ -23,8 +23,8 @@ namespace side
 
         public void LoadPage(string text)
         {
-            Debug.Log(text);
-            NetworkManager.Instance.Page(text);
+            var (address, path) = text.Split(text, "/");
+            NetworkManager.Instance.Page(address, path);
         }
     }
 }
