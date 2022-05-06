@@ -12,9 +12,12 @@ namespace Entities.Cells
 
         private void Start()
         {
-            if (roomItem.id == 0 && GameManager.Instance.currentParcel.owner_id == GameManager.Instance.me.id)
+            if (GameManager.Instance.currentParcel.owner_id == GameManager.Instance.me.id)
             {
-                AddButton($"Build Room", () => NetworkManager.Instance.RoomTypes());
+                if (roomItem.id == 0)
+                {
+                    AddButton($"Build Room", () => NetworkManager.Instance.RoomTypes());
+                }
             }
             else if (GameManager.Instance.me.room_id == roomItem.id)
             {
@@ -23,6 +26,15 @@ namespace Entities.Cells
                 {
                     case 1:
                         AddButton("Get Tasks", () => NetworkManager.Instance.Tasks(GameManager.Instance.me.organization_id));
+                        break;
+                    case 13:
+                        foreach (var floor in GameManager.Instance.currentParcel.floors)
+                        {
+                            if (floor.x == GameManager.Instance.currentFloor.x && floor.y == GameManager.Instance.currentFloor.y)
+                            {
+                                AddButton($"Floor {floor.z}", () => NetworkManager.Instance.Floor(floor.id));
+                            }
+                        }
                         break;
                 }
             }

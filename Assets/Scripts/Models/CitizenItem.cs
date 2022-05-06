@@ -44,6 +44,8 @@ namespace Models
         public override string ToString() => @$"Citizen:
         ID: {id}
         Name: {name}
+        Active Task ID: {active_task_id}
+        Storage Root Item ID: {storage_root_item_id}
         {Characteristics()}
         {Statuses()}
         Items Count: {items.Count}";

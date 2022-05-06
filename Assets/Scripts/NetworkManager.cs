@@ -33,6 +33,7 @@ public class NetworkManager : Manager
 	private GameObject createOrganizationButton;
 
 	public GameObject itemSellWindow;
+	public GameObject webBrowserWindow;
 
 	public GameObject marketCanvas;
 	public GameObject inventoryCanvas;
@@ -44,6 +45,8 @@ public class NetworkManager : Manager
 	public TMP_Text title;
 	public Text text;
 	public side.ChatController chatController;
+
+	public TMP_Text webBrowserContent;
 
 	public GameObject itemPrefab;
 	public GameObject taskPrefab;
@@ -135,7 +138,7 @@ public class NetworkManager : Manager
 	{
 		LoadConfig();
 
-		Citizen(GameManager.Instance.me.id);
+		InitState();
 
 		marketButton = Instantiate(mainButtonPrefab, new Vector3(600, -230, 0), Quaternion.identity, mainButtonsPanel.transform);
         marketButton.GetComponentInChildren<Text>().text = "[A] Market";
@@ -150,7 +153,7 @@ public class NetworkManager : Manager
         mapButton.GetComponent<Button>().onClick.AddListener(MapButton);
 
 		citizenButton = Instantiate(mainButtonPrefab, new Vector3(780, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        citizenButton.GetComponentInChildren<Text>().text = "[C] Show Floor";
+        citizenButton.GetComponentInChildren<Text>().text = "[=] Center Me";
         citizenButton.GetComponent<Button>().onClick.AddListener(CitizenButton);
 
 		zoomOutButton = Instantiate(mainButtonPrefab, new Vector3(840, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
@@ -206,13 +209,17 @@ public class NetworkManager : Manager
 		{
 			ReloadButton();
 		}
-		else if (Input.GetKeyDown(KeyCode.C))
+		else if (Input.GetKeyDown(KeyCode.Equals))
 		{
 			CitizenButton();
 		}
 		else if (Input.GetKeyDown(KeyCode.Minus))
 		{
 			ZoomOutButton();
+		}
+		else if (Input.GetKeyDown(KeyCode.W))
+		{
+			WebBrowserButton();
 		}
 	}
 
@@ -251,7 +258,7 @@ public class NetworkManager : Manager
 			case 9:
 				Block(GameManager.Instance.currentParcel.block_id);
 				break;
-			case 10:
+			default:
 				Parcel(GameManager.Instance.currentFloor.parcel_id);
 				break;
 		}
@@ -274,7 +281,11 @@ public class NetworkManager : Manager
 
 	private void CloseWindowButton()
 	{
-		Reload();
+		HideAllButtons();
+		DestroyItems();
+        HideWindows();
+		shading.SetActive(false);
+		closeWindowButton.SetActive(shading.activeSelf);
 	}
 
 	private void OrganizationsButton()
@@ -284,6 +295,7 @@ public class NetworkManager : Manager
 
 	private void Reload()
 	{
+		Citizen(GameManager.Instance.me.id);
 		switch (GameManager.Instance.state)
 		{
 			case 1:
@@ -313,7 +325,7 @@ public class NetworkManager : Manager
 			case 9:
 				Parcel(GameManager.Instance.currentParcel.id);
 				break;
-			case 10:
+			default:
 				Floor(GameManager.Instance.currentFloor.id);
 				break;
 		}
@@ -502,6 +514,16 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("market", "", ProcessMarket));
 	}
 
+	public void InitState()
+    {
+		var query = $"citizen_id={GameManager.Instance.me.id}";
+		
+		StartCoroutine(Request("citizen", query, (result) => {
+			ProcessCitizen(result);
+			Floor(GameManager.Instance.me.floor_id);
+		}));
+	}
+
 	public void Citizen(int citizenId)
     {
 		var query = $"citizen_id={citizenId}";
@@ -665,6 +687,20 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("move-into-room", query, ProcessMoveIntoRoom));
 	}
 
+	public void Page(string address)
+    {
+		int organizationId;
+		if (!int.TryParse(address, out organizationId))
+		{
+			Debug.Log("Текстовые адреса пока не поддерживаются");
+			return;
+		}
+
+		var query = $"organization_id={organizationId}";
+		
+		StartCoroutine(Request("page", query, ProcessPage));
+	}
+
 	public void Inventory(int rootItemId)
     {
 		shading.SetActive(true);
@@ -755,25 +791,27 @@ public class NetworkManager : Manager
 
 	public void LotBuy(int lotId, int rootItemId)
 	{
-		var query = $"citizen_id={GameManager.Instance.me.id}&lot_id={lotId}&root_item_id={rootItemId}";
+		var query = $"account_id={GameManager.Instance.me.account_id}&lot_id={lotId}&root_item_id={rootItemId}";
 
 		StartCoroutine(Request("lot-buy", query, ProcessMarket));
 	}
 
 	public void SelectStorageButton()
 	{
+		shading.SetActive(true);
+		closeWindowButton.SetActive(shading.activeSelf);
+
 		InstantiateRentedRooms(GameManager.Instance.rentedRooms);
 	}
 
 	public void SetStorageRoom(int id)
 	{
-		InstantiateRentedRooms(GameManager.Instance.rentedRooms);
-
 		GameManager.Instance.me.storage_root_item_id = id;
 		DestroyItems();
 		HideAllButtons();
+		shading.SetActive(false);
+		closeWindowButton.SetActive(shading.activeSelf);
 	}
-
 
 	public void LotCreate(LotItem lot)
 	{
@@ -847,6 +885,30 @@ public class NetworkManager : Manager
 				ground.groundItem.y = j+1;
 			}
 		}
+	}
+
+	public void WebBrowserButton()
+	{
+		title.text = $"Web Browser";
+
+		HideAllButtons();
+		DestroyItems();
+        HideWindows();
+		shading.SetActive(false);
+		closeWindowButton.SetActive(shading.activeSelf);
+
+        webBrowserWindow.SetActive(true);
+	}
+
+	public void ProcessPage(string json)
+	{
+		var response = JsonUtility.FromJson<PageResponse>(json);
+		if (response == null)
+		{
+			return;
+		}
+
+		webBrowserContent.text = response.page.content;
 	}
 
 	private void ProcessUniverse(string json)
@@ -1159,19 +1221,24 @@ HideWindows();
 		shading.SetActive(false);
 		closeWindowButton.SetActive(shading.activeSelf);
 
-		var parcelMap = new FloorItem[Width, Height];
+		const int Z = 8;
+		var parcelMap = new FloorItem[Width, Height, Z];
 		foreach(var floor in parcel.floors)
 		{
 			for (var i = 0; i < Width; i++)
 			{
 				for (var j = 0; j < Height; j++)
 				{
-					if (i+1 >= floor.x
-						&& i+1 < floor.x + floor.w
-						&& j+1 <= floor.y
-						&& j+1 > floor.y - floor.h)
+					for (var k = 0; k < Z; k++)
 					{
-						parcelMap[i, j] = floor;
+						if (i+1 >= floor.x
+							&& i+1 < floor.x + floor.w
+							&& j+1 <= floor.y
+							&& j+1 > floor.y - floor.h
+							&& k == floor.z)
+						{
+							parcelMap[i, j, k] = floor;
+						}
 					}
 				}
 			}
@@ -1181,12 +1248,15 @@ HideWindows();
 		{
 			for (var j = 0; j < Height; j++)
 			{
-				var floor = parcelMap[i, j];
-				if (floor != null)
+				for (var k = 0; k < Z; k++)
 				{
-					var instance = Instantiate(floorPrefab, new Vector3(i+1, 0, j+1), Quaternion.identity, entitiesCanvas.transform);
-					instance.name = $"Floor#{floor.id} ({floor.x}/{floor.y})";
-					instance.GetComponent<Entities.Cells.Floor>().floorItem = floor;
+					var floor = parcelMap[i, j, k];
+					if (floor != null)
+					{
+						var instance = Instantiate(floorPrefab, new Vector3(i+1, k, j+1), Quaternion.identity, entitiesCanvas.transform);
+						instance.name = $"Floor#{floor.id} ({floor.x}/{floor.y}/{floor.z})";
+						instance.GetComponent<Entities.Cells.Floor>().floorItem = floor;
+					}
 				}
 			}
 		}
@@ -1276,9 +1346,12 @@ HideWindows();
 				if (r.citizens[i].id == GameManager.Instance.me.id)
 				{
 					citizen.GetComponentInChildren<Renderer>().material.color = Color.green;
+					citizen.citizenItem = GameManager.Instance.me;
 				}
-
-				citizen.citizenItem = r.citizens[i];
+				else
+				{
+					citizen.citizenItem = r.citizens[i];
+				}
 			}
 		}
 	}

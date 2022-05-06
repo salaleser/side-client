@@ -16,6 +16,11 @@ namespace Entities.Cells
             {
                 AddButton($"Move inside \"{floorItem.title}\"", () => NetworkManager.Instance.MoveIntoRoom(floorItem.entrance_room_id));
             }
+
+            if (GameManager.Instance.currentParcel.owner_id == GameManager.Instance.me.id)
+            {
+                AddButton($"Build Floor {floorItem.z + 1 + 1}", () => NetworkManager.Instance.CreateFloor(GameManager.Instance.currentParcel.id, 1, floorItem.x, floorItem.y, floorItem.z + 1, floorItem.w, floorItem.h));
+            }
         }
     }
 }

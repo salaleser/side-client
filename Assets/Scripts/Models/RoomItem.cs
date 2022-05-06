@@ -15,6 +15,7 @@ namespace Models
         public int h;
         public int renter_id;
         public int item_id;
+        public int floor_id;
         public bool rentable;
         public int organization_id;
         public float r;
