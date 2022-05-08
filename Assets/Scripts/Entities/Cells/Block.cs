@@ -12,7 +12,7 @@ namespace Entities.Cells
 
         private void Start()
         {
-            if (blockItem.parcels.Count == 0)
+            if (blockItem.explorer_id == 0)
             {
                 AddButton($"Explore Block", () => NetworkManager.Instance.BlockExplore(blockItem.id));
             }

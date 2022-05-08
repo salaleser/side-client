@@ -13,7 +13,15 @@ namespace Entities.Items
         private void Start()
         {
             AddButton($"Sell", () => NetworkManager.Instance.ItemSell(itemItem));
-            AddButton($"Open", () => NetworkManager.Instance.Inventory(itemItem.id));
+            AddButton($"Show", () => NetworkManager.Instance.CitizenActionDo(5, itemItem.id));
+            if (itemItem.children_count > 0)
+            {
+                AddButton($"Open", () => NetworkManager.Instance.Inventory(itemItem.id));
+            }
+            if (GameManager.Instance.currentItem.parent_id != 0)
+            {
+                AddButton($"Back", () => NetworkManager.Instance.Inventory(GameManager.Instance.currentItem.parent_id));
+            }
         }
 
         public void Handler()

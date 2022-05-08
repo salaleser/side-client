@@ -13,6 +13,7 @@ namespace Models
         public int explorer_id;
         public int block_id;
         public List<FloorItem> floors;
+        public int floors_count;
         public ParcelProperties properties;
 
         public override string ToString() => @$"Parcel:
@@ -21,7 +22,7 @@ namespace Models
         Owner ID: {owner_id}
         Explorer ID: {explorer_id}
         {properties}
-        Floors Count: {floors.Count}";
+        Floors Count: {floors_count}";
     }
 
     [System.Serializable]

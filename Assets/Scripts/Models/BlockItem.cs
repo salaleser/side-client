@@ -12,11 +12,12 @@ namespace Models
         public int city_id;
         public int explorer_id;
         public List<ParcelItem> parcels;
+        public int parcels_count;
 
         public override string ToString() => @$"Block:
         ID: {id}
         Title: {title}
         Explorer ID: {explorer_id}
-        Parcels Count: {parcels.Count}";
+        Parcels Count: {parcels_count}";
     }
 }

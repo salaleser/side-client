@@ -11,11 +11,12 @@ namespace Models
         public int explorer_id;
         public int galaxy_id;
         public List<PlanetItem> planets;
+        public int planets_count;
 
         public override string ToString() => @$"System:
         ID: {id}
         Title: {title}
         Explorer ID: {explorer_id}
-        Planets Count: {planets.Count}";
+        Planets Count: {planets_count}";
     }
 }

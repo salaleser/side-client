@@ -10,11 +10,12 @@ namespace Models
         public int number;
         public int explorer_id;
         public List<SystemItem> systems;
+        public int systems_count;
 
         public override string ToString() => @$"Galaxy:
         ID: {id}
         Title: {title}
         Explorer ID: {explorer_id}
-        Systems Count: {systems.Count}";
+        Systems Count: {systems_count}";
     }
 }

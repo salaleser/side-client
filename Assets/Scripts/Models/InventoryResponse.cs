@@ -6,7 +6,7 @@ namespace Models
     [System.Serializable]
     public class InventoryResponse
     {
-        public List<ItemItem> items;
-        public string title;
+        public ItemItem item;
+        public List<ItemItem> children;
     }
 }

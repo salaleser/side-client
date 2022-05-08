@@ -55,6 +55,7 @@ public class NetworkManager : Manager
 	public GameObject taskPrefab;
 	public GameObject positionPrefab;
 	public GameObject lotPrefab;
+	public GameObject pagePrefab;
 	public GameObject organizationTypePrefab;
 	public GameObject organizationPrefab;
 	public GameObject roomTypePrefab;
@@ -173,7 +174,7 @@ public class NetworkManager : Manager
 
 		closeWindowButton = Instantiate(mainButtonPrefab, new Vector3(1020, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
 		closeWindowButton.SetActive(false);
-        closeWindowButton.GetComponentInChildren<Text>().text = "[Q] Close Window";
+        closeWindowButton.GetComponentInChildren<Text>().text = "[ESC] Close Window";
         closeWindowButton.GetComponent<Button>().onClick.AddListener(CloseWindowButton);
 
 		organizationsButton = Instantiate(mainButtonPrefab, new Vector3(1080, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
@@ -188,6 +189,11 @@ public class NetworkManager : Manager
 
 	private void Update()
 	{
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			CloseWindowButton();
+		}
+		
 		if (shortcutsActive)
 		{
 			if (Input.GetKeyDown(KeyCode.I))
@@ -197,10 +203,6 @@ public class NetworkManager : Manager
 			else if (Input.GetKeyDown(KeyCode.M))
 			{
 				MapButton();
-			}
-			else if (Input.GetKeyDown(KeyCode.Q))
-			{
-				CloseWindowButton();
 			}
 			else if (Input.GetKeyDown(KeyCode.A))
 			{
@@ -431,6 +433,7 @@ public class NetworkManager : Manager
 	{
 		DestroyAll<Entities.Items.Item>();
 		DestroyAll<Entities.Items.Lot>();
+		DestroyAll<Entities.Items.Page>();
 		DestroyAll<Entities.Items.Task>();
 		DestroyAll<Entities.Items.Position>();
 		DestroyAll<Entities.Items.RoomType>();
@@ -729,6 +732,16 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("inventory", query, ProcessInventory));
 	}
 
+	public void CitizenActionDo(int actionTypeId, int itemId)
+    {
+		shading.SetActive(true);
+		closeWindowButton.SetActive(shading.activeSelf);
+
+		var query = $"citizen_id={GameManager.Instance.me.id}&action_type_id={actionTypeId}&item_id={itemId}";
+		
+		StartCoroutine(Request("citizen-action-do", query, ProcessCitizen));
+	}
+
 	public void RoomTypes()
 	{
 		shading.SetActive(true);
@@ -952,7 +965,7 @@ public class NetworkManager : Manager
 		{
 			var x = galaxy.number * 2;
 
-			var prefab = galaxy.systems.Count == 0 ? galaxyUnknownPrefab : galaxyExploredPrefab;
+			var prefab = galaxy.systems_count == 0 ? galaxyUnknownPrefab : galaxyExploredPrefab;
 
 			var instance = Instantiate(prefab, new Vector3(x, 0, 5), Quaternion.identity, entitiesCanvas.transform);
 			instance.name = $"Galaxy#{galaxy.id} ({galaxy.number})";
@@ -983,7 +996,7 @@ public class NetworkManager : Manager
 		{
 			var x = system.number * 2;
 
-			var prefab = system.planets.Count == 0 ? systemUnknownPrefab : systemExploredPrefab;
+			var prefab = system.planets_count == 0 ? systemUnknownPrefab : systemExploredPrefab;
 
 			var instance = Instantiate(prefab, new Vector3(x, 0, 8), Quaternion.identity, entitiesCanvas.transform);
 			instance.name = $"System#{system.id} ({system.number})";
@@ -1007,7 +1020,6 @@ public class NetworkManager : Manager
 		HideAllButtons();
 		DestroyAll();
         HideWindows();
-HideWindows();
 		shading.SetActive(false);
 		closeWindowButton.SetActive(shading.activeSelf);
 
@@ -1018,7 +1030,7 @@ HideWindows();
 		{
 			var x = -planet.number * 2 - 4;
 
-			var prefab = planet.continents.Count == 0 ? planetUnknownPrefab : planetExploredPrefab;
+			var prefab = planet.continents_count == 0 ? planetUnknownPrefab : planetExploredPrefab;
 
 			var instance = Instantiate(prefab, new Vector3(x, 0, 0), Quaternion.identity, entitiesCanvas.transform);
 			instance.name = $"Planet#{planet.id} ({planet.number})";
@@ -1050,7 +1062,7 @@ HideWindows();
 		{
 			var z = -continent.number * 3 + 8;
 
-			var continentPrefab = continent.regions.Count == 0 ? continentUnknownPrefab : continentExploredPrefab;
+			var continentPrefab = continent.regions_count == 0 ? continentUnknownPrefab : continentExploredPrefab;
 
 			var continentInstance = Instantiate(continentPrefab, new Vector3(0, z, 0), Quaternion.identity, entitiesCanvas.transform);
 			continentInstance.name = $"Continent#{continent.id} ({continent.number})";
@@ -1128,7 +1140,7 @@ HideWindows();
 			var instance = Instantiate(prefab, new Vector3(region.x, 0, region.y), Quaternion.identity, entitiesCanvas.transform);
 			instance.name = $"Region#{region.id} ({region.x}/{region.y})";
 			instance.GetComponent<Entities.Cells.Region>().regionItem = region;
-			if (region.cities_count == 0)
+			if (region.cities.Count == 0)
 			{
 				var color = region.z > 0 ? new Color(0.5f, 1.0f, 0.5f) : new Color(0.0f, 0.5f, 1.0f);
 				instance.GetComponentInChildren<Renderer>().material.color = color;
@@ -1155,9 +1167,9 @@ HideWindows();
 		shading.SetActive(false);
 		closeWindowButton.SetActive(shading.activeSelf);
 
-		foreach(var city in response.cities)
+		foreach(var city in region.cities)
 		{
-			var prefab = city.blocks.Count == 0 ? cityUnknownPrefab : cityExploredPrefab;
+			var prefab = city.blocks_count == 0 ? cityUnknownPrefab : cityExploredPrefab;
 			var instance = Instantiate(prefab, new Vector3(city.x, 0, city.y), Quaternion.identity, entitiesCanvas.transform);
 			instance.name = $"City#{city.id} ({city.x}/{city.y})";
 			instance.GetComponent<Entities.Cells.City>().cityItem = city;
@@ -1185,7 +1197,7 @@ HideWindows();
 
 		foreach(var block in city.blocks)
 		{
-			var prefab = block.parcels.Count == 0 ? blockUnknownPrefab : blockExploredPrefab;
+			var prefab = block.parcels_count == 0 ? blockUnknownPrefab : blockExploredPrefab;
 			var instance = Instantiate(prefab, new Vector3(block.x, 0, block.y), Quaternion.identity, entitiesCanvas.transform);
 			instance.name = $"Block#{block.id} ({block.x}/{block.y})";
 			instance.GetComponent<Entities.Cells.Block>().blockItem = block;
@@ -1567,18 +1579,44 @@ HideWindows();
         }
 	}
 
-	public void OrganizationPage(PageItem page)
+	public void OrganizationPage(OrganizationItem organization)
 	{
 		shading.SetActive(true);
 		closeWindowButton.SetActive(shading.activeSelf);
 
-		title.text = $"Organization Pages";
+		title.text = $"\"{organization.title}\" Pages";
+		HideAllButtons();
+		DestroyItems();
+        HideWindows();
+
+        var col = 0;
+        var row = 0;
+		for (var i = 0; i < organization.pages.Count; i++)
+        {
+            if (i % 5 == 0)
+            {
+                col++;
+                row = 0;
+            }
+
+			var page = InstantiateObject<Page>(pagePrefab, buildCanvas,
+				$"{organization.pages[i].path}", 100, 700, col, row);
+			page.pageItem = organization.pages[i];
+
+            row++;
+        }
+	}
+
+	public void LoadPage(PageItem page)
+	{
+		title.text = $"Page \"{page.path}\"";
 		HideAllButtons();
 		DestroyItems();
         HideWindows();
 
 		shortcutsActive = false;
-		organizationPagesWindow.GetComponentInChildren<TMP_InputField>().text = page.content;
+		organizationPagesWindow.GetComponentsInChildren<TMP_InputField>()[0].text = page.path;
+		organizationPagesWindow.GetComponentsInChildren<TMP_InputField>()[1].text = page.content;
         organizationPagesWindow.SetActive(true);
 	}
 
@@ -1602,14 +1640,16 @@ HideWindows();
             return;
         }
 
-        title.text = $"{response.title}";
+		GameManager.Instance.currentItem = response.item;
+		GameManager.Instance.state = GameManager.Inventory;
+        title.text = $"{response.item.type_title}";
 		HideWindows();
 		HideAllButtons();
 		DestroyItems();
 
         var col = 0;
         var row = 0;
-		for (var i = 0; i < response.items.Count; i++)
+		for (var i = 0; i < response.children.Count; i++)
         {
             if (i % 5 == 0)
             {
@@ -1618,8 +1658,8 @@ HideWindows();
             }
 
             var item = InstantiateObject<Entities.Items.Item>(itemPrefab, inventoryCanvas,
-				$"{response.items[i].type_title} {response.items[i].quantity}", 100, 700, col, row);
-			item.itemItem = response.items[i];
+				$"{response.children[i].type_title} {response.children[i].quantity}", 100, 700, col, row);
+			item.itemItem = response.children[i];
 
             row++;
         }

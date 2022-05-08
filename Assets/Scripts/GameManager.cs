@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
 	public CitizenItem me = new();
 	public List<RentedRoomItem> rentedRooms;
     public OrganizationItem currentOrganization;
+    public ItemItem currentItem;
     public OrganizationItem newOrganization;
 	public LotItem newLot;
 

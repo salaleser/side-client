@@ -18,6 +18,7 @@ namespace Models
         public int z;
         public int root_item_id;
         public List<ItemItem> items;
+        public List<ActionItem> actions;
         public List<StatusItem> statuses;
         public List<CharacteristicItem> characteristics;
 
@@ -41,6 +42,16 @@ namespace Models
             return result;
         }
 
+        private string Actions()
+        {
+            var result = "Actions:";
+            foreach (var a in actions)
+            {
+                result += $"\n{a.type_description} {a.item.type_title}";
+            }
+            return result;
+        }
+
         public override string ToString() => @$"Citizen:
         ID: {id}
         Name: {name}
@@ -48,7 +59,8 @@ namespace Models
         Storage Root Item ID: {storage_root_item_id}
         {Characteristics()}
         {Statuses()}
-        Items Count: {items.Count}";
+        Items Count: {items.Count}
+        {Actions()}";
     }
 
     [System.Serializable]

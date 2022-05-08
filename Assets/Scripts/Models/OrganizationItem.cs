@@ -11,7 +11,7 @@ namespace Models
         public List<RentedRoomItem> attached_rooms;
         public OrganizationTypeItem type;
         public int owner_id;
-        public PageItem page;
+        public List<PageItem> pages;
 
         public override string ToString() => @$"Organization:
         ID: {id}
@@ -19,6 +19,7 @@ namespace Models
         Owner ID: {owner_id}
         Type ID: {type.id}
         Type Title: {type.title}
+        Pages Count: {pages.Count}
         Attached Rooms Count: {attached_rooms.Count}
         Required Room Types Count: {type.requirements.room_types.Count}";
     }

@@ -12,7 +12,7 @@ namespace Entities.Cells
 
         private void Start()
         {
-            if (planetItem.continents.Count == 0)
+            if (planetItem.explorer_id == 0)
             {
                 AddButton($"Explore \"{planetItem.title}\"", () => NetworkManager.Instance.PlanetExplore(planetItem.id));
             }

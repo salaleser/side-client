@@ -12,7 +12,7 @@ namespace Entities.Cells
 
         private void Start()
         {
-            if (systemItem.planets.Count == 0)
+            if (systemItem.explorer_id == 0)
             {
                 AddButton($"Explore \"{systemItem.title}\"", () => NetworkManager.Instance.SystemExplore(systemItem.id));
             }

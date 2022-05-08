@@ -12,7 +12,7 @@ namespace Entities.Cells
 
         private void Start()
         {
-            if (regionItem.cities_count == 0)
+            if (regionItem.explorer_id == 0)
             {
                 AddButton($"Explore \"{regionItem.title}\"", () => NetworkManager.Instance.RegionExplore(regionItem.id));
             }

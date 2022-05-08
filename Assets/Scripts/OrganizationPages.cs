@@ -8,21 +8,29 @@ namespace side
 {
     public class OrganizationPages : MonoBehaviour
     {
+        public TMP_InputField path;
         public TMP_InputField content;
+        public TMP_Text contentPreview;
 
         void OnEnable()
         {
-            content.onSubmit.AddListener(CreatePage);
+            content.onSubmit.AddListener(UpdatePreview);
         }
 
         void OnDisable()
         {
-            content.onSubmit.RemoveListener(CreatePage);
+            content.onSubmit.RemoveListener(UpdatePreview);
         }
 
-        public void CreatePage(string text)
+        private void UpdatePreview(string text)
         {
-            NetworkManager.Instance.CreatePage(GameManager.Instance.currentOrganization.id, text, "index");
+            contentPreview.text = text;
+        }
+
+        public void CreatePage()
+        {
+            NetworkManager.Instance.CreatePage(GameManager.Instance.currentOrganization.id, content.text, path.text);
+            contentPreview.text = "(Preview)";
         }
     }
 }

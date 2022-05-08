@@ -46,7 +46,7 @@ public class Entity : MonoBehaviour
     public void AddButton(string text, UnityAction action, bool interactable = true)
     {
         var rect = buttonPrefab.transform.GetComponent<RectTransform>().rect;
-        var pos = new Vector3(X + rect.height * buttons.Count, Y - rect.height * buttons.Count, 0);
+        var pos = new Vector3(X, Y - rect.height * buttons.Count, 0);
         var button = Instantiate(buttonPrefab, pos, Quaternion.identity, this.transform);
         button.name = $"Button.{buttons.Count} ({text})";
         button.SetActive(false);

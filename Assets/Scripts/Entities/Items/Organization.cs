@@ -13,7 +13,7 @@ namespace Entities.Items
         private void Start()
         {
             AddButton($"Attached rooms", () => NetworkManager.Instance.InstantiateRequiredRoomTypes(organizationItem));
-            AddButton($"Pages", () => NetworkManager.Instance.OrganizationPage(organizationItem.page));
+            AddButton($"Pages", () => NetworkManager.Instance.OrganizationPage(organizationItem));
             
             foreach (var room in organizationItem.attached_rooms)
             {

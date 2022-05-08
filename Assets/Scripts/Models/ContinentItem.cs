@@ -11,12 +11,13 @@ namespace Models
         public int explorer_id;
         public int planet_id;
         public List<RegionItem> regions;
+        public int regions_count;
 
         public override string ToString() => @$"Continent:
         ID: {id}
         Number: {number}
         Title: {title}
         Explorer ID: {explorer_id}
-        Regions Count: {regions.Count}";
+        Regions Count: {regions_count}";
     }
 }

@@ -12,7 +12,7 @@ namespace Entities.Cells
 
         private void Start()
         {
-            if (galaxyItem.systems.Count == 0)
+            if (galaxyItem.explorer_id == 0)
             {
                 AddButton($"Explore \"{galaxyItem.title}\"", () => NetworkManager.Instance.GalaxyExplore(galaxyItem.id));
             }
