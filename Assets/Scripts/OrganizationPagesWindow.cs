@@ -6,7 +6,7 @@ using TMPro;
 
 namespace side
 {
-    public class OrganizationPages : MonoBehaviour
+    public class OrganizationPagesWindow : MonoBehaviour
     {
         public TMP_InputField path;
         public TMP_InputField content;

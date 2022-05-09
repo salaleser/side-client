@@ -9,7 +9,7 @@ namespace Models
         public int id;
         public string title;
         public OrganizationRequirements requirements;
-        public OrganizationProperties properties;
+        public OrganizationTypeProperties properties;
 
         public override string ToString() => @$"Organization Type:
         ID: {id}
@@ -26,7 +26,7 @@ namespace Models
     }
 
     [System.Serializable]
-    public class OrganizationProperties
+    public class OrganizationTypeProperties
     {
         public List<Items> in_items;
         public List<Items> out_items;

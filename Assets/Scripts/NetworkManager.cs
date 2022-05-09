@@ -37,6 +37,7 @@ public class NetworkManager : Manager
 	public GameObject itemSellWindow;
 	public GameObject webBrowserWindow;
 	public GameObject organizationPagesWindow;
+	public GameObject organizationPropertiesWindow;
 
 	public GameObject marketCanvas;
 	public GameObject inventoryCanvas;
@@ -287,7 +288,7 @@ public class NetworkManager : Manager
 		Market();
 	}
 
-	private void CloseWindowButton()
+	public void CloseWindowButton()
 	{
 		HideAllButtons();
 		DestroyItems();
@@ -503,15 +504,24 @@ public class NetworkManager : Manager
 			case UnityWebRequest.Result.ConnectionError:
 			case UnityWebRequest.Result.DataProcessingError:
 				Debug.LogError(pages[page] + ": Error: " + request.error);
-				result(request.error);
+				if (result != null)
+				{
+					result(request.error);
+				}
 				break;
 			case UnityWebRequest.Result.ProtocolError:
 				Debug.LogError(pages[page] + ": HTTP Error: " + request.error);
-				result(request.error);
+				if (result != null)
+				{
+					result(request.error);
+				}
 				break;
 			case UnityWebRequest.Result.Success:
 				Debug.Log(pages[page] + ":\nReceived: " + request.downloadHandler.text);
-				result(request.downloadHandler.text);
+				if (result != null)
+				{
+					result(request.downloadHandler.text);
+				}
 				break;
 		}
 	}
@@ -692,11 +702,34 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("floor", query, ProcessFloor));
 	}
 
+	public void MemberCreate(int organizationId, int citizenId)
+    {
+		var query = $"organization_id={organizationId}&citizen_id={citizenId}";
+		StartCoroutine(Request("member-create", query, ProcessOrganizations));
+	}
+	
+	public void MemberDelete(int organizationId, int citizenId)
+    {
+		var query = $"organization_id={organizationId}&citizen_id={citizenId}";
+		StartCoroutine(Request("member-delete", query, ProcessOrganizations));
+	}
+
 	public void MoveIntoRoom(int roomId)
     {
 		var query = $"citizen_id={GameManager.Instance.me.id}&room_id={roomId}";
-		
 		StartCoroutine(Request("move-into-room", query, ProcessMoveIntoRoom));
+	}
+
+	public void OrganizationSetJoin(int organizationId, int joinTypeId)
+    {
+		var query = $"organization_id={organizationId}&join_type_id={joinTypeId}";
+		StartCoroutine(Request("organization-set-join", query, null));
+	}
+
+	public void OrganizationSetTitle(int organizationId, string title)
+    {
+		var query = $"organization_id={organizationId}&title={Escape(title)}";
+		StartCoroutine(Request("organization-set-title", query, null));
 	}
 
 	public void Page(string address, string path)
@@ -715,9 +748,7 @@ public class NetworkManager : Manager
 
 	public void CreatePage(int organizationId, string content, string path)
     {
-		content = UnityWebRequest.EscapeURL(content);
-		
-		var query = $"organization_id={organizationId}&content={content}&path={path}";
+		var query = $"organization_id={organizationId}&content={Escape(content)}&path={path}";
 
 		StartCoroutine(Request("page-create", query, (r) => CloseWindowButton()));
 	}
@@ -856,10 +887,7 @@ public class NetworkManager : Manager
 
 	public void Chat(int citizenId, int roomId, string text)
     {
-		text = UnityWebRequest.EscapeURL(text);
-
-		var query = $"citizen_id={citizenId}&room_id={roomId}&text={text}";
-		
+		var query = $"citizen_id={citizenId}&room_id={roomId}&text={Escape(text)}";
 		StartCoroutine(Request("chat", query, (result) =>
 		{
 			var c = JsonUtility.FromJson<ChatResponse>(result);
@@ -1607,6 +1635,23 @@ public class NetworkManager : Manager
         }
 	}
 
+	public void OrganizationProperties(OrganizationItem organization)
+	{
+		shading.SetActive(true);
+		closeWindowButton.SetActive(shading.activeSelf);
+
+		title.text = $"\"{organization.title}\" Properties";
+		HideAllButtons();
+		DestroyItems();
+        HideWindows();
+
+		shortcutsActive = false;
+		var o = organizationPropertiesWindow.GetComponent<side.OrganizationPropertiesWindow>();
+		o.joinTypeId.value = organization.properties.join_type_id;
+		o.title.text = organization.title;
+		organizationPropertiesWindow.SetActive(true);
+	}
+
 	public void LoadPage(PageItem page)
 	{
 		title.text = $"Page \"{page.path}\"";
@@ -1756,5 +1801,12 @@ public class NetworkManager : Manager
 
             row++;
         }
+	}
+
+	private string Escape(string text)
+	{
+		text = text.Replace("'", "''");
+		text = UnityWebRequest.EscapeURL(text);
+		return text;
 	}
 }

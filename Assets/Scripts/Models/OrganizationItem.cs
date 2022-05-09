@@ -10,8 +10,10 @@ namespace Models
         public string title;
         public List<RentedRoomItem> attached_rooms;
         public OrganizationTypeItem type;
+        public OrganizationProperties properties;
         public int owner_id;
         public List<PageItem> pages;
+        public List<MemberItem> members;
 
         public override string ToString() => @$"Organization:
         ID: {id}
@@ -20,7 +22,15 @@ namespace Models
         Type ID: {type.id}
         Type Title: {type.title}
         Pages Count: {pages.Count}
+        Members Count: {members.Count}
         Attached Rooms Count: {attached_rooms.Count}
         Required Room Types Count: {type.requirements.room_types.Count}";
+    }
+
+    [System.Serializable]
+    public class OrganizationProperties
+    {
+        public int membership_fee;
+        public int join_type_id;
     }
 }
