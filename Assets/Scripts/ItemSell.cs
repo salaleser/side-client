@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using Models;
 using TMPro;
 
-namespace side
+namespace Side
 {
     public class ItemSell : MonoBehaviour
     {

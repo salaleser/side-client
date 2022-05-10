@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using Entities.Items;
+using Entities.Cells;
 using Models;
 using TMPro;
 
-namespace side
+namespace Side
 {
-    public class WebBrowser : MonoBehaviour
+    public class ComputerInternetTab : MonoBehaviour
     {
         public TMP_InputField addressBar;
         public TMP_Text content;

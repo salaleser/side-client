@@ -17,7 +17,7 @@ namespace Models
         public int item_id;
         public int floor_id;
         public bool rentable;
-        public int organization_id;
+        public List<int> organization_ids;
         public float r;
         public float g;
         public float b;
@@ -33,7 +33,7 @@ namespace Models
         Description: {description}
         Renter ID: {renter_id}
         Rentable: {rentable}
-        Organization ID: {organization_id}
+        Organization IDs Count: {organization_ids.Count}
         Title: {title}
         Items Count: {items.Count}
         Citizens Count: {citizens.Count}

@@ -12,13 +12,9 @@ namespace Entities.Items
 
         private void Start()
         {
-            if (requiredRoomTypeItem.is_attached)
+            if (requiredRoomTypeItem.attached_room != null)
             {
-                AddButton($"Detach \"{requiredRoomTypeItem.title}\" from \"{GameManager.Instance.currentOrganization.title}\"", () => NetworkManager.Instance.OrganizationDetachRoom(requiredRoomTypeItem.attached_room_id, GameManager.Instance.currentOrganization.id));
-            }
-            else
-            {
-                AddButton($"Attach...", () => NetworkManager.Instance.RentedRooms(requiredRoomTypeItem.id));
+                AddButton($"Inventory...", () => NetworkManager.Instance.Inventory(requiredRoomTypeItem.attached_room.item_id));
             }
         }
 

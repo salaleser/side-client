@@ -26,7 +26,7 @@ namespace Entities.Cells
                 switch (roomItem.type_id)
                 {
                     case 1:
-                        AddButton("Get Tasks", () => NetworkManager.Instance.Tasks(GameManager.Instance.me.organization_id));
+                        AddButton("Get Tasks", () => NetworkManager.Instance.Tasks(roomItem.organization_ids));
                         break;
                     case 13:
                         foreach (var floor in GameManager.Instance.currentParcel.floors)

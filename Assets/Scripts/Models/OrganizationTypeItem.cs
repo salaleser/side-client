@@ -21,7 +21,7 @@ namespace Models
     [System.Serializable]
     public class OrganizationRequirements
     {
-        public List<RequiredRoomTypeItem> room_types;
+        public List<RoomTypeItem> room_types;
         public List<int> room_type_ids;
     }
 

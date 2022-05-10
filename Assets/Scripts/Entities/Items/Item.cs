@@ -12,8 +12,6 @@ namespace Entities.Items
 
         private void Start()
         {
-            AddButton($"Sell", () => NetworkManager.Instance.ItemSell(itemItem));
-            AddButton($"Show", () => NetworkManager.Instance.CitizenActionDo(5, itemItem.id));
             if (itemItem.children_count > 0)
             {
                 AddButton($"Open", () => NetworkManager.Instance.Inventory(itemItem.id));

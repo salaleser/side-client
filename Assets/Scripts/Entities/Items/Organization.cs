@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Models;
@@ -12,19 +13,12 @@ namespace Entities.Items
 
         private void Start()
         {
-            AddButton($"Attached rooms...", () => NetworkManager.Instance.InstantiateRequiredRoomTypes(organizationItem));
-            AddButton($"Pages...", () => NetworkManager.Instance.OrganizationPage(organizationItem));
-            AddButton($"Properties...", () => NetworkManager.Instance.OrganizationProperties(organizationItem));
-            
-            var isMember = false;
-            foreach (var member in organizationItem.members)
+            if (organizationItem.owner_id == GameManager.Instance.me.id)
             {
-                if (member.citizen_id == GameManager.Instance.me.id)
-                {
-                    isMember = true;
-                }
+                AddButton($"Properties...", () => NetworkManager.Instance.InstantiateOrganization(organizationItem));
             }
-            if (isMember)
+            
+            if (organizationItem.members.Any(x => x.citizen_id == GameManager.Instance.me.id))
             {
                 AddButton($"Leave", () => NetworkManager.Instance.MemberDelete(organizationItem.id, GameManager.Instance.me.id));
             }
@@ -32,21 +26,10 @@ namespace Entities.Items
             {
                 AddButton($"Join", () => NetworkManager.Instance.MemberCreate(organizationItem.id, GameManager.Instance.me.id));
             }
-            
-            foreach (var room in organizationItem.attached_rooms)
-            {
-                if (room.type_id == 4)
-                {
-                    AddButton($"Manage storage ({room.item_id})", () => NetworkManager.Instance.Inventory(room.item_id));
-                    break;
-                }
-            }
         }
 
         public void Handler()
         {
-            GameManager.Instance.currentOrganization = organizationItem;
-            GameManager.Instance.state = GameManager.Organization;
             NetworkManager.Instance.HideAllButtons();
             NetworkManager.Instance.text.text = $"{organizationItem}";
             ShowButtons();

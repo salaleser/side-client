@@ -8,5 +8,6 @@ namespace Models
     {
         public CitizenItem citizen;
         public List<RentedRoomItem> rented_rooms;
+        public List<OrganizationItem> organizations;
     }
 }

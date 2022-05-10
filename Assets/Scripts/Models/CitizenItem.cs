@@ -18,9 +18,12 @@ namespace Models
         public int z;
         public int root_item_id;
         public List<ItemItem> items;
+        public List<FriendItem> friends;
         public List<ActionItem> actions;
         public List<StatusItem> statuses;
         public List<CharacteristicItem> characteristics;
+        public List<OrganizationItem> organizations;
+        public List<RentedRoomItem> rented_rooms;
 
         private string Characteristics()
         {

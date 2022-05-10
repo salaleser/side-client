@@ -8,10 +8,11 @@ namespace Models
     {
         public int id;
         public string title;
-        public List<RentedRoomItem> attached_rooms;
+        public List<RoomItem> attached_rooms;
         public OrganizationTypeItem type;
         public OrganizationProperties properties;
         public int owner_id;
+        public bool is_active;
         public List<PageItem> pages;
         public List<MemberItem> members;
 

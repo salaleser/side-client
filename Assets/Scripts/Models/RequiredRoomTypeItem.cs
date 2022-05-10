@@ -6,17 +6,17 @@ namespace Models
     [System.Serializable]
     public class RequiredRoomTypeItem
     {
-        public int id;
+        public int room_type_id;
+        public int organization_id;
         public string title;
         public bool is_attached;
-        public int attached_room_id;
+        public RoomItem attached_room;
         public int w;
         public int h;
 
         public override string ToString() => @$"Required Room Type:
         Title: {title}
-        Is Attached: {is_attached}
-        Attached Room ID: {attached_room_id}
+        Attached Room: {attached_room}
         Width: {w}
         Height: {h}";
     }
