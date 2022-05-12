@@ -12,16 +12,24 @@ namespace Side
     public class ComputerInternetTab : MonoBehaviour
     {
         public TMP_InputField addressBar;
+        public TMP_InputField searchBar;
         public TMP_Text content;
 
         void OnEnable()
         {
             addressBar.onSubmit.AddListener(LoadPage);
+            searchBar.onSubmit.AddListener(Search);
         }
 
         void OnDisable()
         {
             addressBar.onSubmit.RemoveListener(LoadPage);
+            searchBar.onSubmit.RemoveListener(Search);
+        }
+
+        public void Search(string text)
+        {
+            NetworkManager.Instance.Exec("search", new string[]{"q",text});
         }
 
         public void LoadPage(string text)

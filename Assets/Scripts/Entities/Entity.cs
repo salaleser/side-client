@@ -11,37 +11,37 @@ public class Entity : MonoBehaviour
     private const int X = 130;
     private const int Y = 300;
 
-    private void Update()
-    {
-        if (buttons.Count > 0 && Input.GetKeyUp(KeyCode.Alpha1))
-		{
-            if (buttons[0].activeSelf)
-            {
-			    buttons[0].GetComponent<Button>().onClick.Invoke();
-            }
-		}
-        else if (buttons.Count > 1 && Input.GetKeyUp(KeyCode.Alpha2))
-		{
-            if (buttons[1].activeSelf)
-            {
-			    buttons[1].GetComponent<Button>().onClick.Invoke();
-            }
-		}
-        else if (buttons.Count > 2 && Input.GetKeyUp(KeyCode.Alpha3))
-		{
-            if (buttons[2].activeSelf)
-            {
-			    buttons[2].GetComponent<Button>().onClick.Invoke();
-            }
-		}
-        else if (buttons.Count > 3 && Input.GetKeyUp(KeyCode.Alpha4))
-		{
-            if (buttons[3].activeSelf)
-            {
-			    buttons[3].GetComponent<Button>().onClick.Invoke();
-            }
-		}
-    }
+    // private void Update()
+    // {
+    //     if (buttons.Count > 0 && Input.GetKeyUp(KeyCode.Alpha1))
+	// 	{
+    //         if (buttons[0].activeSelf)
+    //         {
+	// 		    buttons[0].GetComponent<Button>().onClick.Invoke();
+    //         }
+	// 	}
+    //     else if (buttons.Count > 1 && Input.GetKeyUp(KeyCode.Alpha2))
+	// 	{
+    //         if (buttons[1].activeSelf)
+    //         {
+	// 		    buttons[1].GetComponent<Button>().onClick.Invoke();
+    //         }
+	// 	}
+    //     else if (buttons.Count > 2 && Input.GetKeyUp(KeyCode.Alpha3))
+	// 	{
+    //         if (buttons[2].activeSelf)
+    //         {
+	// 		    buttons[2].GetComponent<Button>().onClick.Invoke();
+    //         }
+	// 	}
+    //     else if (buttons.Count > 3 && Input.GetKeyUp(KeyCode.Alpha4))
+	// 	{
+    //         if (buttons[3].activeSelf)
+    //         {
+	// 		    buttons[3].GetComponent<Button>().onClick.Invoke();
+    //         }
+	// 	}
+    // }
 
     public void AddButton(string text, UnityAction action, bool interactable = true)
     {

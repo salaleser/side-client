@@ -39,7 +39,6 @@ public class GameManager : MonoBehaviour
 	public CitizenItem me = new();
     public ItemItem currentItem;
     public OrganizationItem newOrganization;
-	public LotItem newLot;
 
 	public int cursorX;
 	public int cursorY;

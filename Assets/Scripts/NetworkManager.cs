@@ -140,7 +140,7 @@ public class NetworkManager : Manager
 			Floor(GameManager.Instance.me.floor_id);
 		}));
 
-		shortcutsActive = true;
+		SetShortcutsActive(true);
 
 		reloadButton = Instantiate(mainButtonPrefab, new Vector3(660, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
         reloadButton.GetComponentInChildren<Text>().text = "[R] Reload";
@@ -189,13 +189,13 @@ public class NetworkManager : Manager
 			{
 				MapButton();
 			}
-			else if (Input.GetKeyDown(KeyCode.A))
-			{
-				MarketButton();
-			}
 			else if (Input.GetKeyDown(KeyCode.O))
 			{
 				OrganizationsButton();
+			}
+			else if (Input.GetKeyDown(KeyCode.I))
+			{
+				ItemsButton();
 			}
 			else if (Input.GetKeyDown(KeyCode.R))
 			{
@@ -223,6 +223,11 @@ public class NetworkManager : Manager
 	private void ProfileButton()
 	{
 		InstantiateCitizen(GameManager.Instance.me);
+	}
+
+	private void ItemsButton()
+	{
+		InstantiateCitizen(GameManager.Instance.me, "Items");
 	}
 
 	private void ComputerButton()
@@ -266,6 +271,13 @@ public class NetworkManager : Manager
 		}
 	}
 
+	public GameObject shortcutsActiveSign;
+	public void SetShortcutsActive(bool isActive)
+	{
+		shortcutsActive = isActive;
+		shortcutsActiveSign.GetComponent<Image>().color = isActive ? Color.green : Color.red;
+	}
+
 	private void ReloadButton()
 	{
 		Reload();
@@ -276,23 +288,18 @@ public class NetworkManager : Manager
 		Universe();
 	}
 
-	private void MarketButton()
-	{
-		Market();
-	}
-
 	public void CloseWindowButton()
 	{
 		HideAllButtons();
 		DestroyItems();
-		shortcutsActive = true;
+		SetShortcutsActive(true);
 		shading.SetActive(false);
 		closeWindowButton.SetActive(shading.activeSelf);
 	}
 
 	private void OrganizationsButton()
 	{
-		Organizations(GameManager.Instance.me.id);
+		InstantiateCitizen(GameManager.Instance.me, "Organizations");
 	}
 
 	private void Reload()
@@ -474,7 +481,7 @@ public class NetworkManager : Manager
 		}
 	}
 
-	IEnumerator Request(string endpoint, string query, Action<string> result)
+	public IEnumerator Request(string endpoint, string query, Action<string> result)
 	{
 		var url = $"http://{Host}:{Port}/{endpoint}?{query}";
 
@@ -515,12 +522,35 @@ public class NetworkManager : Manager
 		}
 	}
 
-	public void Market()
+	public void Exec(string command, string[] parameters)
 	{
-		shading.SetActive(true);
-		closeWindowButton.SetActive(shading.activeSelf);
+		var query = $"citizen_id={GameManager.Instance.me.id}&command={command}&parameters={string.Join(",", parameters)}";
+		StartCoroutine(Request("exec", query, ProcessExec));
+	}
 
-		StartCoroutine(Request("market", "", ProcessMarket));
+	public void OrganizationPagesItemsPublish(int organizationId)
+	{
+		var query = $"organization_id={organizationId}";
+		StartCoroutine(Request("organization-pages-items-publish", query, ProcessOrganization));
+	}
+
+	// Если price=0, то снимает с продажи
+	public void ItemSell(int itemId, int price)
+	{
+		var query = $"item_id={itemId}&price={(price == 0 ? "" : price)}";
+		StartCoroutine(Request("item-sell", query, ProcessInventory));
+	}
+
+	public void ItemSplit(int itemId, int quantity)
+	{
+		var query = $"item_id={itemId}&quantity={quantity}";
+		StartCoroutine(Request("item-split", query, ProcessInventory));
+	}
+
+	public void ItemStack(int itemId)
+	{
+		var query = $"item_id={itemId}";
+		StartCoroutine(Request("item-stack", query, ProcessInventory));
 	}
 
 	public void Me()
@@ -700,7 +730,6 @@ public class NetworkManager : Manager
 		}
 
 		var query = $"organization_id={organizationId}&path={path}";
-		
 		StartCoroutine(Request("page", query, ProcessPage));
 	}
 
@@ -734,7 +763,6 @@ public class NetworkManager : Manager
 		closeWindowButton.SetActive(shading.activeSelf);
 
 		var query = $"root_item_id={rootItemId}";
-		
 		StartCoroutine(Request("inventory", query, ProcessInventory));
 	}
 
@@ -786,38 +814,6 @@ public class NetworkManager : Manager
 
 		var query = $"organization_type_id={organizationTypeId}&owner_id={GameManager.Instance.me.id}";
 		StartCoroutine(Request("organization-create", query, ProcessOrganization));
-	}
-
-	public void LotBuy(int lotId, int rootItemId)
-	{
-		var query = $"account_id={GameManager.Instance.me.account_id}&lot_id={lotId}&root_item_id={rootItemId}";
-		StartCoroutine(Request("lot-buy", query, ProcessMarket));
-	}
-
-	public void SelectStorageButton()
-	{
-		shading.SetActive(true);
-		closeWindowButton.SetActive(shading.activeSelf);
-
-		InstantiateRentedRooms(GameManager.Instance.me.rented_rooms);
-	}
-
-	public void SetStorageRoom(int id)
-	{
-		GameManager.Instance.me.storage_root_item_id = id;
-		DestroyItems();
-		HideAllButtons();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
-	}
-
-	public void LotCreate(LotItem lot)
-	{
-		shading.SetActive(true);
-		closeWindowButton.SetActive(shading.activeSelf);
-
-		var query = $"owner_id={lot.owner_id}&item_id={lot.item_id}&quantity={lot.quantity}&price={lot.price}";
-		StartCoroutine(Request("lot-create", query, ProcessMarket));
 	}
 
 	public void Chat(int citizenId, int roomId, string text)
@@ -1517,36 +1513,47 @@ public class NetworkManager : Manager
 		InstantiateOrganization(organization);
 	}
 
-	public void InstantiateOrganization(OrganizationItem organization)
+	public void InstantiateOrganization(OrganizationItem organization, string tabName = "Main")
 	{
 		HideAllButtons();
 		DestroyItems();
 		DestroyWindows();
 
 		GameManager.Instance.currentOrganization = organization;
-		shortcutsActive = false;
-		Instantiate(organizationWindowPrefab, uiCanvas.transform);
+		Instantiate(organizationWindowPrefab, uiCanvas.transform)
+			.GetComponent<Side.WindowManager>().SwitchTab(tabName);
 	}
 
-	public void InstantiateCitizen(CitizenItem citizen)
+	public void InstantiateCitizen(CitizenItem citizen, string tabName = "Main")
 	{
 		HideAllButtons();
 		DestroyItems();
 		DestroyWindows();
 
 		GameManager.Instance.currentCitizen = citizen;
-		shortcutsActive = false;
-		Instantiate(citizenWindowPrefab, uiCanvas.transform);
+		Instantiate(citizenWindowPrefab, uiCanvas.transform)
+			.GetComponent<Side.WindowManager>().SwitchTab(tabName);
 	}
 
-	public void InstantiateComputer()
+	public void InstantiateComputer(string tabName = "Main")
 	{
 		HideAllButtons();
 		DestroyItems();
 		DestroyWindows();
 
-		shortcutsActive = false;
-		Instantiate(computerWindowPrefab, uiCanvas.transform);
+		Instantiate(computerWindowPrefab, uiCanvas.transform)
+			.GetComponent<Side.WindowManager>().SwitchTab(tabName);
+	}
+
+	private void ProcessExec(string json)
+	{
+		var response = JsonUtility.FromJson<ExecResponse>(json);
+		if (response == null)
+		{
+			return;
+		}
+
+		GameObject.Find("ComputerWindow(Clone)").GetComponentInChildren<Side.ComputerInternetTab>().content.text = response.result;
 	}
 
 	private void ProcessCitizen(string json)
@@ -1600,7 +1607,7 @@ public class NetworkManager : Manager
         var row = 0;
 		for (var i = 0; i < items.Count; i++)
         {
-            if (i % 5 == 0)
+            if (i % 4 == 0)
             {
                 col++;
                 row = 0;

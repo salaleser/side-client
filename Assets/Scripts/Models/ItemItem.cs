@@ -12,6 +12,7 @@ namespace Models
         public int owner_id;
         public string type_title;
         public int quantity;
+        public int price;
         public int children_count;
 
         public override string ToString() => @$"Item:
@@ -21,6 +22,7 @@ namespace Models
         Type Title: {type_title}
         Owner ID: {owner_id}
         Quantity: {quantity}
+        Price: {price}
         Children Count: {children_count}";
     }
 }

@@ -24,6 +24,8 @@ namespace Entities.Items
 
         public void Handler()
         {
+            GameManager.Instance.currentItem = itemItem;
+		    GameObject.Find("OrganizationWindow(Clone)").GetComponentInChildren<Side.OrganizationItemsTab>().price.text = itemItem.price.ToString();
             NetworkManager.Instance.HideAllButtons();
             NetworkManager.Instance.text.text = $"{itemItem}";
             ShowButtons();

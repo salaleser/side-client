@@ -293,6 +293,82 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 26508635}
   m_CullTransparentMesh: 1
+--- !u!1 &152935536
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 152935537}
+  - component: {fileID: 152935539}
+  - component: {fileID: 152935538}
+  m_Layer: 5
+  m_Name: ShortcutsActiveSign
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &152935537
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152935536}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1207886750}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -32.926514, y: -32.591553}
+  m_SizeDelta: {x: 65.81299, y: 63.183105}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &152935538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152935536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &152935539
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152935536}
+  m_CullTransparentMesh: 1
 --- !u!1 &216619828
 GameObject:
   m_ObjectHideFlags: 0
@@ -1082,6 +1158,7 @@ RectTransform:
   - {fileID: 1987155251}
   - {fileID: 873391787}
   - {fileID: 26508636}
+  - {fileID: 152935537}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1489,6 +1566,7 @@ MonoBehaviour:
   citizenWindowPrefab: {fileID: 5675518160032065541, guid: c83e14f86d7944249b7bd0d42b827ef8, type: 3}
   computerWindowPrefab: {fileID: 5675518160032065541, guid: 7bee1e4f612574b88802571278907e54, type: 3}
   uiCanvas: {fileID: 645576251}
+  mapCanvas: {fileID: 1987155250}
   shading: {fileID: 1843583205}
   title: {fileID: 867344066}
   text: {fileID: 1881210457}
@@ -1497,7 +1575,6 @@ MonoBehaviour:
   taskPrefab: {fileID: 5523004236194669490, guid: b8a559821a352483ea82726f49f02d9e, type: 3}
   positionPrefab: {fileID: 5523004236194669490, guid: 8af27ef854ee94e729ae4821219d79b6, type: 3}
   lotPrefab: {fileID: 5523004236194669490, guid: 6b53c80b129cb4a7d83121372e4ee58e, type: 3}
-  pagePrefab: {fileID: 5523004236194669490, guid: 7d6aa22a7886244af9bfec3d6370535d, type: 3}
   organizationTypePrefab: {fileID: 5523004236194669490, guid: 9f1ed22b7328b4c8289ea7f5c97cd319, type: 3}
   organizationPrefab: {fileID: 5523004236194669490, guid: 75cebe38af4c14b4ab0973f0e7fdc69e, type: 3}
   roomTypePrefab: {fileID: 5523004236194669490, guid: 4e39da44a664f4e5da60ec30b6c9484a, type: 3}
@@ -1527,6 +1604,7 @@ MonoBehaviour:
   openRoomPrefab: {fileID: 9040041545605410619, guid: 31e570a0693444af68b2610cbc4fd5da, type: 3}
   closedRoomPrefab: {fileID: 9040041545605410619, guid: 4d2faf986b5d644a9aeeffd27acb34d5, type: 3}
   citizenPrefab: {fileID: 9040041545605410619, guid: 634fbc60833f8483c94ddca97232a269, type: 3}
+  shortcutsActiveSign: {fileID: 152935536}
 --- !u!4 &1561466740
 Transform:
   m_ObjectHideFlags: 0

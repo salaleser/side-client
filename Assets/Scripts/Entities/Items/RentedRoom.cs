@@ -10,13 +10,6 @@ namespace Entities.Items
     {
         public RentedRoomItem rentedRoomItem;
 
-        private void Start()
-        {
-            AddButton($"Attach \"{rentedRoomItem.title}\" to organization", () => NetworkManager.Instance.OrganizationAttachRoom(GameManager.Instance.newOrganization.id, rentedRoomItem.id));
-            AddButton($"Set storage room", () => NetworkManager.Instance.SetStorageRoom(rentedRoomItem.item_id));
-            AddButton($"Inventory", () => NetworkManager.Instance.Inventory(rentedRoomItem.item_id));
-        }
-
         public void Handler()
         {
             NetworkManager.Instance.HideAllButtons();

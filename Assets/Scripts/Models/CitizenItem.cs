@@ -23,6 +23,7 @@ namespace Models
         public List<StatusItem> statuses;
         public List<CharacteristicItem> characteristics;
         public List<OrganizationItem> organizations;
+        public List<EmailItem> emails;
         public List<RentedRoomItem> rented_rooms;
 
         private string Characteristics()

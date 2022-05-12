@@ -17,7 +17,7 @@ namespace Side
         void Start()
         {
             UpdatePages();
-            LoadPage("index");
+            LoadPage("");
         }
 
         public void UpdatePreview()
@@ -36,6 +36,11 @@ namespace Side
             pages.AddOptions(GameManager.Instance.currentOrganization.pages.Select(x => new TMP_Dropdown.OptionData(x.path.ToString())).ToList());
         }
 
+        public void PublishItems()
+        {
+            NetworkManager.Instance.OrganizationPagesItemsPublish(GameManager.Instance.currentOrganization.id);
+        }
+
         public void LoadPage(string name)
         {
             if (name == "")
@@ -48,6 +53,7 @@ namespace Side
                 {
                     path.text = page.path;
                     content.text = page.content;
+                    break;
                 }
             }
         }

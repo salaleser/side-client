@@ -7,10 +7,8 @@ using TMPro;
 
 namespace Side
 {
-    public class OrganizationWindow : MonoBehaviour
+    public class OrganizationWindow : Window
     {
-        public List<GameObject> windows;
-        public List<Button> buttons;
         public OrganizationItem organization;
         public TMP_InputField title;
         public TMP_Dropdown joinTypeId;
@@ -21,8 +19,6 @@ namespace Side
         public Button kick;
         public Button join;
 
-        private bool isLeftControlDown;
-
         public void Awake()
         {
             organization = GameManager.Instance.currentOrganization;
@@ -30,8 +26,6 @@ namespace Side
 
         public void Start()
         {
-            SwitchTab("Main");
-
             isActive.text = organization.is_active.ToString();
             isActive.GetComponent<Image>().color = organization.is_active ? Color.green : Color.red;
             title.text = organization.title;
@@ -41,57 +35,6 @@ namespace Side
             membersCount.text = organization.members.Count.ToString();
             
             join.interactable = !organization.members.Any(x => x.citizen_id == GameManager.Instance.me.id);
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.LeftControl))
-            {
-                isLeftControlDown = true;
-            }
-            else if (Input.GetKeyUp(KeyCode.LeftControl))
-            {
-                isLeftControlDown = false;
-            }
-
-            if ((isLeftControlDown && Input.GetKeyDown(KeyCode.Q)) || Input.GetKeyDown(KeyCode.Escape))
-            {
-                CloseWindow();
-            }
-
-            if (isLeftControlDown && Input.GetKeyDown(KeyCode.Tab))
-            {
-                SwitchTab(-1);
-            }
-            else if (isLeftControlDown && Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                SwitchTab(1);
-            }
-            else if (isLeftControlDown && Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                SwitchTab(2);
-            }
-            else if (isLeftControlDown && Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                SwitchTab(3);
-            }
-            else if (isLeftControlDown && Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                SwitchTab(4);
-            }
-            else if (isLeftControlDown && Input.GetKeyDown(KeyCode.Alpha5))
-            {
-                SwitchTab(5);
-            }
-            else if (isLeftControlDown && Input.GetKeyDown(KeyCode.Alpha6))
-            {
-                SwitchTab(6);
-            }
-        }
-
-        public void Cancel()
-        {
-            CloseWindow();
         }
 
         public void Apply()
@@ -104,12 +47,6 @@ namespace Side
             NetworkManager.Instance.OrganizationSetProperties(GameManager.Instance.currentOrganization.id, properties);
         }
 
-        public void Ok()
-        {
-            Apply();
-            CloseWindow();
-        }
-
         public void SetKickButtonInteractable(bool interactable) => kick.interactable = interactable;
 
         public void KickMember()
@@ -118,63 +55,12 @@ namespace Side
             if (int.TryParse(members.captionText.text, out memberId))
             {
                 NetworkManager.Instance.MemberDelete(organization.id, memberId);
-                CloseWindow();
             }
         }
 
         public void Join()
         {
             NetworkManager.Instance.MemberCreate(organization.id, GameManager.Instance.me.id);
-            CloseWindow();
-        }
-
-        public void CloseWindow()
-        {
-            Destroy(this.gameObject);
-            NetworkManager.Instance.CloseWindowButton();
-        }
-
-        public void SwitchTab(string name)
-        {
-            NetworkManager.Instance.CloseWindowButton();
-            
-            for (var i = 0; i < windows.Count; i++)
-            {
-                windows[i].SetActive(windows[i].name == name);
-                buttons[i].GetComponent<Image>().color = windows[i].activeSelf ? Color.white : new Color(0.7f, 0.7f, 0.7f, 1.0f);
-            }
-        }
-
-        public void SwitchTab(int number)
-        {
-            if (number > windows.Count)
-            {
-                return;
-            }
-
-            if (number < 0)
-            {
-                for (var i = 0; i < windows.Count; i++)
-                {
-                    if (windows[i].activeSelf)
-                    {
-                        number = i + 1 + 1;
-                        if (number > windows.Count)
-                        {
-                            number = 1;
-                        }
-                        break;
-                    }
-                }
-            }
-
-            NetworkManager.Instance.CloseWindowButton();
-            
-            for (var i = 0; i < windows.Count; i++)
-            {
-                windows[i].SetActive(i == number - 1);
-                buttons[i].GetComponent<Image>().color = windows[i].activeSelf ? Color.white : new Color(0.7f, 0.7f, 0.7f, 1.0f);
-            }
         }
     }
 }

@@ -7,7 +7,7 @@ using TMPro;
 
 namespace Side
 {
-    public class ComputerWindow : Window
+    public class Window : MonoBehaviour
     {
     }
 }

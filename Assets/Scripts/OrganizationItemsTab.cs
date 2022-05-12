@@ -12,6 +12,8 @@ namespace Side
     public class OrganizationItemsTab : MonoBehaviour
     {
         public TMP_Dropdown attachedRooms;
+        public TMP_InputField price;
+        public TMP_InputField quantity;
 
         public void Start()
         {
@@ -32,6 +34,21 @@ namespace Side
             var organization = GameManager.Instance.currentOrganization;
             var options = organization.attached_rooms.Select(x => new TMP_Dropdown.OptionData(x.title)).ToList();
             attachedRooms.AddOptions(options);
+        }
+
+        public void Sell()
+        {
+            NetworkManager.Instance.ItemSell(GameManager.Instance.currentItem.id, int.Parse(price.text));
+        }
+
+        public void Split()
+        {
+            NetworkManager.Instance.ItemSplit(GameManager.Instance.currentItem.id, int.Parse(quantity.text));
+        }
+
+        public void Stack()
+        {
+            NetworkManager.Instance.ItemStack(GameManager.Instance.currentItem.id);
         }
     }
 }
