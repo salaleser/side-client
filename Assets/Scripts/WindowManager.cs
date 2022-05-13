@@ -13,17 +13,10 @@ namespace Side
         public List<Button> buttons;
         
         private bool isLeftControlDown;
-        private bool isShortcutsActive;
-
-        public void SetShortcutsActive(bool active)
-        {
-            NetworkManager.Instance.SetShortcutsActive(active);
-            isShortcutsActive = active;
-        }
-
+        
         private void Start()
         {
-            isShortcutsActive = true;
+            GameManager.SetShortcutsActive(true);
         }
 
         private void Update()
@@ -37,36 +30,36 @@ namespace Side
                 isLeftControlDown = false;
             }
 
-            if ((isShortcutsActive && Input.GetKeyDown(KeyCode.Q)) || Input.GetKeyDown(KeyCode.Escape))
+            if ((GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Q)) || Input.GetKeyDown(KeyCode.Escape))
             {
                 CloseWindow();
             }
 
-            if (isShortcutsActive && Input.GetKeyDown(KeyCode.Tab))
+            if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Tab))
             {
                 SwitchTab(-1);
             }
-            else if (isShortcutsActive && Input.GetKeyDown(KeyCode.Alpha1))
+            else if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Alpha1))
             {
                 SwitchTab(1);
             }
-            else if (isShortcutsActive && Input.GetKeyDown(KeyCode.Alpha2))
+            else if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Alpha2))
             {
                 SwitchTab(2);
             }
-            else if (isShortcutsActive && Input.GetKeyDown(KeyCode.Alpha3))
+            else if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Alpha3))
             {
                 SwitchTab(3);
             }
-            else if (isShortcutsActive && Input.GetKeyDown(KeyCode.Alpha4))
+            else if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Alpha4))
             {
                 SwitchTab(4);
             }
-            else if (isShortcutsActive && Input.GetKeyDown(KeyCode.Alpha5))
+            else if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Alpha5))
             {
                 SwitchTab(5);
             }
-            else if (isShortcutsActive && Input.GetKeyDown(KeyCode.Alpha6))
+            else if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Alpha6))
             {
                 SwitchTab(6);
             }

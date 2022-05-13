@@ -8,6 +8,7 @@ using TMPro;
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
 {
+	public GameObject buyPopupPrefab;
     public TMP_Text content;
 
     public void OnPointerClick(PointerEventData eventData)
@@ -19,20 +20,21 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
         }
 
         TMP_LinkInfo linkInfo = content.textInfo.linkInfo[linkIndex];
-        var link = linkInfo.GetLinkID();
-        if (link.StartsWith("?"))
+        var linkId = linkInfo.GetLinkID();
+        var linkText = linkInfo.GetLinkText();
+        if (linkId.StartsWith("?"))
         {
-            ExecCommand(link);
+            ExecCommand(linkId, linkText);
         }
         else
         {
-            LoadPage(link);
+            LoadPage(linkId);
         }
     }
 
-    private void ExecCommand(string link)
+    private void ExecCommand(string linkId, string linkText)
     {
-        var c = link.Substring(1).Split(":");
+        var c = linkId.Substring(1).Split(":");
         var command = c[0];
         var parameters = new string[]{};
         if (c.Length > 1)
@@ -40,7 +42,17 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
             parameters = c[1].Split(",");
         }
 
-        NetworkManager.Instance.Exec(command, parameters);
+        switch (command)
+        {
+            case "buy":
+                NetworkManager.Instance.DealCreate(GameManager.Instance.currentPage.organization_id, GameManager.Instance.me.account_id,
+                    GameManager.Instance.me.delivery_address != 0 ? GameManager.Instance.me.delivery_address : GameManager.Instance.me.room_id,
+                    int.Parse(parameters[0]), int.Parse(parameters[1]), int.Parse(parameters[2]));
+                break;
+            default:
+                NetworkManager.Instance.Exec(command, parameters);
+                break;
+        }
     }
 
     private void LoadPage(string link)

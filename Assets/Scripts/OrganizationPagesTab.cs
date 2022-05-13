@@ -36,11 +36,6 @@ namespace Side
             pages.AddOptions(GameManager.Instance.currentOrganization.pages.Select(x => new TMP_Dropdown.OptionData(x.path.ToString())).ToList());
         }
 
-        public void PublishItems()
-        {
-            NetworkManager.Instance.OrganizationPagesItemsPublish(GameManager.Instance.currentOrganization.id);
-        }
-
         public void LoadPage(string name)
         {
             if (name == "")

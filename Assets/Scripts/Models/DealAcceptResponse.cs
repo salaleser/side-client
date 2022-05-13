@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace Models
 {
     [System.Serializable]
-    public class CitizenResponse
+    public class DealAcceptResponse
     {
-        public CitizenItem citizen;
+        public string status;
     }
 }

@@ -2,6 +2,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Models;
 
@@ -38,10 +39,14 @@ public class GameManager : MonoBehaviour
     public CitizenItem currentCitizen;
 	public CitizenItem me = new();
     public ItemItem currentItem;
+    public PageItem currentPage;
     public OrganizationItem newOrganization;
 
 	public int cursorX;
 	public int cursorY;
+
+	public GameObject shortcutsActiveSign;
+	public static bool IsShortcutsActive { get; private set; }
 
 	public static GameManager Instance { get; private set; }
 
@@ -56,5 +61,16 @@ public class GameManager : MonoBehaviour
 		{
 			Destroy(gameObject);
 		}
+	}
+
+	private void Start()
+	{
+		SetShortcutsActive(true);
+	}
+
+	public static void SetShortcutsActive(bool isActive)
+	{
+		IsShortcutsActive = isActive;
+		GameManager.Instance.shortcutsActiveSign.GetComponent<Image>().color = isActive ? Color.green : Color.red;
 	}
 }

@@ -17,7 +17,7 @@ namespace Models
         public int item_id;
         public int floor_id;
         public bool rentable;
-        public List<int> organization_ids;
+        public List<int> organization_ids = new();
         public float r;
         public float g;
         public float b;
@@ -26,6 +26,8 @@ namespace Models
         public List<ItemItem> items = new();
         public List<CitizenItem> citizens = new();
         public List<MessageItem> messages = new();
+
+        public string ToCaption() => $"{title} ({id})";
 
         public override string ToString() => @$"Room:
         ID: {id}

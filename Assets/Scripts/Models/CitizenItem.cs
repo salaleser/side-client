@@ -12,11 +12,11 @@ namespace Models
         public int active_task_id;
         public int organization_id;
         public int room_id;
-        public int storage_root_item_id;
         public int parcel_id;
         public int floor_id;
         public int z;
         public int root_item_id;
+        public int delivery_address;
         public List<ItemItem> items;
         public List<FriendItem> friends;
         public List<ActionItem> actions;
@@ -60,7 +60,7 @@ namespace Models
         ID: {id}
         Name: {name}
         Active Task ID: {active_task_id}
-        Storage Root Item ID: {storage_root_item_id}
+        Delivery Address: {delivery_address}
         {Characteristics()}
         {Statuses()}
         Items Count: {items.Count}

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Entities.Items;
 using Entities.Cells;
@@ -15,16 +16,31 @@ namespace Side
         public TMP_InputField searchBar;
         public TMP_Text content;
 
-        void OnEnable()
+        private void OnEnable()
         {
             addressBar.onSubmit.AddListener(LoadPage);
             searchBar.onSubmit.AddListener(Search);
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             addressBar.onSubmit.RemoveListener(LoadPage);
             searchBar.onSubmit.RemoveListener(Search);
+        }
+
+        private void Update()
+        {
+            if (GameManager.IsShortcutsActive)
+            {
+                if (Input.GetKeyDown(KeyCode.A))
+                {
+                    addressBar.Select();
+                }
+                else if (Input.GetKeyDown(KeyCode.S))
+                {
+                    searchBar.Select();
+                }
+            }
         }
 
         public void Search(string text)

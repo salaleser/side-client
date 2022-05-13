@@ -2278,8 +2278,8 @@ MonoBehaviour:
   m_OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80237644652420108}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -2293,8 +2293,8 @@ MonoBehaviour:
   m_OnDeselect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80237644652420108}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -2438,7 +2438,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5517100566700762712
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2456,7 +2456,6 @@ RectTransform:
   - {fileID: 5155806239866528427}
   - {fileID: 823056735975141514}
   - {fileID: 8545404628313497335}
-  - {fileID: 4322465997365613845}
   m_Father: {fileID: 5675518160032065542}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4001,7 +4000,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Publish Items
+  m_text: Create pages with items for sale
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4525,19 +4524,19 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3754150760208148359}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5245350053769111237}
-  m_Father: {fileID: 5517100566700762712}
-  m_RootOrder: 5
+  m_Father: {fileID: 5110984508225666086}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 367, y: -331}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: 237, y: -288}
+  m_SizeDelta: {x: 409.5323, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2965975899388972512
 CanvasRenderer:
@@ -4621,13 +4620,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 5690475964258556751}
+        m_TargetAssemblyTypeName: Side.OrganizationItemsTab, Assembly-CSharp
+        m_MethodName: PublishItems
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -5509,7 +5508,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5110984508225666086
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5528,6 +5527,7 @@ RectTransform:
   - {fileID: 3983971819630965354}
   - {fileID: 8094873975239763033}
   - {fileID: 5685909013102874884}
+  - {fileID: 4322465997365613845}
   m_Father: {fileID: 5675518160032065542}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5888,8 +5888,8 @@ MonoBehaviour:
   m_OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80237644652420108}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -5903,8 +5903,8 @@ MonoBehaviour:
   m_OnDeselect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80237644652420108}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -7042,8 +7042,8 @@ MonoBehaviour:
   m_OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80237644652420108}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -7057,8 +7057,8 @@ MonoBehaviour:
   m_OnDeselect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80237644652420108}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -8622,8 +8622,8 @@ MonoBehaviour:
   m_OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80237644652420108}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -8637,8 +8637,8 @@ MonoBehaviour:
   m_OnDeselect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80237644652420108}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -9639,7 +9639,7 @@ GameObject:
   m_Layer: 5
   m_Name: OrganizationWindow
   m_TagString: Window
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -11383,8 +11383,8 @@ MonoBehaviour:
   m_OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80237644652420108}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -11398,8 +11398,8 @@ MonoBehaviour:
   m_OnDeselect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80237644652420108}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -16467,8 +16467,8 @@ MonoBehaviour:
   m_OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80237644652420108}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -16482,8 +16482,8 @@ MonoBehaviour:
   m_OnDeselect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 80237644652420108}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:

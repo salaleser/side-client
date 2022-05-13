@@ -2213,7 +2213,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5110984508225666086
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3696,8 +3696,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 165.27, y: 333.02924}
-  m_SizeDelta: {x: 595.29, y: 47.8799}
+  m_AnchoredPosition: {x: 171.05893, y: 333.03}
+  m_SizeDelta: {x: 583.7221, y: 47.8799}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6000636422287399287
 CanvasRenderer:
@@ -3805,8 +3805,8 @@ MonoBehaviour:
   m_OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3756255584407954948}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -3820,8 +3820,8 @@ MonoBehaviour:
   m_OnDeselect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3756255584407954948}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -3932,7 +3932,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -116.5, y: -23.938}
+  m_AnchoredPosition: {x: -116.5, y: -23.937}
   m_SizeDelta: {x: 692.83, y: 666.05}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4885781313752058529
@@ -4044,6 +4044,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07262c7351558417c82c873afa51cdd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buyPopupPrefab: {fileID: 2130151071311696967, guid: 4aa0c94f0746d4346a8d7d40ba3d4b82, type: 3}
   content: {fileID: 2135167361449981463}
 --- !u!1 &6253371793720456555
 GameObject:
@@ -4218,8 +4219,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -297.645, y: 333.02924}
-  m_SizeDelta: {x: 330.5437, y: 47.8799}
+  m_AnchoredPosition: {x: -296.7578, y: 333.02924}
+  m_SizeDelta: {x: 332.3143, y: 47.8799}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &873065138048006917
 CanvasRenderer:
@@ -4272,7 +4273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: -1
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -4327,8 +4328,8 @@ MonoBehaviour:
   m_OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3756255584407954948}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -4342,8 +4343,8 @@ MonoBehaviour:
   m_OnDeselect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3756255584407954948}
-        m_TargetAssemblyTypeName: Side.WindowManager, Assembly-CSharp
+      - m_Target: {fileID: 5087599602160872646, guid: 34d27acd45b2f4870a25fcb3c4e9b055, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SetShortcutsActive
         m_Mode: 6
         m_Arguments:
@@ -4899,7 +4900,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &350356584754233360
 Transform:
   m_ObjectHideFlags: 0

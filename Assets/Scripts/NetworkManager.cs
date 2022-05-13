@@ -19,9 +19,10 @@ public class NetworkManager : Manager
 	private string Host;
 	private string Port;
 
-	private bool shortcutsActive;
-
 	public GameObject mainButtonsPanel;
+	public GameObject dealPopupPrefab;
+	public GameObject noticePopupPrefab;
+	public GameObject chatPanelPrefab;
 	public GameObject mainButtonPrefab;
 	public GameObject organizationWindowPrefab;
 	public GameObject citizenWindowPrefab;
@@ -42,7 +43,6 @@ public class NetworkManager : Manager
 
 	public TMP_Text title;
 	public Text text;
-	public Side.ChatController chatController;
 
 	public GameObject itemPrefab;
 	public GameObject taskPrefab;
@@ -140,7 +140,7 @@ public class NetworkManager : Manager
 			Floor(GameManager.Instance.me.floor_id);
 		}));
 
-		SetShortcutsActive(true);
+		Instantiate(chatPanelPrefab, uiCanvas.transform);
 
 		reloadButton = Instantiate(mainButtonPrefab, new Vector3(660, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
         reloadButton.GetComponentInChildren<Text>().text = "[R] Reload";
@@ -183,7 +183,7 @@ public class NetworkManager : Manager
 			CloseWindowButton();
 		}
 		
-		if (shortcutsActive)
+		if (GameManager.IsShortcutsActive)
 		{
 			if (Input.GetKeyDown(KeyCode.M))
 			{
@@ -192,6 +192,10 @@ public class NetworkManager : Manager
 			else if (Input.GetKeyDown(KeyCode.O))
 			{
 				OrganizationsButton();
+			}
+			else if (Input.GetKeyDown(KeyCode.W))
+			{
+				InternetButton();
 			}
 			else if (Input.GetKeyDown(KeyCode.I))
 			{
@@ -228,6 +232,11 @@ public class NetworkManager : Manager
 	private void ItemsButton()
 	{
 		InstantiateCitizen(GameManager.Instance.me, "Items");
+	}
+
+	private void InternetButton()
+	{
+		InstantiateComputer("Internet");
 	}
 
 	private void ComputerButton()
@@ -271,13 +280,6 @@ public class NetworkManager : Manager
 		}
 	}
 
-	public GameObject shortcutsActiveSign;
-	public void SetShortcutsActive(bool isActive)
-	{
-		shortcutsActive = isActive;
-		shortcutsActiveSign.GetComponent<Image>().color = isActive ? Color.green : Color.red;
-	}
-
 	private void ReloadButton()
 	{
 		Reload();
@@ -292,7 +294,7 @@ public class NetworkManager : Manager
 	{
 		HideAllButtons();
 		DestroyItems();
-		SetShortcutsActive(true);
+		GameManager.SetShortcutsActive(true);
 		shading.SetActive(false);
 		closeWindowButton.SetActive(shading.activeSelf);
 	}
@@ -528,9 +530,9 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("exec", query, ProcessExec));
 	}
 
-	public void OrganizationPagesItemsPublish(int organizationId)
+	public void OrganizationPagesItemsPublish(int organizationId, int roomId)
 	{
-		var query = $"organization_id={organizationId}";
+		var query = $"organization_id={organizationId}&room_id={roomId}";
 		StartCoroutine(Request("organization-pages-items-publish", query, ProcessOrganization));
 	}
 
@@ -747,7 +749,10 @@ public class NetworkManager : Manager
 			content = "Page not found";
 		}
 
-		GameObject.Find("ComputerWindow(Clone)").GetComponentInChildren<Side.ComputerInternetTab>().content.text = content;
+		GameManager.Instance.currentPage = response.page;
+		GameObject.Find("ComputerWindow(Clone)")
+			.GetComponentInChildren<Side.ComputerInternetTab>()
+			.content.text = content;
 	}
 
 	public void PageCreate(int organizationId, string content, string path)
@@ -816,13 +821,107 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("organization-create", query, ProcessOrganization));
 	}
 
+	public void DealCreate(int marketId, int buyerAccountId, int deliveryAddress, int sellerAccountId, int itemId, int price)
+    {
+		var query = $"market_id={marketId}&buyer_account_id={buyerAccountId}&delivery_address={deliveryAddress}&seller_account_id={sellerAccountId}&item_id={itemId}&price={price}";
+		StartCoroutine(Request("deal-create", query, ProcessDealCreate));
+	}
+
+	public void DealAccept(int dealId, int quantity)
+    {
+		var query = $"deal_id={dealId}&quantity={quantity}";
+		StartCoroutine(Request("deal-accept", query, ProcessDealAccept));
+	}
+
+	public void DealDecline(int dealId)
+    {
+		var query = $"deal_id={dealId}";
+		StartCoroutine(Request("deal-decline", query, (result) => {}));
+	}
+
+	private void ProcessDealCreate(string json)
+	{
+		var response = JsonUtility.FromJson<DealCreateResponse>(json);
+		if (response == null)
+		{
+			return;
+		}
+
+		if (response.error != null)
+		{
+			InstantiateNoticePopup("ERROR", response.error);
+		}
+		else
+		{
+			InstantiateDealPopup(response.deal);
+		}
+
+		if (response.warning != null)
+		{
+			InstantiateNoticePopup("WARNING", response.warning);
+		}
+	}
+
+	private void InstantiateDealPopup(DealItem deal)
+	{
+		var dealPopup = Instantiate(dealPopupPrefab, uiCanvas.transform)
+			.GetComponent<Side.DealPopup>();
+		dealPopup.caption.text = "DEAL";
+		dealPopup.description.text = $"Buy item?";
+		dealPopup.deal = deal;
+	}
+
+	private void ProcessDealAccept(string json)
+	{
+		var response = JsonUtility.FromJson<DealAcceptResponse>(json);
+		if (response == null)
+		{
+			return;
+		}
+
+		InstantiateNoticePopup("STATUS", response.status);
+	}
+
+	public void InstantiateNoticePopup(string caption, string description)
+	{
+		var noticePopup = Instantiate(noticePopupPrefab, uiCanvas.transform)
+			.GetComponent<Side.NoticePopup>();
+		noticePopup.caption.text = caption;
+		noticePopup.description.text = description;
+
+		Color borderColor = new();
+		Color backgroundColor = new();
+		switch (caption)
+		{
+			case "ERROR":
+				borderColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+				backgroundColor = new Color(1.0f, 0.8f, 0.8f, 1.0f);
+				break;
+			case "WARNING":
+				borderColor = new Color(1.0f, 0.5f, 0.0f, 1.0f);
+				backgroundColor = new Color(1.0f, 0.8f, 0.1f, 1.0f);
+				break;
+		}
+		foreach (var component in noticePopup.GetComponentsInChildren<Image>())
+		{
+			if (component.name == "Border")
+			{
+				component.color = borderColor;
+			}
+			else if (component.name == "Background")
+			{
+				component.color = backgroundColor;
+			}
+		}
+	}
+
 	public void Chat(int citizenId, int roomId, string text)
     {
 		var query = $"citizen_id={citizenId}&room_id={roomId}&text={Escape(text)}";
 		StartCoroutine(Request("chat", query, (result) =>
 		{
 			var c = JsonUtility.FromJson<ChatResponse>(result);
-			chatController.ReplaceChat(c.messages);
+			GameObject.Find("Chat(Clone)").GetComponentInChildren<Side.ChatController>().ReplaceChat(c.messages);
 		}));
 	}
 
@@ -1293,7 +1392,7 @@ public class NetworkManager : Manager
 				continue;
 			}
 
-			chatController.ReplaceChat(r.messages);
+			GameObject.Find("Chat(Clone)").GetComponentInChildren<Side.ChatController>().ReplaceChat(r.messages);
 
 			for (var i = 0; i < r.citizens.Count; i++)
 			{
@@ -1565,8 +1664,6 @@ public class NetworkManager : Manager
         }
 
 		GameManager.Instance.currentCitizen = response.citizen;
-		GameManager.Instance.currentCitizen.rented_rooms = response.rented_rooms;
-		GameManager.Instance.currentCitizen.organizations = response.organizations;
 	}
 
 	private void ProcessMe(string json)
@@ -1578,8 +1675,6 @@ public class NetworkManager : Manager
         }
 
 		GameManager.Instance.me = response.citizen;
-		GameManager.Instance.me.rented_rooms = response.rented_rooms;
-		GameManager.Instance.me.organizations = response.organizations;
 	}
 
     private void ProcessInventory(string json)
@@ -1615,6 +1710,7 @@ public class NetworkManager : Manager
 
             var item = InstantiateObject<Entities.Items.Item>(itemPrefab, uiCanvas,
 				$"{items[i].type_title} {items[i].quantity}", 380, 700, col, row);
+			item.GetComponent<Image>().color = items[i].price == 0 ? Color.white : Color.blue;
 			item.itemItem = items[i];
 
             row++;

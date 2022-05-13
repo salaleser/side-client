@@ -23,7 +23,7 @@ namespace Side
         public void Inventory()
         {
             var items = GameManager.Instance.currentOrganization.attached_rooms
-                .Where(x => x.title == attachedRooms.captionText.text)
+                .Where(x => x.ToCaption() == attachedRooms.captionText.text)
                 .SelectMany(x => x.items)
                 .ToList();
             NetworkManager.Instance.InstantiateInventory(items);
@@ -32,7 +32,7 @@ namespace Side
         public void UpdateAttachedRooms()
         {
             var organization = GameManager.Instance.currentOrganization;
-            var options = organization.attached_rooms.Select(x => new TMP_Dropdown.OptionData(x.title)).ToList();
+            var options = organization.attached_rooms.Select(x => new TMP_Dropdown.OptionData(x.ToCaption())).ToList();
             attachedRooms.AddOptions(options);
         }
 
@@ -49,6 +49,18 @@ namespace Side
         public void Stack()
         {
             NetworkManager.Instance.ItemStack(GameManager.Instance.currentItem.id);
+        }
+
+        public void PublishItems()
+        {
+            foreach (var room in GameManager.Instance.currentOrganization.attached_rooms)
+            {
+                if (room.ToCaption() == attachedRooms.captionText.text)
+                {
+                    NetworkManager.Instance.OrganizationPagesItemsPublish(GameManager.Instance.currentOrganization.id, room.id);
+                    break;
+                }
+            }
         }
     }
 }
