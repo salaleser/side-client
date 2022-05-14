@@ -11,7 +11,8 @@ namespace Side
     {
         public List<GameObject> windows;
         public List<Button> buttons;
-        
+
+        private List<GameObject> _hotkeys = new();
         private bool isLeftControlDown;
         
         private void Start()
@@ -19,15 +20,24 @@ namespace Side
             GameManager.SetShortcutsActive(true);
         }
 
+        private void OnEnable()
+        {
+            foreach (var go in GameObject.FindGameObjectsWithTag("Hotkey"))
+            {
+                go.SetActive(false);
+                _hotkeys.Add(go);
+            }
+        }
+
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.LeftControl))
+            if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Space))
             {
-                isLeftControlDown = true;
+                ToggleHotkeys(true);
             }
-            else if (Input.GetKeyUp(KeyCode.LeftControl))
+            else if (GameManager.IsShortcutsActive && Input.GetKeyUp(KeyCode.Space))
             {
-                isLeftControlDown = false;
+                ToggleHotkeys(false);
             }
 
             if ((GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Q)) || Input.GetKeyDown(KeyCode.Escape))
@@ -63,6 +73,11 @@ namespace Side
             {
                 SwitchTab(6);
             }
+        }
+
+        public void ToggleHotkeys(bool isActive)
+        {
+            _hotkeys.ForEach(x => x.SetActive(isActive));
         }
 
         public void CloseWindow()

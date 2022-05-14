@@ -16,6 +16,8 @@ namespace Models
         public List<PageItem> pages;
         public List<MemberItem> members;
 
+        public string ToCaption() => $"{type.title} \"{title}\" [{(is_active ? "O" : "X")}]";
+
         public override string ToString() => @$"Organization:
         ID: {id}
         Title: {title}

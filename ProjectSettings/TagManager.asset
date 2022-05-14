@@ -7,6 +7,7 @@ TagManager:
   - Side
   - EntityButton
   - Window
+  - Hotkey
   layers:
   - Default
   - TransparentFX

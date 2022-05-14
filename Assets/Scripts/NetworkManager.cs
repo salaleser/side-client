@@ -19,7 +19,7 @@ public class NetworkManager : Manager
 	private string Host;
 	private string Port;
 
-	public GameObject mainButtonsPanel;
+	public GameObject mainButtonsPanelPrefab;
 	public GameObject dealPopupPrefab;
 	public GameObject noticePopupPrefab;
 	public GameObject chatPanelPrefab;
@@ -28,20 +28,9 @@ public class NetworkManager : Manager
 	public GameObject citizenWindowPrefab;
 	public GameObject computerWindowPrefab;
 
-	private GameObject reloadButton;
-	private GameObject mapButton;
-	private GameObject centerMeButton;
-	private GameObject zoomOutButton;
-	private GameObject closeWindowButton;
-	private GameObject organizationsButton;
-	private GameObject profileButton;
-	private GameObject computerButton;
-
 	public GameObject uiCanvas;
 	public GameObject mapCanvas;
-	public GameObject shading;
 
-	public TMP_Text title;
 	public Text text;
 
 	public GameObject itemPrefab;
@@ -85,6 +74,31 @@ public class NetworkManager : Manager
 
 	private void Awake()
 	{
+		var dir = "";
+		switch (Application.platform)
+		{
+			case RuntimePlatform.OSXEditor:
+			case RuntimePlatform.WindowsEditor:
+			case RuntimePlatform.LinuxEditor:
+				dir = "/StreamingAssets";
+				break;
+			case RuntimePlatform.OSXPlayer:
+				dir = "/Resources/Data/StreamingAssets";
+				break;
+			case RuntimePlatform.WindowsPlayer:
+				dir = "/side_Data/StreamingAssets";
+				break;
+		}
+
+		try
+		{
+			LoadConfig($"{dir}/config.txt");
+		}
+		catch (Exception e)
+		{
+			InstantiateNoticePopup("ERROR", $"{e}");
+		}
+		
 		if (Instance == null)
 		{
 			Instance = this;
@@ -96,84 +110,43 @@ public class NetworkManager : Manager
 		}
 	}
 
-	private void LoadConfig()
+	private void LoadConfig(string filepath)
 	{
-		var path = Application.dataPath + "/StreamingAssets/config.txt";
+		var path = Application.dataPath + filepath;
 		using (StreamReader reader = new StreamReader(path))
 		{
-			try
+			var config = reader.ReadToEnd();
+			foreach (var line in config.Split("\n"))
 			{
-				var config = reader.ReadToEnd();
-				foreach (var line in config.Split("\n"))
+				var pair = line.Split("=");
+				var key = pair[0];
+				var value = pair[1];
+				if (key == "Host")
 				{
-					var pair = line.Split("=");
-					var key = pair[0];
-					var value = pair[1];
-					if (key == "Host")
-					{
-						Host = value;
-					}
-					else if (key == "Port")
-					{
-						Port = value;
-					}
-					else if (key == "CitizenID")
-					{
-						GameManager.Instance.me.id = int.Parse(value);
-					}
+					Host = value;
 				}
-			}
-			catch (System.Exception e)
-			{
-				Debug.Log(e);
+				else if (key == "Port")
+				{
+					Port = value;
+				}
+				else if (key == "CitizenID")
+				{
+					GameManager.Instance.me.id = int.Parse(value);
+				}
 			}
 		}
 	}
 
 	private void Start()
 	{
-		LoadConfig();
-
+		Instantiate(chatPanelPrefab, uiCanvas.transform);
+		Instantiate(mainButtonsPanelPrefab, uiCanvas.transform);
+		
 		var query = $"citizen_id={GameManager.Instance.me.id}";
 		StartCoroutine(Request("citizen", query, (result) => {
 			ProcessMe(result);
 			Floor(GameManager.Instance.me.floor_id);
 		}));
-
-		Instantiate(chatPanelPrefab, uiCanvas.transform);
-
-		reloadButton = Instantiate(mainButtonPrefab, new Vector3(660, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        reloadButton.GetComponentInChildren<Text>().text = "[R] Reload";
-        reloadButton.GetComponent<Button>().onClick.AddListener(ReloadButton);
-
-		mapButton = Instantiate(mainButtonPrefab, new Vector3(720, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        mapButton.GetComponentInChildren<Text>().text = "[M] Show Map";
-        mapButton.GetComponent<Button>().onClick.AddListener(MapButton);
-
-		centerMeButton = Instantiate(mainButtonPrefab, new Vector3(780, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        centerMeButton.GetComponentInChildren<Text>().text = "[=] Center Me";
-        centerMeButton.GetComponent<Button>().onClick.AddListener(CenterMeButton);
-
-		zoomOutButton = Instantiate(mainButtonPrefab, new Vector3(840, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        zoomOutButton.GetComponentInChildren<Text>().text = "[-] Zoom Out";
-        zoomOutButton.GetComponent<Button>().onClick.AddListener(ZoomOutButton);
-
-		closeWindowButton = Instantiate(mainButtonPrefab, new Vector3(960, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-		closeWindowButton.SetActive(false);
-        closeWindowButton.GetComponentInChildren<Text>().text = "[ESC] Close Window";
-        closeWindowButton.GetComponent<Button>().onClick.AddListener(CloseWindowButton);
-
-		organizationsButton = Instantiate(mainButtonPrefab, new Vector3(1020, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        organizationsButton.GetComponentInChildren<Text>().text = "[O] Organizations";
-        organizationsButton.GetComponent<Button>().onClick.AddListener(OrganizationsButton);
-
-		profileButton = Instantiate(mainButtonPrefab, new Vector3(1080, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        profileButton.GetComponentInChildren<Text>().text = "[P] Profile";
-        profileButton.GetComponent<Button>().onClick.AddListener(ProfileButton);
-		
-		computerButton = Instantiate(mainButtonPrefab, new Vector3(1140, 30, 0), Quaternion.identity, mainButtonsPanel.transform);
-        computerButton.GetComponentInChildren<Text>().text = "[C] Computer";
-        computerButton.GetComponent<Button>().onClick.AddListener(ComputerButton);
 	}
 
 	private void Update()
@@ -187,7 +160,7 @@ public class NetworkManager : Manager
 		{
 			if (Input.GetKeyDown(KeyCode.M))
 			{
-				MapButton();
+				ShowMapButton();
 			}
 			else if (Input.GetKeyDown(KeyCode.O))
 			{
@@ -224,27 +197,27 @@ public class NetworkManager : Manager
 		}
 	}
 
-	private void ProfileButton()
+	public void ProfileButton()
 	{
 		InstantiateCitizen(GameManager.Instance.me);
 	}
 
-	private void ItemsButton()
+	public void ItemsButton()
 	{
 		InstantiateCitizen(GameManager.Instance.me, "Items");
 	}
 
-	private void InternetButton()
+	public void InternetButton()
 	{
 		InstantiateComputer("Internet");
 	}
 
-	private void ComputerButton()
+	public void ComputerButton()
 	{
 		InstantiateComputer();
 	}
 
-	private void ZoomOutButton()
+	public void ZoomOutButton()
 	{
 		switch (GameManager.Instance.state)
 		{
@@ -280,12 +253,7 @@ public class NetworkManager : Manager
 		}
 	}
 
-	private void ReloadButton()
-	{
-		Reload();
-	}
-
-	private void MapButton()
+	public void ShowMapButton()
 	{
 		Universe();
 	}
@@ -294,17 +262,14 @@ public class NetworkManager : Manager
 	{
 		HideAllButtons();
 		DestroyItems();
-		GameManager.SetShortcutsActive(true);
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
 	}
 
-	private void OrganizationsButton()
+	public void OrganizationsButton()
 	{
 		InstantiateCitizen(GameManager.Instance.me, "Organizations");
 	}
 
-	private void Reload()
+	public void ReloadButton()
 	{
 		Me();
 		switch (GameManager.Instance.state)
@@ -342,7 +307,7 @@ public class NetworkManager : Manager
 		}
 	}
 
-	private void CenterMeButton()
+	public void CenterMeButton()
 	{
 		Floor(GameManager.Instance.me.floor_id);
 	}
@@ -502,6 +467,7 @@ public class NetworkManager : Manager
 			case UnityWebRequest.Result.ConnectionError:
 			case UnityWebRequest.Result.DataProcessingError:
 				Debug.LogError(pages[page] + ": Error: " + request.error);
+				InstantiateNoticePopup("ERROR", request.error);
 				if (result != null)
 				{
 					result(request.error);
@@ -509,6 +475,7 @@ public class NetworkManager : Manager
 				break;
 			case UnityWebRequest.Result.ProtocolError:
 				Debug.LogError(pages[page] + ": HTTP Error: " + request.error);
+				InstantiateNoticePopup("ERROR", request.error);
 				if (result != null)
 				{
 					result(request.error);
@@ -518,7 +485,14 @@ public class NetworkManager : Manager
 				Debug.Log(pages[page] + ":\nReceived: " + request.downloadHandler.text);
 				if (result != null)
 				{
-					result(request.downloadHandler.text);
+					try
+					{
+						result(request.downloadHandler.text);
+					}
+					catch (Exception e)
+					{
+						InstantiateNoticePopup("ERROR", $"{e}");
+					}
 				}
 				break;
 		}
@@ -764,44 +738,28 @@ public class NetworkManager : Manager
 
 	public void Inventory(int rootItemId)
     {
-		shading.SetActive(true);
-		closeWindowButton.SetActive(shading.activeSelf);
-
 		var query = $"root_item_id={rootItemId}";
 		StartCoroutine(Request("inventory", query, ProcessInventory));
 	}
 
 	public void RoomTypes()
 	{
-		shading.SetActive(true);
-		closeWindowButton.SetActive(shading.activeSelf);
-
 		StartCoroutine(Request("room-types", "", ProcessRoomTypes));
 	}
 
 	public void Organizations(int ownerId)
 	{
-		organizationsButton.SetActive(false);
-		shading.SetActive(true);
-		closeWindowButton.SetActive(shading.activeSelf);
-
 		var query = $"owner_id={ownerId}";
 		StartCoroutine(Request("organizations", query, ProcessOrganizations));
 	}
 
 	public void OrganizationTypes()
 	{
-		organizationsButton.SetActive(true);
-		closeWindowButton.SetActive(shading.activeSelf);
-
 		StartCoroutine(Request("organization-types", "", ProcessOrganizationTypes));
 	}
 
 	public void RentedRooms(int roomTypeId)
 	{
-		shading.SetActive(true);
-		closeWindowButton.SetActive(shading.activeSelf);
-
 		var query = $"renter_id={GameManager.Instance.me.id}&room_type_id={roomTypeId}";
 		StartCoroutine(Request("rented-rooms", query, ProcessRentedRooms));
 	}
@@ -814,9 +772,6 @@ public class NetworkManager : Manager
 
 	public void OrganizationCreate(int organizationTypeId)
 	{
-		shading.SetActive(true);
-		closeWindowButton.SetActive(shading.activeSelf);
-
 		var query = $"organization_type_id={organizationTypeId}&owner_id={GameManager.Instance.me.id}";
 		StartCoroutine(Request("organization-create", query, ProcessOrganization));
 	}
@@ -927,9 +882,6 @@ public class NetworkManager : Manager
 
 	public void Tasks(List<int> organizationIds)
 	{
-		shading.SetActive(true);
-		closeWindowButton.SetActive(shading.activeSelf);
-
 		var value = "";
 		foreach (var organizationId in organizationIds)
 		{
@@ -990,12 +942,9 @@ public class NetworkManager : Manager
 		var universe = response.universe;
 		GameManager.Instance.currentUniverse = universe;
 		GameManager.Instance.state = GameManager.Universe;
-		title.text = $"Universe \"{universe.title}\"";
 
 		HideAllButtons();
 		DestroyAll();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
 
 		foreach(var galaxy in universe.galaxies)
 		{
@@ -1020,12 +969,9 @@ public class NetworkManager : Manager
 		var galaxy = response.galaxy;
 		GameManager.Instance.currentGalaxy = galaxy;
 		GameManager.Instance.state = GameManager.Galaxy;
-		title.text = $"Galaxy \"{galaxy.title}\"";
 
 		HideAllButtons();
 		DestroyAll();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
 
 		foreach(var system in galaxy.systems)
 		{
@@ -1050,12 +996,9 @@ public class NetworkManager : Manager
 		var system = response.system;
 		GameManager.Instance.currentSystem = system;
 		GameManager.Instance.state = GameManager.System;
-		title.text = $"System \"{system.title}\"";
 
 		HideAllButtons();
 		DestroyAll();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
 
 		var starInstance = Instantiate(systemExploredPrefab, new Vector3(0, 4f, 0), Quaternion.identity, mapCanvas.transform);
 		starInstance.transform.localScale = Vector3.one * 8;
@@ -1083,12 +1026,9 @@ public class NetworkManager : Manager
 		var planet = response.planet;
 		GameManager.Instance.currentPlanet = planet;
 		GameManager.Instance.state = GameManager.Planet;
-		title.text = $"Planet \"{planet.title}\"";
 
 		HideAllButtons();
 		DestroyAll();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
 
 		foreach(var continent in planet.continents)
 		{
@@ -1135,12 +1075,9 @@ public class NetworkManager : Manager
 		var continent = response.continent;
 		GameManager.Instance.currentContinent = continent;
 		GameManager.Instance.state = GameManager.Continent;
-		title.text = $"Continent \"{continent.title}\"";
 
 		HideAllButtons();
 		DestroyAll();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
 
 		foreach(var region in continent.regions)
 		{
@@ -1190,12 +1127,9 @@ public class NetworkManager : Manager
 		var region = response.region;
 		GameManager.Instance.currentRegion = region;
 		GameManager.Instance.state = GameManager.Region;
-		title.text = $"Region \"{region.title}\"";
 
 		HideAllButtons();
 		DestroyAll();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
 
 		foreach(var city in region.cities)
 		{
@@ -1217,12 +1151,9 @@ public class NetworkManager : Manager
 		var city = response.city;
 		GameManager.Instance.currentCity = city;
 		GameManager.Instance.state = GameManager.City;
-		title.text = $"City \"{city.title}\"";
 
 		HideAllButtons();
 		DestroyAll();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
 
 		foreach(var block in city.blocks)
 		{
@@ -1244,12 +1175,9 @@ public class NetworkManager : Manager
 		var block = response.block;
 		GameManager.Instance.currentBlock = block;
 		GameManager.Instance.state = GameManager.Block;
-		title.text = $"Block \"{block.title}\"";
 
 		HideAllButtons();
 		DestroyAll();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
 
 		foreach(var parcel in block.parcels)
 		{
@@ -1271,12 +1199,9 @@ public class NetworkManager : Manager
 		var parcel = response.parcel;
 		GameManager.Instance.currentParcel = parcel;
 		GameManager.Instance.state = GameManager.Parcel;
-		title.text = $"Parcel \"{parcel.title}\"";
 
 		HideAllButtons();
 		DestroyAll();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
 
 		const int Z = 8;
 		var parcelMap = new FloorItem[Width, Height, Z];
@@ -1331,13 +1256,10 @@ public class NetworkManager : Manager
 
 		HideAllButtons();
 		DestroyAll();
-		shading.SetActive(false);
-		closeWindowButton.SetActive(shading.activeSelf);
 
 		var floor = response.floor;
 		GameManager.Instance.currentFloor = floor;
 		GameManager.Instance.state = GameManager.Floor;
-		title.text = $"\"{floor.title}\", {floor.z} этаж";
 
 		var width = Width * floor.w;
 		var height = Height * floor.h;
@@ -1420,7 +1342,6 @@ public class NetworkManager : Manager
             return;
         }
 
-		title.text = "Market";
 		DestroyItems();
 
         var col = 0;
@@ -1449,7 +1370,6 @@ public class NetworkManager : Manager
             return;
         }
 
-		title.text = "Choose organization type";
 		DestroyItems();
 
         var col = 0;
@@ -1478,7 +1398,6 @@ public class NetworkManager : Manager
             return;
         }
 
-		title.text = "Manage organizations";
 		DestroyItems();
 
         var col = 0;
@@ -1533,7 +1452,6 @@ public class NetworkManager : Manager
             return;
         }
 
-		title.text = "Choose a room";
 		DestroyItems();
 
 		InstantiateRentedRooms(response.rented_rooms);
@@ -1606,18 +1524,12 @@ public class NetworkManager : Manager
             return;
         }
 
-		var organization = response.organization;
-		GameManager.Instance.currentOrganization = organization;
-
-		InstantiateOrganization(organization);
+		InstantiateOrganization(response.organization);
 	}
 
 	public void InstantiateOrganization(OrganizationItem organization, string tabName = "Main")
 	{
-		HideAllButtons();
-		DestroyItems();
 		DestroyWindows();
-
 		GameManager.Instance.currentOrganization = organization;
 		Instantiate(organizationWindowPrefab, uiCanvas.transform)
 			.GetComponent<Side.WindowManager>().SwitchTab(tabName);
@@ -1625,21 +1537,15 @@ public class NetworkManager : Manager
 
 	public void InstantiateCitizen(CitizenItem citizen, string tabName = "Main")
 	{
-		HideAllButtons();
-		DestroyItems();
-		DestroyWindows();
-
 		GameManager.Instance.currentCitizen = citizen;
+		DestroyWindows();
 		Instantiate(citizenWindowPrefab, uiCanvas.transform)
 			.GetComponent<Side.WindowManager>().SwitchTab(tabName);
 	}
 
 	public void InstantiateComputer(string tabName = "Main")
 	{
-		HideAllButtons();
-		DestroyItems();
 		DestroyWindows();
-
 		Instantiate(computerWindowPrefab, uiCanvas.transform)
 			.GetComponent<Side.WindowManager>().SwitchTab(tabName);
 	}
@@ -1688,8 +1594,6 @@ public class NetworkManager : Manager
 		GameManager.Instance.currentItem = response.item;
 		GameManager.Instance.state = GameManager.Inventory;
         
-		title.text = $"{response.item.type_title}";
-		
 		InstantiateInventory(response.children);
 	}
 
@@ -1747,7 +1651,6 @@ public class NetworkManager : Manager
             return;
         }
 
-        title.text = $"Tasks and positions";
 		DestroyItems();
 
         var col = 0;

@@ -11,6 +11,8 @@ namespace Models
         public OrganizationRequirements requirements;
         public OrganizationTypeProperties properties;
 
+        public string ToCaption() => $"{title}";
+
         public override string ToString() => @$"Organization Type:
         ID: {id}
         Title: {title}

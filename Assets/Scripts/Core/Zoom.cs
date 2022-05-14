@@ -15,15 +15,18 @@ public class Zoom : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetAxis("Mouse ScrollWheel") < 0)
+		if (GameObject.FindWithTag("Window") == null)
 		{
-			_camera.orthographicSize += ZoomSpeed;
-		}
-		else if (Input.GetAxis("Mouse ScrollWheel") > 0)
-		{
-			_camera.orthographicSize -= ZoomSpeed;
-		}
+			if (Input.GetAxis("Mouse ScrollWheel") < 0)
+			{
+				_camera.orthographicSize += ZoomSpeed;
+			}
+			else if (Input.GetAxis("Mouse ScrollWheel") > 0)
+			{
+				_camera.orthographicSize -= ZoomSpeed;
+			}
 
-		_camera.orthographicSize = Mathf.Clamp(_camera.orthographicSize, Min, Max);
+			_camera.orthographicSize = Mathf.Clamp(_camera.orthographicSize, Min, Max);
+		}
 	}
 }

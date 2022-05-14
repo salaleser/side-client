@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Models;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -72,5 +73,6 @@ public class GameManager : MonoBehaviour
 	{
 		IsShortcutsActive = isActive;
 		GameManager.Instance.shortcutsActiveSign.GetComponent<Image>().color = isActive ? Color.green : Color.red;
+		GameManager.Instance.shortcutsActiveSign.GetComponentInChildren<TMP_Text>().text = isActive ? "SHORCUTS ENABLED" : "SHORCUTS DISABLED";
 	}
 }

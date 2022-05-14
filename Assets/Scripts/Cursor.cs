@@ -13,7 +13,7 @@ public class Cursor : MonoBehaviour
 	private int _commandY;
 
     private void Update() {
-		if (!NetworkManager.Instance.shading.activeSelf && Input.GetMouseButtonDown(0)) {
+		if ((GameObject.FindWithTag("Window") == null) && Input.GetMouseButtonDown(0)) {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit)) {
