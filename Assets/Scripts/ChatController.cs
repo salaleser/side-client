@@ -9,7 +9,6 @@ namespace Side
     public class ChatController : MonoBehaviour
     {
         public TMP_InputField inputField;
-
         public TMP_Text displayOutput;
 
         void OnEnable()
@@ -34,7 +33,6 @@ namespace Side
         public void Send(string text)
         {
             NetworkManager.Instance.Chat(GameManager.Instance.me.id, GameManager.Instance.me.room_id, text);
-
             inputField.text = string.Empty;
         }
     }

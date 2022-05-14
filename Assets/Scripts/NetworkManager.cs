@@ -881,7 +881,8 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("chat", query, (result) =>
 		{
 			var c = JsonUtility.FromJson<ChatResponse>(result);
-			GameObject.Find("Chat(Clone)").GetComponentInChildren<Side.ChatController>().ReplaceChat(c.messages);
+			GameObject.Find("Chat(Clone)").GetComponentInChildren<Side.ChatController>()
+				.ReplaceChat(c.messages);
 		}));
 	}
 
