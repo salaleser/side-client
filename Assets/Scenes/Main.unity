@@ -776,8 +776,8 @@ MonoBehaviour:
   mainButtonsPanelPrefab: {fileID: 4986402042970637749, guid: 3265e76a060fa43898fa60b7254c8794, type: 3}
   dealPopupPrefab: {fileID: 2130151071311696967, guid: 4aa0c94f0746d4346a8d7d40ba3d4b82, type: 3}
   noticePopupPrefab: {fileID: 2130151071311696967, guid: 411be8ea80c7a475290182270c3c7ae4, type: 3}
+  loginPopupPrefab: {fileID: 2130151071311696967, guid: 821cf549b71da46c296859cdc8c3e911, type: 3}
   chatPanelPrefab: {fileID: 3180324904303522590, guid: 396b4fce2d9894e5ca425b35b7fc24df, type: 3}
-  mainButtonPrefab: {fileID: 1343136061256876229, guid: 2b6783f4cc36f435ebda42550be4a91a, type: 3}
   organizationWindowPrefab: {fileID: 5675518160032065541, guid: e23ec2cfa44c54970bd4c29bb9a4f0d8, type: 3}
   citizenWindowPrefab: {fileID: 5675518160032065541, guid: c83e14f86d7944249b7bd0d42b827ef8, type: 3}
   computerWindowPrefab: {fileID: 5675518160032065541, guid: 7bee1e4f612574b88802571278907e54, type: 3}
