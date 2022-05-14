@@ -22,8 +22,8 @@ public class NetworkManager : Manager
 	public GameObject mainButtonsPanelPrefab;
 	public GameObject dealPopupPrefab;
 	public GameObject noticePopupPrefab;
+	public GameObject loginPopupPrefab;
 	public GameObject chatPanelPrefab;
-	public GameObject mainButtonPrefab;
 	public GameObject organizationWindowPrefab;
 	public GameObject citizenWindowPrefab;
 	public GameObject computerWindowPrefab;
@@ -86,7 +86,7 @@ public class NetworkManager : Manager
 				dir = "/Resources/Data/StreamingAssets";
 				break;
 			case RuntimePlatform.WindowsPlayer:
-				dir = "/side_Data/StreamingAssets";
+				dir = "/side_Data/side_Data/StreamingAssets";
 				break;
 		}
 
@@ -129,10 +129,6 @@ public class NetworkManager : Manager
 				{
 					Port = value;
 				}
-				else if (key == "CitizenID")
-				{
-					GameManager.Instance.me.id = int.Parse(value);
-				}
 			}
 		}
 	}
@@ -141,12 +137,7 @@ public class NetworkManager : Manager
 	{
 		Instantiate(chatPanelPrefab, uiCanvas.transform);
 		Instantiate(mainButtonsPanelPrefab, uiCanvas.transform);
-		
-		var query = $"citizen_id={GameManager.Instance.me.id}";
-		StartCoroutine(Request("citizen", query, (result) => {
-			ProcessMe(result);
-			Floor(GameManager.Instance.me.floor_id);
-		}));
+		InstantiateLoginPopup();
 	}
 
 	private void Update()
@@ -496,6 +487,15 @@ public class NetworkManager : Manager
 				}
 				break;
 		}
+	}
+
+	public void Login(int citizenId)
+	{
+		var query = $"citizen_id={citizenId}";
+		StartCoroutine(Request("citizen", query, (result) => {
+			ProcessMe(result);
+			Floor(GameManager.Instance.me.floor_id);
+		}));
 	}
 
 	public void Exec(string command, string[] parameters)
@@ -868,6 +868,11 @@ public class NetworkManager : Manager
 				component.color = backgroundColor;
 			}
 		}
+	}
+
+	public void InstantiateLoginPopup()
+	{
+		Instantiate(loginPopupPrefab, uiCanvas.transform);
 	}
 
 	public void Chat(int citizenId, int roomId, string text)
