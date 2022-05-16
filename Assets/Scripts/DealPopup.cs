@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Models;
 using TMPro;
@@ -19,6 +20,21 @@ namespace Side
         {
             description.text = deal.ToString();
             deliveryAddress.text = deal.buyer.room.id.ToString();
+        }
+
+        private void Update()
+        {
+            if (GameManager.IsShortcutsActive)
+            {
+                if (Keyboard.current.enterKey.wasPressedThisFrame)
+                {
+                    Accept();
+                }
+                else if (Keyboard.current.escapeKey.wasPressedThisFrame)
+                {
+                    Decline();
+                }
+            }
         }
 
         public void Accept()

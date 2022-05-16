@@ -21,5 +21,10 @@ namespace Entities.Cells
                 AddButton($"Zoom in \"{systemItem.title}\"", () => NetworkManager.Instance.System(systemItem.id));
             }
         }
+
+        private void OnMouseEnter()
+        {
+            NetworkManager.Instance.text.text = $"\n\n{systemItem}";
+        }
     }
 }

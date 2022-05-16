@@ -21,5 +21,10 @@ namespace Entities.Cells
                 AddButton($"Zoom in \"{planetItem.title}\"", () => NetworkManager.Instance.Planet(planetItem.id));
             }
         }
+
+        private void OnMouseEnter()
+        {
+            NetworkManager.Instance.text.text = $"\n\n{planetItem}";
+        }
     }
 }

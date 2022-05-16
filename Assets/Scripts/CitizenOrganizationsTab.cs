@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Entities.Items;
 using Entities.Cells;
@@ -21,6 +22,49 @@ namespace Side
         {
             UpdateOrganizations();
             UpdateOrganizationTypes();
+        }
+
+        private void OnEnable()
+        {
+            this.GetComponentInParent<WindowManager>()
+                .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
+        }
+
+        private void Update()
+        {
+            if (GameManager.IsShortcutsActive)
+            {
+                if (Keyboard.current.oKey.wasPressedThisFrame)
+                {
+                    if (organizations.value == organizations.options.Count - 1)
+                    {
+                        organizations.value = 0;
+                    }
+                    else
+                    {
+                        organizations.value++;
+                    }
+                }
+                else if (Keyboard.current.tKey.wasPressedThisFrame)
+                {
+                    if (organizationTypes.value == organizationTypes.options.Count - 1)
+                    {
+                        organizationTypes.value = 0;
+                    }
+                    else
+                    {
+                        organizationTypes.value++;
+                    }
+                }
+                else if (Keyboard.current.mKey.wasPressedThisFrame)
+                {
+                    ManageOrganization();
+                }
+                else if (Keyboard.current.cKey.wasPressedThisFrame)
+                {
+                    CreateOrganization();
+                }
+            }
         }
 
         public void UpdateOrganizations()
@@ -47,7 +91,8 @@ namespace Side
                 .FirstOrDefault();
             if (organization != null)
             {
-                NetworkManager.Instance.InstantiateOrganization(organization);
+                GameManager.Instance.currentOrganization = organization;
+                NetworkManager.Instance.InstantiateOrganization();
                 Destroy(this.gameObject);
             }
         }

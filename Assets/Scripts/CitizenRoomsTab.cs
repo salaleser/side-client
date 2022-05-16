@@ -19,6 +19,12 @@ namespace Side
             UpdateRentedRooms();
         }
 
+        private void OnEnable()
+        {
+            this.GetComponentInParent<WindowManager>()
+                .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
+        }
+
         public void UpdateRentedRooms()
         {
             var options = GameManager.Instance.currentCitizen.rented_rooms.Select(x => new TMP_Dropdown.OptionData(x.title)).ToList();

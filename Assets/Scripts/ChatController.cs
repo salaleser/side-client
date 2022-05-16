@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Models;
 using TMPro;
@@ -19,6 +20,18 @@ namespace Side
         void OnDisable()
         {
             inputField.onSubmit.RemoveListener(Send);
+        }
+
+        private void Update()
+        {
+            if (GameManager.IsShortcutsActive && GameObject.FindWithTag("Window") == null
+                && GameObject.FindWithTag("Popup") == null)
+            {
+                if (Keyboard.current.enterKey.wasPressedThisFrame)
+                {
+                    inputField.Select();
+                }
+            }
         }
 
         public void ReplaceChat(List<MessageItem> messages)

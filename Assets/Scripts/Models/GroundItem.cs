@@ -9,9 +9,8 @@ namespace Models
     {
         public int x;
         public int y;
+        public int z;
         
-        public override string ToString() => @$"Ground:
-        X: {x}
-        Y: {y}";
+        public override string ToString() => @$"Ground: Position{{x={x},y={y},z={z}}}";
     }
 }

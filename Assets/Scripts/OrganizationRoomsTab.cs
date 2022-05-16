@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Entities.Items;
 using Entities.Cells;
@@ -12,20 +13,60 @@ namespace Side
     public class OrganizationRoomsTab : MonoBehaviour
     {
         public TMP_Dropdown requiredRoomTypes;
-        public TMP_InputField requiredRoomTypesCount;
         public Button detach;
+
+        public GameObject rentedRoomPrefab;
+        public GameObject rentedRooms;
         public Button attach;
+        public TMP_Text Description;
 
         public void Start()
         {
             UpdateRequiredRoomTypes();
         }
 
+        private void OnEnable()
+        {
+            UpdateRentedRooms();
+            this.GetComponentInParent<WindowManager>()
+                .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
+        }
+
+        private void Update()
+        {
+            if (GameManager.IsShortcutsActive)
+            {
+                if (Keyboard.current.tKey.wasPressedThisFrame)
+                {
+                    if (requiredRoomTypes.value == requiredRoomTypes.options.Count - 1)
+                    {
+                        requiredRoomTypes.value = 0;
+                    }
+                    else
+                    {
+                        requiredRoomTypes.value++;
+                    }
+                }
+                else if (Keyboard.current.dKey.wasPressedThisFrame)
+                {
+                    Detach();
+                }
+                else if (Keyboard.current.aKey.wasPressedThisFrame)
+                {
+                    Attach();
+                }
+                else if (Keyboard.current.rKey.wasPressedThisFrame)
+                {
+                    //
+                }
+            }
+        }
+
         public void SetDetachButtonInteractable() => detach.interactable = GetIdFromDropdown(requiredRoomTypes) > 0;
 
         public void Attach()
         {
-            NetworkManager.Instance.RentedRooms(GetTypeIdFromDropdown(requiredRoomTypes));
+            NetworkManager.Instance.OrganizationAttachRoom(GameManager.Instance.currentOrganization.id, GameManager.Instance.currentRentedRoom.id);
         }
 
         public void Detach()
@@ -43,10 +84,10 @@ namespace Side
                 RequiredRoomTypeItem rrt = new();
                 rrt.title = roomType.title;
                 rrt.room_type_id = roomType.id;
-                rrt.w = roomType.w;
-                rrt.h = roomType.h;
+                rrt.w = roomType.properties.size.w;
+                rrt.h = roomType.properties.size.h;
                 rrt.organization_id = organization.id;
-                foreach (var attachedRoom in organization.attached_rooms.Where(x => x.type_id == roomType.id))
+                foreach (var attachedRoom in organization.attached_rooms.Where(x => x.type.id == roomType.id))
                 {
                     rrt.attached_room = attachedRoom;
                 }
@@ -54,7 +95,38 @@ namespace Side
             }
 
             requiredRoomTypes.AddOptions(rrts.Select(x => new TMP_Dropdown.OptionData($"{x.title} ({x.room_type_id}) [{(x.attached_room != null ? x.attached_room.id : "")}]")).ToList());
-            requiredRoomTypesCount.text = rrts.Count.ToString();
+        }
+
+        public void UpdateRentedRooms()
+        {
+            var rrs = GameManager.Instance.me.rented_rooms;
+            var rrRectTransform = rentedRooms.transform.GetComponent<RectTransform>();
+
+            var col = 0;
+            var row = 0;
+            for (var i = 0; i < rrs.Count; i++)
+            {
+                var rentedRoom = rrs[i];
+
+                var instance = Instantiate(rentedRoomPrefab);
+                instance.GetComponent<Image>().color = rentedRoom.type.id == GetTypeIdFromDropdown(requiredRoomTypes)
+                    ? Color.green
+                    : GameManager.Instance.currentOrganization.attached_rooms
+                        .Where(x => x.id == rentedRoom.id)
+                        .Any() ? Color.blue : Color.grey;
+                var rectTransform = instance.transform.GetComponent<RectTransform>();
+                rectTransform.transform.SetParent(rrRectTransform);
+                var x = (rectTransform.rect.width * col) + rectTransform.rect.width / 2;
+                var y = -(rectTransform.rect.height * row) - rectTransform.rect.height / 2;
+                rectTransform.anchoredPosition = new Vector3(x, y, 0);
+
+                var button = instance.GetComponent<Button>();
+                button.GetComponentInChildren<TMP_Text>().text = $"{rentedRoom.type.title} {rentedRoom.title}";
+                button.onClick.AddListener(() => GameManager.Instance.currentRentedRoom = rentedRoom);
+                button.onClick.AddListener(() => Description.text = rentedRoom.ToString());
+
+                row++;
+            }
         }
 
         private int GetIdFromDropdown(TMP_Dropdown dropdown)

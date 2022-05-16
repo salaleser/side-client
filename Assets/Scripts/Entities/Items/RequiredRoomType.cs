@@ -6,7 +6,7 @@ using Models;
 
 namespace Entities.Items
 {
-    public class RequiredRoomType : Entity, IItem
+    public class RequiredRoomType : Entity
     {
         public RequiredRoomTypeItem requiredRoomTypeItem;
 
@@ -16,13 +16,6 @@ namespace Entities.Items
             {
                 AddButton($"Inventory...", () => NetworkManager.Instance.Inventory(requiredRoomTypeItem.attached_room.item_id));
             }
-        }
-
-        public void Handler()
-        {
-            NetworkManager.Instance.HideAllButtons();
-            NetworkManager.Instance.text.text = $"{requiredRoomTypeItem}";
-            ShowButtons();
         }
     }
 }

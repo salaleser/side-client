@@ -32,12 +32,10 @@ namespace Models
     {
         public List<Items> in_items;
         public List<Items> out_items;
-        public List<Task> tasks;
 
         public override string ToString() => @$"Properties:
             In Items: {ListToString<Items>(in_items)}
-            Out Items: {ListToString<Items>(out_items)}
-            Tasks: {ListToString<Task>(tasks)}";
+            Out Items: {ListToString<Items>(out_items)}";
 
         private string ListToString<T>(List<T> items)
         {
@@ -64,16 +62,5 @@ namespace Models
         public override string ToString() => @$"
         Quantity: {quantity}
         {type}";
-    }
-
-    [System.Serializable]
-    public class Task
-    {
-        public int type_id;
-        public int count;
-
-        public override string ToString() => @$"Task:
-        Count: {count}
-        Type ID: {type_id}";
     }
 }

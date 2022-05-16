@@ -377,25 +377,12 @@ MonoBehaviour:
     id: 0
     x: 0
     y: 0
-    owner_id: 0
     explorer_id: 0
     block_id: 0
-    floors: []
-    floors_count: 0
-    properties:
-      resources: []
-  currentFloor:
-    title: 
-    id: 0
-    x: 0
-    y: 0
-    z: 0
-    w: 0
-    h: 0
-    entrance_room_id: 0
-    parcel_id: 0
     rooms: []
     rooms_count: 0
+    properties:
+      resources: []
   currentOrganization:
     id: 0
     title: 
@@ -413,7 +400,6 @@ MonoBehaviour:
     properties:
       membership_fee: 0
       join_type_id: 0
-    owner_id: 0
     is_active: 0
     pages: []
     members: []
@@ -436,6 +422,33 @@ MonoBehaviour:
     characteristics: []
     organizations: []
     emails: []
+    room:
+      title: 
+      id: 0
+      type_id: 0
+      type_title: 
+      x: 0
+      y: 0
+      z: 0
+      w: 0
+      h: 0
+      creator_id: 0
+      renter_id: 0
+      item_id: 0
+      parcel_id: 0
+      rentable: 0
+      organization_ids: 
+      items: []
+      citizens: []
+      messages: []
+      properties:
+        type_id: 0
+      type_properties:
+        color: {r: 0, g: 0, b: 0, a: 0}
+        size:
+          w: 0
+          h: 0
+        category: 
     rented_rooms: []
   me:
     id: 0
@@ -456,7 +469,46 @@ MonoBehaviour:
     characteristics: []
     organizations: []
     emails: []
+    room:
+      title: 
+      id: 0
+      type_id: 0
+      type_title: 
+      x: 0
+      y: 0
+      z: 0
+      w: 0
+      h: 0
+      creator_id: 0
+      renter_id: 0
+      item_id: 0
+      parcel_id: 0
+      rentable: 0
+      organization_ids: 
+      items: []
+      citizens: []
+      messages: []
+      properties:
+        type_id: 0
+      type_properties:
+        color: {r: 0, g: 0, b: 0, a: 0}
+        size:
+          w: 0
+          h: 0
+        category: 
     rented_rooms: []
+  currentRentedRoom:
+    title: 
+    id: 0
+    type_id: 0
+    x: 0
+    y: 0
+    w: 0
+    h: 0
+    type_title: 
+    renter_id: 0
+    item_id: 0
+    organization_ids: 
   currentItem:
     id: 0
     parent_id: 0
@@ -488,12 +540,12 @@ MonoBehaviour:
     properties:
       membership_fee: 0
       join_type_id: 0
-    owner_id: 0
     is_active: 0
     pages: []
     members: []
   cursorX: 0
   cursorY: 0
+  cursorZ: 0
   shortcutsActiveSign: {fileID: 152935536}
 --- !u!4 &559488106
 Transform:
@@ -546,6 +598,63 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1001 &1015806963
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9040041545605410619, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+      propertyPath: m_Name
+      value: Cursor
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
 --- !u!1 &1207886746
 GameObject:
   m_ObjectHideFlags: 0
@@ -774,7 +883,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainButtonsPanelPrefab: {fileID: 4986402042970637749, guid: 3265e76a060fa43898fa60b7254c8794, type: 3}
+  quickMenuPrefab: {fileID: 6657676188238830695, guid: c3ace36d5551e4b118710cdc24625288, type: 3}
+  quickButtonPrefab: {fileID: 1343136061256876229, guid: 61c154883dbc74fc99f914614b9216a0, type: 3}
   dealPopupPrefab: {fileID: 2130151071311696967, guid: 4aa0c94f0746d4346a8d7d40ba3d4b82, type: 3}
+  createRoomPopupPrefab: {fileID: 2130151071311696967, guid: 91778e3526d294319b6b93bf0e6348ce, type: 3}
   noticePopupPrefab: {fileID: 2130151071311696967, guid: 411be8ea80c7a475290182270c3c7ae4, type: 3}
   loginPopupPrefab: {fileID: 2130151071311696967, guid: 821cf549b71da46c296859cdc8c3e911, type: 3}
   chatPanelPrefab: {fileID: 3180324904303522590, guid: 396b4fce2d9894e5ca425b35b7fc24df, type: 3}
@@ -791,7 +903,7 @@ MonoBehaviour:
   organizationTypePrefab: {fileID: 5523004236194669490, guid: 9f1ed22b7328b4c8289ea7f5c97cd319, type: 3}
   organizationPrefab: {fileID: 5523004236194669490, guid: 75cebe38af4c14b4ab0973f0e7fdc69e, type: 3}
   roomTypePrefab: {fileID: 5523004236194669490, guid: 4e39da44a664f4e5da60ec30b6c9484a, type: 3}
-  rentedRoomPrefab: {fileID: 5523004236194669490, guid: 9f404e5ecd3f44021abdec1bb04d978b, type: 3}
+  rentedRoomPrefab: {fileID: 9040041545605410619, guid: 842f10b2fdc3d4f18aad8f7cea1b902e, type: 3}
   requiredRoomTypePrefab: {fileID: 5523004236194669490, guid: 47539598142d147acb5920835b3a8bb3, type: 3}
   galaxyExploredPrefab: {fileID: 9040041545605410619, guid: d6646e7fd24f14301a4564be0f646d6b, type: 3}
   galaxyUnknownPrefab: {fileID: 9040041545605410619, guid: 45475fbb4724549e19c5da2dda983889, type: 3}
@@ -882,7 +994,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: -100
   far clip plane: 1000
   field of view: 60
   orthographic: 1
@@ -1064,67 +1176,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1719722359}
   m_CullTransparentMesh: 1
---- !u!1001 &1790239042
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 5834511480234517524, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: command
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410619, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_Name
-      value: Cursor
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
 --- !u!1 &1881210455
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,5 +13,10 @@ namespace Entities
         {
             AddButton($"Inventory ({citizenItem.name})", () => NetworkManager.Instance.Inventory(citizenItem.root_item_id));
         }
+
+        private void OnMouseEnter()
+        {
+            NetworkManager.Instance.text.text = $"\n\n{citizenItem}";
+        }
     }
 }

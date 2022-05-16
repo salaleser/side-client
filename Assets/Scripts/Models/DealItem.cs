@@ -12,7 +12,7 @@ namespace Models
         public DealerItem seller;
         public int price;
 
-        public override string ToString() => @$"Item Type: ""{item.type_title}"";
+        public override string ToString() => @$"Item Type: ""{item.type.title}"";
 Buyer: ""{buyer.title}"" ({buyer.id});
 Seller: ""{seller.title}"" ({seller.id});
 Max Quantity: {item.quantity}

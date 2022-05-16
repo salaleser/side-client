@@ -6,20 +6,13 @@ using Models;
 
 namespace Entities.Items
 {
-    public class OrganizationType : Entity, IItem
+    public class OrganizationType : Entity
     {
         public OrganizationTypeItem organizationTypeItem;
 
         private void Start()
         {
             AddButton($"Create \"{organizationTypeItem.title}\"", () => NetworkManager.Instance.OrganizationCreate(organizationTypeItem.id));
-        }
-
-        public void Handler()
-        {
-            NetworkManager.Instance.HideAllButtons();
-            NetworkManager.Instance.text.text = $"{organizationTypeItem}";
-            ShowButtons();
         }
     }
 }

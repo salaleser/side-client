@@ -10,11 +10,8 @@ namespace Models
         public string name;
         public int account_id;
         public int active_task_id;
-        public int organization_id;
         public int room_id;
         public int parcel_id;
-        public int floor_id;
-        public int z;
         public int root_item_id;
         public int delivery_address;
         public List<ItemItem> items;
@@ -24,6 +21,7 @@ namespace Models
         public List<CharacteristicItem> characteristics;
         public List<OrganizationItem> organizations;
         public List<EmailItem> emails;
+        public RoomItem room;
         public List<RentedRoomItem> rented_rooms;
 
         private string Characteristics()
@@ -46,25 +44,15 @@ namespace Models
             return result;
         }
 
-        private string Actions()
-        {
-            var result = "Actions:";
-            foreach (var a in actions)
-            {
-                result += $"\n{a.type_description} {a.item.type_title}";
-            }
-            return result;
-        }
-
-        public override string ToString() => @$"Citizen:
-        ID: {id}
-        Name: {name}
-        Active Task ID: {active_task_id}
-        Delivery Address: {delivery_address}
-        {Characteristics()}
-        {Statuses()}
-        Items Count: {items.Count}
-        {Actions()}";
+        public override string ToString() => @$"[citizen]:
+id={id}
+name={name}
+active_task_id={active_task_id}
+delivery_address={delivery_address}
+{Characteristics()}
+{Statuses()}
+items.Count={items.Count}
+actions.Count={actions.Count}";
     }
 
     [System.Serializable]

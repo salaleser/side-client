@@ -16,10 +16,16 @@ namespace Side
             Inventory();
         }
 
+        private void OnEnable()
+        {
+            this.GetComponentInParent<WindowManager>()
+                .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
+        }
+
         public void Inventory()
         {
-            var items = GameManager.Instance.currentCitizen.items;
-            NetworkManager.Instance.InstantiateInventory(items);
+            GameManager.Instance.currentCitizen.items
+                .ForEach(x => NetworkManager.Instance.text.text += $"{x}\n");
         }
     }
 }

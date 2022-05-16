@@ -21,7 +21,6 @@ public class GameManager : MonoBehaviour
 	public const int City = 7;
 	public const int Block = 8;
 	public const int Parcel = 9;
-	public const int Floor = 10;
 	public const int Room = 11;
 
 	public int state;
@@ -35,16 +34,15 @@ public class GameManager : MonoBehaviour
 	public CityItem currentCity;
 	public BlockItem currentBlock;
 	public ParcelItem currentParcel;
-	public FloorItem currentFloor;
     public OrganizationItem currentOrganization;
     public CitizenItem currentCitizen;
 	public CitizenItem me = new();
-    public ItemItem currentItem;
+    public RentedRoomItem currentRentedRoom;
     public PageItem currentPage;
-    public OrganizationItem newOrganization;
 
 	public int cursorX;
 	public int cursorY;
+	public int cursorZ;
 
 	public GameObject shortcutsActiveSign;
 	public static bool IsShortcutsActive { get; private set; }

@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Zoom : MonoBehaviour
 {
 	private const float ZoomSpeed = 1f;
 	private const float Min = 1f;
-	private const float Max = 16f;
+	private const float Max = 32f;
 
 	private Camera _camera;
 
@@ -15,13 +16,13 @@ public class Zoom : MonoBehaviour
 
 	private void Update()
 	{
-		if (GameObject.FindWithTag("Window") == null)
+		if (GameObject.FindWithTag("Window") == null && GameObject.FindWithTag("Popup") == null)
 		{
-			if (Input.GetAxis("Mouse ScrollWheel") < 0)
+			if (Mouse.current.scroll.ReadValue().y < 0)
 			{
 				_camera.orthographicSize += ZoomSpeed;
 			}
-			else if (Input.GetAxis("Mouse ScrollWheel") > 0)
+			else if (Mouse.current.scroll.ReadValue().y > 0)
 			{
 				_camera.orthographicSize -= ZoomSpeed;
 			}

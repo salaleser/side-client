@@ -6,7 +6,7 @@ using Models;
 
 namespace Entities.Items
 {
-    public class Task : Entity, IItem
+    public class Task : Entity
     {
         public TaskItem taskItem;
 
@@ -16,13 +16,6 @@ namespace Entities.Items
             {
                 AddButton($"Accept {taskItem.title}", () => NetworkManager.Instance.TaskAccept(GameManager.Instance.me.id, taskItem.id));
             }
-        }
-
-        public void Handler()
-        {
-            NetworkManager.Instance.HideAllButtons();
-            NetworkManager.Instance.text.text = $"{taskItem}";
-            ShowButtons();
         }
     }
 }

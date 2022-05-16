@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Entities.Items;
 using Entities.Cells;
@@ -20,6 +21,8 @@ namespace Side
         {
             addressBar.onSubmit.AddListener(LoadPage);
             searchBar.onSubmit.AddListener(Search);
+            this.GetComponentInParent<WindowManager>()
+                .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
         }
 
         private void OnDisable()
@@ -32,11 +35,11 @@ namespace Side
         {
             if (GameManager.IsShortcutsActive)
             {
-                if (Input.GetKeyDown(KeyCode.A))
+                if (Keyboard.current.aKey.wasPressedThisFrame)
                 {
                     addressBar.Select();
                 }
-                else if (Input.GetKeyDown(KeyCode.S))
+                else if (Keyboard.current.sKey.wasPressedThisFrame)
                 {
                     searchBar.Select();
                 }

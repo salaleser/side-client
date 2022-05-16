@@ -36,7 +36,7 @@ namespace Side
 
         private void UpdateDeliveryAddress()
         {
-            deliveryAddress.AddOptions(GameManager.Instance.me.rented_rooms.Where(x => x.type_id == 4).Select(x => new TMP_Dropdown.OptionData(x.title)).ToList());
+            deliveryAddress.AddOptions(GameManager.Instance.me.rented_rooms.Where(x => x.type.id == 4).Select(x => new TMP_Dropdown.OptionData(x.title)).ToList());
             deliveryAddressId.text = GameManager.Instance.me.delivery_address.ToString();
         }
 

@@ -8,21 +8,17 @@ namespace Models
     {
         public int id;
         public int parent_id;
-        public int type_id;
-        public int owner_id;
-        public string type_title;
+        public ItemTypeItem type;
         public int quantity;
         public int price;
         public int children_count;
 
-        public override string ToString() => @$"Item:
-        ID: {id}
-        Parent ID: {parent_id}
-        Type ID: {type_id}
-        Type Title: {type_title}
-        Owner ID: {owner_id}
-        Quantity: {quantity}
-        Price: {price}
-        Children Count: {children_count}";
+        public override string ToString() => @$"[item]:
+id={id}
+parent_id={parent_id}
+type={type}
+quantity={quantity}
+price={price}
+children_count={children_count}";
     }
 }

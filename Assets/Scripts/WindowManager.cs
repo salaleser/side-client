@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Models;
 using TMPro;
@@ -12,7 +13,7 @@ namespace Side
         public List<GameObject> windows;
         public List<Button> buttons;
 
-        private List<GameObject> _hotkeys = new();
+        public GameObject[] _hotkeys;
         private bool isLeftControlDown;
         
         private void Start()
@@ -20,76 +21,81 @@ namespace Side
             GameManager.SetShortcutsActive(true);
         }
 
-        private void OnEnable()
+        private void Update()
         {
-            foreach (var go in GameObject.FindGameObjectsWithTag("Hotkey"))
+            if (GameManager.IsShortcutsActive)
             {
-                go.SetActive(false);
-                _hotkeys.Add(go);
+                if (GameObject.FindWithTag("Popup") == null)
+                {
+                    if (Keyboard.current.qKey.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame)
+                    {
+                        CloseWindow();
+                    }
+                }
+                
+                if (Keyboard.current.hKey.wasPressedThisFrame)
+                {
+                    ToggleHotkeys(true);
+                }
+                else if (Keyboard.current.hKey.wasReleasedThisFrame)
+                {
+                    ToggleHotkeys(false);
+                }
+                
+                if (Keyboard.current.tabKey.wasPressedThisFrame)
+                {
+                    SwitchTab(-1);
+                }
+                else if (Keyboard.current.digit1Key.wasPressedThisFrame)
+                {
+                    SwitchTab(1);
+                }
+                else if (Keyboard.current.digit2Key.wasPressedThisFrame)
+                {
+                    SwitchTab(2);
+                }
+                else if (Keyboard.current.digit3Key.wasPressedThisFrame)
+                {
+                    SwitchTab(3);
+                }
+                else if (Keyboard.current.digit4Key.wasPressedThisFrame)
+                {
+                    SwitchTab(4);
+                }
+                else if (Keyboard.current.digit5Key.wasPressedThisFrame)
+                {
+                    SwitchTab(5);
+                }
+                else if (Keyboard.current.digit6Key.wasPressedThisFrame)
+                {
+                    SwitchTab(6);
+                }
             }
         }
 
-        private void Update()
+        public void UpdateHotkeys(GameObject[] hotkeys)
         {
-            if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Space))
-            {
-                ToggleHotkeys(true);
-            }
-            else if (GameManager.IsShortcutsActive && Input.GetKeyUp(KeyCode.Space))
-            {
-                ToggleHotkeys(false);
-            }
-
-            if ((GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Q)) || Input.GetKeyDown(KeyCode.Escape))
-            {
-                CloseWindow();
-            }
-
-            if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Tab))
-            {
-                SwitchTab(-1);
-            }
-            else if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                SwitchTab(1);
-            }
-            else if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                SwitchTab(2);
-            }
-            else if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                SwitchTab(3);
-            }
-            else if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                SwitchTab(4);
-            }
-            else if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Alpha5))
-            {
-                SwitchTab(5);
-            }
-            else if (GameManager.IsShortcutsActive && Input.GetKeyDown(KeyCode.Alpha6))
-            {
-                SwitchTab(6);
-            }
+            _hotkeys = hotkeys;
+            ToggleHotkeys(false);
         }
 
         public void ToggleHotkeys(bool isActive)
         {
-            _hotkeys.ForEach(x => x.SetActive(isActive));
+            foreach (var go in _hotkeys)
+            {
+                go.SetActive(isActive);
+                // go.GetComponent<TMP_Text>().color = isActive ?
+                //     new Color(1.0f, 0.0f, 0.0f, 1.0f) : new Color(0.0f, 0.0f, 0.0f, 0.05f);
+            }
         }
 
         public void CloseWindow()
         {
             Destroy(this.gameObject);
-            NetworkManager.Instance.CloseWindowButton();
         }
 
         public void SwitchTab(string name)
         {
-            NetworkManager.Instance.CloseWindowButton();
-            
             for (var i = 0; i < windows.Count; i++)
             {
                 windows[i].SetActive(windows[i].name == name);
@@ -120,8 +126,6 @@ namespace Side
                 }
             }
 
-            NetworkManager.Instance.CloseWindowButton();
-            
             for (var i = 0; i < windows.Count; i++)
             {
                 windows[i].SetActive(i == number - 1);

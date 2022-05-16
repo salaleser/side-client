@@ -7,6 +7,5 @@ namespace Models
     public class TaskResponse
     {
         public List<TaskItem> tasks;
-        public List<PositionItem> positions;
     }
 }

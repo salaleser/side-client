@@ -21,5 +21,10 @@ namespace Entities.Cells
                 AddButton($"Zoom in \"{continentItem.title}\"", () => NetworkManager.Instance.Continent(continentItem.id));
             }
         }
+
+        private void OnMouseEnter()
+        {
+            NetworkManager.Instance.text.text = $"\n\n{continentItem}";
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Models;
@@ -8,12 +9,12 @@ using TMPro;
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
 {
-	public GameObject buyPopupPrefab;
+	public GameObject dealPopupPrefab;
     public TMP_Text content;
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        int linkIndex = TMP_TextUtilities.FindIntersectingLink(content, Input.mousePosition, null);
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(content, Mouse.current.position.ReadValue(), null);
         if (linkIndex == -1)
         {
             return;

@@ -6,29 +6,8 @@ using Models;
 
 namespace Entities.Items
 {
-    public class Item : Entity, IItem
+    public class Item : Entity
     {
         public ItemItem itemItem;
-
-        private void Start()
-        {
-            if (itemItem.children_count > 0)
-            {
-                AddButton($"Open", () => NetworkManager.Instance.Inventory(itemItem.id));
-            }
-            if (GameManager.Instance.currentItem.parent_id != 0)
-            {
-                AddButton($"Back", () => NetworkManager.Instance.Inventory(GameManager.Instance.currentItem.parent_id));
-            }
-        }
-
-        public void Handler()
-        {
-            GameManager.Instance.currentItem = itemItem;
-		    GameObject.Find("OrganizationWindow(Clone)").GetComponentInChildren<Side.OrganizationItemsTab>().price.text = itemItem.price.ToString();
-            NetworkManager.Instance.HideAllButtons();
-            NetworkManager.Instance.text.text = $"{itemItem}";
-            ShowButtons();
-        }
     }
 }

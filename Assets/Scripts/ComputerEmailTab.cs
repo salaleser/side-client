@@ -28,6 +28,12 @@ namespace Side
             }));
         }
 
+        private void OnEnable()
+        {
+            this.GetComponentInParent<WindowManager>()
+                .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
+        }
+
         public void LoadEmail()
         {
             foreach (var email in GameManager.Instance.me.emails)
