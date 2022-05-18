@@ -11,10 +11,10 @@ namespace Models
         public int account_id;
         public RoomItem room;
 
-        public override string ToString() => @$"Dealer:
-        ID: {id}
-        Title: {title}
-        Account ID: {account_id}
-        Room: {room}";
+        public override string ToString() => @$"[dealer]:
+id={id}
+title={title}
+account_id={account_id}
+room={room}";
     }
 }

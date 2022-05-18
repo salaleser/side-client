@@ -14,10 +14,10 @@ namespace Models
         public List<BlockItem> blocks;
         public int blocks_count;
 
-        public override string ToString() => @$"City:
-        ID: {id}
-        Title: {title}
-        Explorer ID: {explorer_id}
-        Blocks Count: {blocks_count}";
+        public override string ToString() => @$"[city]:
+id={id}
+title={title}
+explorer_id={explorer_id}
+blocks_count={blocks_count}";
     }
 }

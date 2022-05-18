@@ -13,10 +13,10 @@ namespace Models
         public List<PlanetItem> planets;
         public int planets_count;
 
-        public override string ToString() => @$"System:
-        ID: {id}
-        Title: {title}
-        Explorer ID: {explorer_id}
-        Planets Count: {planets_count}";
+        public override string ToString() => @$"[system]:
+id={id}
+title={title}
+explorer_id={explorer_id}
+planets_count={planets_count}";
     }
 }

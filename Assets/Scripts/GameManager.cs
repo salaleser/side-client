@@ -9,7 +9,7 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-	public const int GroundLevel = 2;
+	public const int GroundLevel = 1;
 
 	public const int Organization = -3;
 	public const int Market = -2;

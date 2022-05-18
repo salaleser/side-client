@@ -36,15 +36,27 @@ namespace Side
         {
             if (GameManager.ShortcutsActive)
             {
+                if (Keyboard.current.leftShiftKey.wasReleasedThisFrame)
+                {
+                    requiredRoomTypes.Hide();
+                }
+
                 if (Keyboard.current.tKey.wasPressedThisFrame)
                 {
-                    if (requiredRoomTypes.value == requiredRoomTypes.options.Count - 1)
+                    if (Keyboard.current.leftShiftKey.isPressed)
                     {
-                        requiredRoomTypes.value = 0;
+                        requiredRoomTypes.Show();
                     }
                     else
                     {
-                        requiredRoomTypes.value++;
+                        if (requiredRoomTypes.value == requiredRoomTypes.options.Count - 1)
+                        {
+                            requiredRoomTypes.value = 0;
+                        }
+                        else
+                        {
+                            requiredRoomTypes.value++;
+                        }
                     }
                 }
                 else if (Keyboard.current.dKey.wasPressedThisFrame)

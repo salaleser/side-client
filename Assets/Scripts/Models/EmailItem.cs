@@ -8,11 +8,18 @@ namespace Models
     {
         public int id;
         public int from;
-        public DateTime date;
+        public string from_name;
+        public string date;
+        public string date_formatted;
         public string subject;
         public string body;
         public int status; // 0 - новое; 1 - прочитанное
 
-        public override string ToString() => $"{subject}({id})";
+        public string ToCaption() => $"{subject} ({from_name}) [{status}]";
+
+        public override string ToString() => @$"[{date_formatted}] {subject}:
+{body}
+
+{from_name}";
     }
 }

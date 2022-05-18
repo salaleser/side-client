@@ -34,26 +34,46 @@ namespace Side
         {
             if (GameManager.ShortcutsActive)
             {
+                if (Keyboard.current.leftShiftKey.wasReleasedThisFrame)
+                {
+                    organizations.Hide();
+                    organizationTypes.Hide();
+                }
+
                 if (Keyboard.current.oKey.wasPressedThisFrame)
                 {
-                    if (organizations.value == organizations.options.Count - 1)
+                    if (Keyboard.current.leftShiftKey.isPressed)
                     {
-                        organizations.value = 0;
+                        organizations.Show();
                     }
                     else
                     {
-                        organizations.value++;
+                        if (organizations.value == organizations.options.Count - 1)
+                        {
+                            organizations.value = 0;
+                        }
+                        else
+                        {
+                            organizations.value++;
+                        }
                     }
                 }
                 else if (Keyboard.current.tKey.wasPressedThisFrame)
                 {
-                    if (organizationTypes.value == organizationTypes.options.Count - 1)
+                    if (Keyboard.current.leftShiftKey.isPressed)
                     {
-                        organizationTypes.value = 0;
+                        organizationTypes.Show();
                     }
                     else
                     {
-                        organizationTypes.value++;
+                        if (organizationTypes.value == organizationTypes.options.Count - 1)
+                        {
+                            organizationTypes.value = 0;
+                        }
+                        else
+                        {
+                            organizationTypes.value++;
+                        }
                     }
                 }
                 else if (Keyboard.current.mKey.wasPressedThisFrame)

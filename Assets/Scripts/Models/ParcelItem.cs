@@ -15,12 +15,12 @@ namespace Models
         public int rooms_count;
         public ParcelProperties properties;
 
-        public override string ToString() => @$"Parcel:
-        ID: {id}
-        Title: {title}
-        Explorer ID: {explorer_id}
-        {properties}
-        Rooms Count: {rooms_count}";
+        public override string ToString() => @$"[parcel]:
+id={id}
+title={title}
+explorer_id={explorer_id}
+properties={properties}
+rooms_count={rooms_count}";
     }
 
     [System.Serializable]
@@ -28,15 +28,15 @@ namespace Models
     {
         public List<Resource> resources;
 
-        public override string ToString() => @$"Properties:
-        {Resources()}";
+        public override string ToString() => @$"[properties]:
+resources={Resources()}";
 
         private string Resources()
         {
-            var result = "Resources:";
+            var result = "";
             foreach (var resource in resources)
             {
-                result += $"\n        {resource}";
+                result += $"{resource},";
             }
             return result;
         }
@@ -48,7 +48,8 @@ namespace Models
         public ItemTypeItem type;
         public int quantity;
 
-        public override string ToString() => @$"{type}
-        Quantity: {quantity}";
+        public override string ToString() => @$"[resource]:
+item_type={type}
+quantity={quantity}";
     }
 }

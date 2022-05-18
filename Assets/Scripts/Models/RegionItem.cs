@@ -15,11 +15,11 @@ namespace Models
         public List<CityItem> cities;
         public int cities_count;
 
-        public override string ToString() => @$"Region:
-        ID: {id}
-        Title: {title}
-        Height: {z}
-        Explorer ID: {explorer_id}
-        Cities Count: {cities_count}";
+        public override string ToString() => @$"[region]:
+id={id}
+title={title}
+z={z}
+explorer_id={explorer_id}
+cities_count={cities_count}";
     }
 }

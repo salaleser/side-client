@@ -10,10 +10,10 @@ namespace Models
         public int type_id;
         public bool is_free;
 
-        public override string ToString() => @$"Position:
-        ID: {id}
-        Type ID: {type_id}
-        Title: {title}
-        Is Free: {is_free}";
+        public override string ToString() => @$"[position]:
+id={id}
+type_id={type_id}
+title={title}
+is_free={is_free}";
     }
 }

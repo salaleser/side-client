@@ -21,6 +21,7 @@ namespace Side
 
         public void Awake()
         {
+            GameManager.SetWindowActive(true);
             organization = GameManager.Instance.currentOrganization;
         }
 

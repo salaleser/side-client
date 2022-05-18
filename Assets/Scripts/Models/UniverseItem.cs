@@ -10,9 +10,9 @@ namespace Models
         public int number;
         public List<GalaxyItem> galaxies;
 
-        public override string ToString() => @$"Universe:
-        ID: {id}
-        Title: {title}
-        Galaxies Count: {galaxies.Count}";
+        public override string ToString() => @$"[universe]:
+id={id}
+title={title}
+galaxies.Count={galaxies.Count}";
     }
 }

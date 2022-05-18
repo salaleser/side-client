@@ -8630,7 +8630,7 @@ GameObject:
   - component: {fileID: 4344427112609885612}
   - component: {fileID: 7982158485826569028}
   m_Layer: 5
-  m_Name: AttachedRoom
+  m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8649,12 +8649,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8178259836401181987}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 9.0112915, y: 0}
-  m_SizeDelta: {x: -18.0226, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4344427112609885612
 CanvasRenderer:
@@ -10840,7 +10840,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3862368757475161451}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99884003
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -18060,7 +18060,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000061035156, y: 0.00017674919}
+  m_AnchoredPosition: {x: -0.000061035156, y: 0.0001450725}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &5874671515128955841
@@ -20274,15 +20274,15 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6522914615189094015}
   - {fileID: 8655704172011287586}
+  - {fileID: 6522914615189094015}
   m_Father: {fileID: 5110984508225666086}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -33.9799}
-  m_SizeDelta: {x: 0, y: 67.9597}
+  m_AnchoredPosition: {x: 0, y: -30}
+  m_SizeDelta: {x: -20, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6944302061952011247
 GameObject:
@@ -21764,11 +21764,11 @@ RectTransform:
   - {fileID: 7727082453538639464}
   - {fileID: 5934604249234619583}
   m_Father: {fileID: 8178259836401181987}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -216, y: 0}
+  m_AnchoredPosition: {x: -200.06616, y: 0}
   m_SizeDelta: {x: 400.13232, y: 47.3069}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8687142907467193188

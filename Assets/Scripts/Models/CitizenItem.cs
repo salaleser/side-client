@@ -26,20 +26,20 @@ namespace Models
 
         private string Characteristics()
         {
-            var result = "Characteristics:";
+            var result = "[characteristics]:";
             foreach (var c in characteristics)
             {
-                result += $"\n        {c}";
+                result += $"{c}";
             }
             return result;
         }
 
         private string Statuses()
         {
-            var result = "Statuses:";
+            var result = "[statuses]:";
             foreach (var s in statuses)
             {
-                result += $"\n        {s}";
+                result += $"{s},";
             }
             return result;
         }

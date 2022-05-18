@@ -11,10 +11,10 @@ namespace Models
         public string type_description;
         public ItemItem item;
 
-        public override string ToString() => @$"Action:
-        Type ID: {type_id}
-        Type Title: {type_title}
-        Type Description: {type_description}
-        Item: {item}";
+        public override string ToString() => @$"[action]:
+type_id={type_id}
+type_title={type_title}
+type_description={type_description}
+item={item}";
     }
 }

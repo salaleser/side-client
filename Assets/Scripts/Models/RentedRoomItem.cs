@@ -20,15 +20,15 @@ namespace Models
 id={id}
 type={type}
 title={title}
-{OrganizationIds()}
+organization_ids={OrganizationIds()}
 renter_id={renter_id}";
 
         private string OrganizationIds()
         {
-            var result = "Organization IDs:";
+            var result = "";
             foreach (var v in organization_ids)
             {
-                result += $"\n    {v}";
+                result += $"{v},";
             }
             return result;
         }

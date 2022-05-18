@@ -10,12 +10,7 @@ namespace Side
 {
     public class LoginPopup : Popup
     {
-        public TMP_InputField citizenId;
-
-        private void OnEnable()
-        {
-            citizenId.Select();
-        }
+        public TMP_InputField CitizenId;
 
         private void Update()
         {
@@ -23,14 +18,14 @@ namespace Side
             {
                 if (Keyboard.current.enterKey.wasPressedThisFrame)
                 {
-                    Login();
+                    Login(int.Parse(CitizenId.text));
                 }
             }
         }
 
-        public void Login()
+        public void Login(int citizenId)
         {
-            NetworkManager.Instance.Login(int.Parse(citizenId.text == "" ? "1" : citizenId.text));
+            NetworkManager.Instance.Login(citizenId == 0 ? int.Parse(CitizenId.text) : citizenId);
             Destroy(this.gameObject);
         }
     }

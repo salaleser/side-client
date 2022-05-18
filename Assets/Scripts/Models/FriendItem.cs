@@ -10,9 +10,9 @@ namespace Models
         public int citizen_id;
         public string citizen_name;
 
-        public override string ToString() => @$"Friend:
-        ID: {id}
-        Citizen ID: {citizen_id}
-        Citizen Name: {citizen_name}";
+        public override string ToString() => @$"[friend]:
+id={id}
+citizen_id={citizen_id}
+citizen_name={citizen_name}";
     }
 }

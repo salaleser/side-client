@@ -14,10 +14,10 @@ namespace Models
         public int w;
         public int h;
 
-        public override string ToString() => @$"Required Room Type:
-        Title: {title}
-        Attached Room: {attached_room}
-        Width: {w}
-        Height: {h}";
+        public override string ToString() => @$"[required_room_type]:
+title={title}
+attached_room={attached_room}
+w={w}
+h={h}";
     }
 }

@@ -13,11 +13,11 @@ namespace Models
 
         public string ToCaption() => $"{title}";
 
-        public override string ToString() => @$"Organization Type:
-        ID: {id}
-        Title: {title}
-        {properties}
-        Required Room Types Count: {requirements.room_types.Count}";
+        public override string ToString() => @$"[organization_type]:
+id={id}
+title={title}
+properties={properties}
+requirements.room_types.Count={requirements.room_types.Count}";
     }
 
     [System.Serializable]
@@ -33,9 +33,9 @@ namespace Models
         public List<Items> in_items;
         public List<Items> out_items;
 
-        public override string ToString() => @$"Properties:
-            In Items: {ListToString<Items>(in_items)}
-            Out Items: {ListToString<Items>(out_items)}";
+        public override string ToString() => @$"[properties]:
+in_item={ListToString<Items>(in_items)}
+out_items={ListToString<Items>(out_items)}";
 
         private string ListToString<T>(List<T> items)
         {
@@ -47,7 +47,7 @@ namespace Models
             var result = "";
             foreach(var item in items)
             {
-                result += $"\n• {item}, ";
+                result += $"{item},";
             }
             return result.Substring(0, result.Length-2);
         }
@@ -59,8 +59,8 @@ namespace Models
         public ItemTypeItem type;
         public int quantity;
 
-        public override string ToString() => @$"
-        Quantity: {quantity}
-        {type}";
+        public override string ToString() => @$"[items]:
+quantity={quantity}
+item_type={type}";
     }
 }

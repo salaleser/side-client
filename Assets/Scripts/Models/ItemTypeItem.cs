@@ -10,8 +10,8 @@ namespace Models
         public string title;
         public string description;
 
-        public override string ToString() => @$"Item Type:
-        Title: {title}
-        Description: {description}";
+        public override string ToString() => @$"[item_type]:
+title={title}
+description={description}";
     }
 }

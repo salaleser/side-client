@@ -18,6 +18,7 @@ namespace Side
 
         public void Awake()
         {
+            GameManager.SetWindowActive(true);
         }
 
         public void Start()

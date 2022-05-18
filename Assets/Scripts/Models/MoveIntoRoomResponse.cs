@@ -8,6 +8,6 @@ namespace Models
     public class MoveIntoRoomResponse
     {
         public CitizenItem citizen;
-        public ParcelItem floor;
+        public ParcelItem parcel;
     }
 }

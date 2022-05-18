@@ -424,7 +424,11 @@ public class NetworkManager : Manager
 		var query = $"citizen_id={citizenId}";
 		StartCoroutine(Request("citizen", query, (result) => {
 			ProcessMe(result);
-			Parcel(GameManager.Instance.me.parcel_id);
+			CenterMeButton();
+			
+			// TODO
+			var room = GameManager.Instance.me.room;
+			Camera.main.transform.localPosition = new Vector3(room.x + Mathf.Floor(room.w / 2), 0, room.y - Mathf.Floor(room.h / 2));
 		}));
 	}
 
@@ -1066,18 +1070,19 @@ public class NetworkManager : Manager
 		}
 	}
 
-	private void ProcessParcel(string json)
+	public void ProcessParcel(string json)
 	{
 		var response = JsonUtility.FromJson<ParcelResponse>(json);
-		if (response == null)
-		{
-			return;
-		}
 
 		var parcel = response.parcel;
 		GameManager.Instance.currentParcel = parcel;
 		GameManager.Instance.state = GameManager.Parcel;
 
+		InstantiateParcel(parcel);
+	}
+
+	public void InstantiateParcel(ParcelItem parcel)
+	{
 		DestroyAll();
 
 		var width = Width * Width;

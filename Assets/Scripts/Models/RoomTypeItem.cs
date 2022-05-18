@@ -27,7 +27,7 @@ properties={properties}";
 
         public override string ToString() => @$"[properties]:
 color={color}
-[size]: w={size.w},h={size.h}
+[size]:w={size.w},h={size.h}
 durability={durability}
 tasks={ListToString<Task>(tasks)}";
 
@@ -41,7 +41,7 @@ tasks={ListToString<Task>(tasks)}";
             var result = "";
             foreach(var item in items)
             {
-                result += $"\n• {item}, ";
+                result += $"{item},";
             }
             return result.Substring(0, result.Length-2);
         }
@@ -60,7 +60,7 @@ tasks={ListToString<Task>(tasks)}";
         public int type_id;
         public int count;
 
-        public override string ToString() => @$"task:
+        public override string ToString() => @$"[task]:
 count={count}
 type id={type_id}";
     }
