@@ -17,7 +17,11 @@ namespace Entities.Cells
 
         private void OnMouseEnter()
         {
-            NetworkManager.Instance.text.text = $"\n\n{parcelItem}";
+            if (!GameManager.QuickMenuActive && !GameManager.WindowActive && !GameManager.PopupActive)
+            {
+                NetworkManager.Instance.text.text = $"\n\n{parcelItem}";
+                GameManager.Instance.Cursor.transform.SetPositionAndRotation(this.transform.position, Quaternion.identity);
+            }
         }
     }
 }

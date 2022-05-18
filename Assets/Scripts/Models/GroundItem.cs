@@ -7,10 +7,13 @@ namespace Models
     [System.Serializable]
     public class GroundItem : Item
     {
+        public int id;
         public int x;
         public int y;
         public int z;
         
-        public override string ToString() => @$"Ground: Position{{x={x},y={y},z={z}}}";
+        public override string ToString() => @$"[ground]:
+id={id}
+title={title}";
     }
 }

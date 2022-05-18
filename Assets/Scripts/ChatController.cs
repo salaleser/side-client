@@ -24,12 +24,14 @@ namespace Side
 
         private void Update()
         {
-            if (GameManager.IsShortcutsActive && GameObject.FindWithTag("Window") == null
-                && GameObject.FindWithTag("Popup") == null)
+            if (GameManager.ShortcutsActive)
             {
                 if (Keyboard.current.enterKey.wasPressedThisFrame)
                 {
-                    inputField.Select();
+                    if (!GameManager.WindowActive && !GameManager.PopupActive)
+                    {
+                        inputField.Select();
+                    }
                 }
             }
         }

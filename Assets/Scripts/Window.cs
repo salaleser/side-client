@@ -9,5 +9,14 @@ namespace Side
 {
     public class Window : MonoBehaviour
     {
+        private void Awake()
+        {
+            GameManager.SetWindowActive(true);
+        }
+
+        private void OnDisable()
+        {
+            GameManager.SetWindowActive(false);
+        }
     }
 }

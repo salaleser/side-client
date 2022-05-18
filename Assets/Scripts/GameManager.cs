@@ -9,6 +9,8 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+	public const int GroundLevel = 2;
+
 	public const int Organization = -3;
 	public const int Market = -2;
 	public const int Inventory = -1;
@@ -39,13 +41,18 @@ public class GameManager : MonoBehaviour
 	public CitizenItem me = new();
     public RentedRoomItem currentRentedRoom;
     public PageItem currentPage;
+    
+	public GameObject CursorPrefab;
+	public GameObject Cursor { get; private set; }
 
-	public int cursorX;
-	public int cursorY;
-	public int cursorZ;
+	public GameObject ChatPrefab;
+	public static GameObject Chat { get; private set; }
 
-	public GameObject shortcutsActiveSign;
-	public static bool IsShortcutsActive { get; private set; }
+	public GameObject ShortcutsActiveSign;
+	public static bool QuickMenuActive { get; private set; }
+	public static bool WindowActive { get; private set; }
+	public static bool PopupActive { get; private set; }
+	public static bool ShortcutsActive { get; private set; }
 
 	public static GameManager Instance { get; private set; }
 
@@ -64,13 +71,32 @@ public class GameManager : MonoBehaviour
 
 	private void Start()
 	{
+		Chat = Instantiate(ChatPrefab, NetworkManager.Instance.uiCanvas.transform);
+		Cursor = Instantiate(CursorPrefab, NetworkManager.Instance.uiCanvas.transform);
 		SetShortcutsActive(true);
 	}
 
 	public static void SetShortcutsActive(bool isActive)
 	{
-		IsShortcutsActive = isActive;
-		GameManager.Instance.shortcutsActiveSign.GetComponent<Image>().color = isActive ? Color.green : Color.red;
-		GameManager.Instance.shortcutsActiveSign.GetComponentInChildren<TMP_Text>().text = isActive ? "SHORCUTS ENABLED" : "SHORCUTS DISABLED";
+		ShortcutsActive = isActive;
+		Instance.ShortcutsActiveSign.GetComponent<Image>().color = isActive ? Color.green : Color.red;
+		Instance.ShortcutsActiveSign.GetComponentInChildren<TMP_Text>().text = isActive ? "SHORCUTS ENABLED" : "SHORCUTS DISABLED";
+	}
+
+	public static void SetQuickMenuActive(bool isActive)
+	{
+		QuickMenuActive = isActive;
+	}
+
+	public static void SetWindowActive(bool isActive)
+	{
+		WindowActive = isActive;
+		Chat.SetActive(!isActive);
+	}
+
+	public static void SetPopupActive(bool isActive)
+	{
+		PopupActive = isActive;
+		Chat.SetActive(!isActive);
 	}
 }

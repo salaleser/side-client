@@ -9,32 +9,18 @@ namespace Side
 {
     public class Cursor : MonoBehaviour
     {
-        public TMP_Text command;
-
-        private bool _commandMode;
-        private int _commandX;
-        private int _commandY;
-
         private bool _isShiftDown;
+        private Camera _camera;
+        private Mouse _mouse;
 
-        private void Update() {
-            Ray ray = Camera.main.ScreenPointToRay(new Vector3(Mouse.current.position.x.ReadValue(), Mouse.current.position.y.ReadValue(), 0));
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (GameObject.FindWithTag("QuickMenu") == null)
-                {
-                    var entity = hit.transform.GetComponent<Entity>();
-                    if (entity != null)
-                    {
-                        this.transform.SetPositionAndRotation(entity.transform.position, Quaternion.identity);
-                        GameManager.Instance.cursorX = (int)entity.transform.position.x;
-                        GameManager.Instance.cursorY = (int)entity.transform.position.y;
-                        GameManager.Instance.cursorZ = (int)entity.transform.position.z;
-                    }
-                }
-            }
+        private void Start()
+        {
+            _camera = Camera.main;
+            _mouse = Mouse.current;
+        }
 
+        private void Update()
+        {
             if (Keyboard.current.leftShiftKey.wasPressedThisFrame)
             {
                 _isShiftDown = true;
@@ -44,31 +30,64 @@ namespace Side
                 _isShiftDown = false;
             }
 
+            if (_mouse.rightButton.wasPressedThisFrame)
+            {
+                _camera.transform.SetParent(transform);
+            }
+            else if (_mouse.rightButton.wasReleasedThisFrame)
+            {
+                _camera.transform.SetParent(null);
+            }
+
             if (Keyboard.current.leftArrowKey.wasPressedThisFrame)
             {
-                Camera.main.transform.localPosition -= new Vector3(_isShiftDown ? 8 : 1, 0, 0);
+                MoveLeft();
+                MoveUp();
             }
             
             if (Keyboard.current.downArrowKey.wasPressedThisFrame)
             {
-                Camera.main.transform.localPosition -= new Vector3(0, 0, _isShiftDown ? 8 : 1);
+                MoveLeft();
+                MoveDown();
             }
             
             if (Keyboard.current.upArrowKey.wasPressedThisFrame)
             {
-                Camera.main.transform.localPosition += new Vector3(0, 0, _isShiftDown ? 8 : 1);
+                MoveUp();
+                MoveRight();
             }
             
             if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
             {
-                Camera.main.transform.localPosition += new Vector3(_isShiftDown ? 8 : 1, 0, 0);
+                MoveDown();
+                MoveRight();
             }
             
             if (Keyboard.current.spaceKey.wasPressedThisFrame)
             {
                 var room = GameManager.Instance.me.room;
-                Camera.main.transform.localPosition = new Vector3(room.x + Mathf.Floor(room.w / 2), 0, room.y - Mathf.Floor(room.h / 2));
+                _camera.transform.localPosition = new Vector3(room.x + Mathf.Floor(room.w / 2), 0, room.y - Mathf.Floor(room.h / 2));
             }
+        }
+
+        private void MoveLeft()
+        {
+            _camera.transform.localPosition -= new Vector3(_isShiftDown ? 8 : 1, 0, 0);
+        }
+
+        private void MoveRight()
+        {
+            _camera.transform.localPosition += new Vector3(_isShiftDown ? 8 : 1, 0, 0);
+        }
+
+        private void MoveUp()
+        {
+            _camera.transform.localPosition += new Vector3(0, 0, _isShiftDown ? 8 : 1);
+        }
+
+        private void MoveDown()
+        {
+            _camera.transform.localPosition -= new Vector3(0, 0, _isShiftDown ? 8 : 1);
         }
     }
 }

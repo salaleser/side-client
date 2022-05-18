@@ -12,6 +12,7 @@ namespace Entities.Cells
 
         private void Start()
         {
+            AddButton($"Create Room", () => NetworkManager.Instance.InstantiateCreateRoomPopup(roomItem.z + 1));
             if (GameManager.Instance.me.room_id == roomItem.id)
             {
                 AddButton($"Inventory", () => NetworkManager.Instance.Inventory(roomItem.item_id));
@@ -30,7 +31,11 @@ namespace Entities.Cells
 
         private void OnMouseEnter()
         {
-            NetworkManager.Instance.text.text = $"\n\n{roomItem}";
+            if (!GameManager.QuickMenuActive && !GameManager.WindowActive && !GameManager.PopupActive)
+            {
+                NetworkManager.Instance.text.text = $"\n\n{roomItem}";
+                GameManager.Instance.Cursor.transform.SetPositionAndRotation(this.transform.position, Quaternion.identity);
+            }
         }
     }
 }

@@ -15,6 +15,16 @@ namespace Side
         public Transform Menu;
         public Entity Entity;
 
+        private void Awake()
+        {
+            GameManager.SetQuickMenuActive(true);
+        }
+
+        private void OnDisable()
+        {
+            GameManager.SetQuickMenuActive(false);
+        }
+
         private void Update()
         {
             if (Mouse.current.leftButton.wasReleasedThisFrame)

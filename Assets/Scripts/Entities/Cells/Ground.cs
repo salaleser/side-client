@@ -13,20 +13,16 @@ namespace Entities.Cells
 
         private void Start()
         {
-            AddButton($"Create Room", () => NetworkManager.Instance.InstantiateCreateRoomPopup());
-            AddButton($"2", () => Debug.Log(2));
-            AddButton($"3", () => Debug.Log(3));
-            AddButton($"4", () => Debug.Log(4));
-            QuickButtons.Add(null);
-            AddButton($"6", () => Debug.Log(6));
-            AddButton($"7", () => Debug.Log(7));
-            AddButton($"8", () => Debug.Log(8));
-            AddButton($"9", () => Debug.Log(9));
+            AddButton($"Create Room", () => NetworkManager.Instance.InstantiateCreateRoomPopup(groundItem.z - GameManager.GroundLevel));
         }
 
         private void OnMouseEnter()
         {
-            NetworkManager.Instance.text.text = $"\n\n{groundItem}";
+            if (!GameManager.QuickMenuActive && !GameManager.WindowActive && !GameManager.PopupActive)
+            {
+                NetworkManager.Instance.text.text = $"\n\n{groundItem}";
+                GameManager.Instance.Cursor.transform.SetPositionAndRotation(this.transform.position, Quaternion.identity);
+            }
         }
     }
 }

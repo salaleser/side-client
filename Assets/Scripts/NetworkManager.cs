@@ -16,6 +16,7 @@ public class NetworkManager : Manager
 {
 	public const int Width = 8;
 	public const int Height = 8;
+	public const int Depth = 8;
 
 	private string Host;
 	private string Port;
@@ -26,7 +27,6 @@ public class NetworkManager : Manager
 	public GameObject createRoomPopupPrefab;
 	public GameObject noticePopupPrefab;
 	public GameObject loginPopupPrefab;
-	public GameObject chatPanelPrefab;
 	public GameObject organizationWindowPrefab;
 	public GameObject citizenWindowPrefab;
 	public GameObject computerWindowPrefab;
@@ -55,7 +55,7 @@ public class NetworkManager : Manager
 	public GameObject blockUnknownPrefab;
 	public GameObject parcelExploredPrefab;
 	public GameObject parcelUnknownPrefab;
-	public GameObject floorGroundPrefab;
+	public GameObject RoomGroundPrefab;
 
 	public GameObject openRoomPrefab;
 	public GameObject closedRoomPrefab;
@@ -127,14 +127,13 @@ public class NetworkManager : Manager
 
 	private void Start()
 	{
-		Instantiate(chatPanelPrefab, uiCanvas.transform);
 		Instantiate(mainButtonsPanelPrefab, uiCanvas.transform);
-		InstantiateLoginPopup();
+		Instantiate(loginPopupPrefab, uiCanvas.transform);
 	}
 
 	private void Update()
 	{
-		if (GameManager.IsShortcutsActive && GameObject.FindWithTag("Window") == null)
+		if (GameManager.ShortcutsActive && GameObject.FindWithTag("Window") == null)
 		{
 			if (Keyboard.current.mKey.wasPressedThisFrame)
 			{
@@ -164,7 +163,7 @@ public class NetworkManager : Manager
 			{
 				ZoomOutButton();
 			}
-			else if (Keyboard.current.pKey.wasPressedThisFrame)
+			else if (Keyboard.current.tabKey.wasPressedThisFrame)
 			{
 				ProfileButton();
 			}
@@ -554,9 +553,9 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("parcel-claim", query, ProcessBlock));
 	}
 
-	public void CreateRoom(int parcelId, int typeId, int x, int y, int z, int w, int h, int creatorId, string title)
+	public void CreateRoom(int parcelId, int typeId, int x, int y, int z, int w, int h, int organizationId, int creatorId, string title)
     {
-		var query = $"parcel_id={parcelId}&type_id={typeId}&x={x}&y={y}&z={z}&w={w}&h={h}&creator_id={creatorId}&title={title}";
+		var query = $"parcel_id={parcelId}&type_id={typeId}&x={x}&y={y}&z={z}&w={w}&h={h}&organization_id={organizationId}&creator_id={creatorId}&title={title}";
 		StartCoroutine(Request("room-create", query, ProcessParcel));
 	}
 
@@ -701,9 +700,10 @@ public class NetworkManager : Manager
 		}
 	}
 
-	public void InstantiateCreateRoomPopup()
+	public void InstantiateCreateRoomPopup(int z)
 	{
-		Instantiate(createRoomPopupPrefab, uiCanvas.transform);
+		Instantiate(createRoomPopupPrefab, uiCanvas.transform)
+			.GetComponent<Side.CreateRoomPopup>().Z.text = z.ToString();
 	}
 
 	private void InstantiateDealPopup(DealItem deal)
@@ -771,11 +771,6 @@ public class NetworkManager : Manager
 		quickMenuController.UpdateButtons();
 	}
 
-	public void InstantiateLoginPopup()
-	{
-		Instantiate(loginPopupPrefab, uiCanvas.transform);
-	}
-
 	public void Chat(int citizenId, int roomId, string text)
     {
 		var query = $"citizen_id={citizenId}&room_id={roomId}&text={Escape(text)}";
@@ -820,24 +815,6 @@ public class NetworkManager : Manager
 
 		GameManager.Instance.me = response.citizen;
 		ProcessParcel(json);
-	}
-
-	private void InstantiateGround(GameObject prefab)
-	{
-		for (var i = 0; i < Width * Width; i++)
-		{
-			for (var j = 0; j < Height * Height; j++)
-			{
-				// TODO сделать подземелье (пока не удалось решить проблему низкой производительности)
-				var k = 0;
-				var instance = Instantiate(prefab, new Vector3(i+1, k, j+1), Quaternion.identity, mapCanvas.transform);
-				instance.name = $"Ground ({i+1}/{j+1}/{k})";
-				var ground = instance.GetComponent<Entities.Cells.Ground>();
-				ground.groundItem.x = i+1;
-				ground.groundItem.y = j+1;
-				ground.groundItem.z = k;
-			}
-		}
 	}
 
 	private void ProcessUniverse(string json)
@@ -1103,26 +1080,35 @@ public class NetworkManager : Manager
 
 		DestroyAll();
 
-		const int Z = 8;
 		var width = Width * Width;
 		var height = Height * Height;
-		var parcelMap = new RoomItem[width, height, Z];
-		foreach(var room in parcel.rooms)
+		var depth = Depth + GameManager.GroundLevel;
+		var parcelMap = new Models.Item[width, height, depth];
+		for (var i = 0; i < width; i++)
 		{
-			for (var i = 0; i < width; i++)
+			for (var j = 0; j < height; j++)
 			{
-				for (var j = 0; j < height; j++)
+				for (var k = 0; k < depth; k++)
 				{
-					for (var k = 0; k < Z; k++)
+					foreach(var room in parcel.rooms)
 					{
-						if (i+1 >= room.x
-							&& i+1 < room.x + room.w
-							&& j+1 <= room.y
-							&& j+1 > room.y - room.h
-							&& k == room.z)
+						if (i+1 >= room.x && i+1 < room.x + room.w
+							&& j+1 <= room.y && j+1 > room.y - room.h
+							&& k == room.z + GameManager.GroundLevel)
 						{
 							parcelMap[i, j, k] = room;
 						}
+					}
+					
+					if (k < GameManager.GroundLevel)
+					{
+						var ground = new GroundItem();
+						ground.id = i * width^3 + j * height^2 + k * depth;
+						ground.x = i+1;
+						ground.y = j+1;
+						ground.z = k+1;
+						ground.title = $"{i}-{j}-{k}";
+						parcelMap[i, j, k] = ground;
 					}
 				}
 			}
@@ -1132,31 +1118,21 @@ public class NetworkManager : Manager
 		{
 			for (var j = 0; j < height; j++)
 			{
-				for (var k = 0; k < Z; k++)
+				for (var k = 0; k < depth; k++)
 				{
-					var room = parcelMap[i, j, k];
-					if (room == null)
+					switch (parcelMap[i, j, k])
 					{
-						continue;
-					}
-
-					var roomPrefab = room.id == GameManager.Instance.me.room_id ? openRoomPrefab : closedRoomPrefab;
-					var roomInstance = Instantiate(roomPrefab, new Vector3(i+1, k, j+1), Quaternion.identity, mapCanvas.transform);
-					var roomComponent = roomInstance.GetComponent<Entities.Cells.Room>();
-					roomComponent.GetComponentInChildren<Renderer>().material.color = room.type.properties.color;
-					roomComponent.roomItem = room;
-
-					for (var citiezenNumber = 0; citiezenNumber < room.citizens.Count; citiezenNumber++)
-					{
-						var citizenPos = new Vector3(room.x, room.z, room.y) + new Vector3(citiezenNumber, 0, 0);
-						var citizenInstance = Instantiate(citizenPrefab, citizenPos, Quaternion.identity, roomInstance.transform);
-						var citizen = citizenInstance.GetComponent<Entities.Citizen>();
-						citizen.citizenItem = room.citizens[citiezenNumber];
-
-						if (room.citizens[citiezenNumber].id == GameManager.Instance.me.id)
-						{
-							citizen.GetComponentInChildren<Renderer>().material.color = Color.green;
-						}
+						case GroundItem ground:
+							InstantiateGround(ground, new Vector3(i+1, k+1, j+1));
+							break;
+						case RoomItem room:
+							InstantiateRoom(room, new Vector3(i+1, k+1, j+1));
+							break;
+						case null:
+							break;
+						default:
+							Debug.LogError("entity type unknown");
+							break;
 					}
 				}
 			}
@@ -1172,8 +1148,39 @@ public class NetworkManager : Manager
 			GameObject.Find("Chat(Clone)").GetComponentInChildren<Side.ChatController>()
 				.ReplaceChat(room.messages);
 		}
+	}
 
-		InstantiateGround(floorGroundPrefab);
+	private void InstantiateGround(GroundItem ground, Vector3 pos)
+	{
+		var prefab = RoomGroundPrefab;
+		var instance = Instantiate(prefab, pos, Quaternion.identity, mapCanvas.transform);
+		instance.name = $"Ground#{ground.id} ({ground.x}/{ground.y}/{ground.z})";
+		var component = instance.GetComponent<Entities.Cells.Ground>();
+		component.GetComponentInChildren<Renderer>().material.color = new Color(UnityEngine.Random.Range(0.4f, 0.6f), UnityEngine.Random.Range(0.8f, 1.0f), UnityEngine.Random.Range(0.4f, 0.6f));
+		component.groundItem = ground;
+	}
+
+	private void InstantiateRoom(RoomItem room, Vector3 pos)
+	{
+		var prefab = room.id == GameManager.Instance.me.room_id ? openRoomPrefab : closedRoomPrefab;
+		var instance = Instantiate(prefab, pos, Quaternion.identity, mapCanvas.transform);
+		instance.name = $"Room#{room.id} ({room.x}/{room.y}/{room.z})";
+		var component = instance.GetComponent<Entities.Cells.Room>();
+		component.GetComponentInChildren<Renderer>().material.color = room.type.properties.color;
+		component.roomItem = room;
+
+		// for (var citizenNumber = 0; citizenNumber < room.citizens.Count; citizenNumber++)
+		// {
+		// 	var citizenPos = pos + new Vector3(citizenNumber, 0, 0);
+		// 	var citizenInstance = Instantiate(citizenPrefab, citizenPos, Quaternion.identity, instance.transform);
+		// 	var citizen = citizenInstance.GetComponent<Entities.Citizen>();
+		// 	citizen.citizenItem = room.citizens[citizenNumber];
+
+		// 	if (room.citizens[citizenNumber].id == GameManager.Instance.me.id)
+		// 	{
+		// 		citizen.GetComponentInChildren<Renderer>().material.color = Color.green;
+		// 	}
+		// }
 	}
 
 	public void ProcessOrganization(string json)

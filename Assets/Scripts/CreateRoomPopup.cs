@@ -10,26 +10,28 @@ namespace Side
 {
     public class CreateRoomPopup : Popup
     {
-        public TMP_InputField x;
-        public TMP_InputField y;
-        public TMP_InputField z;
-        public TMP_Dropdown roomTypes;
-        public TMP_InputField title;
-        public TMP_Text description;
+        public TMP_InputField X;
+        public TMP_InputField Y;
+        public TMP_InputField Z;
+        public TMP_InputField Title;
+        public TMP_Dropdown RoomTypes;
+        public TMP_Dropdown ConstructionOrganizations;
+        public TMP_Text Description;
 
         private List<RoomTypeItem> _roomTypes;
+        private List<OrganizationItem> _constructionOrganizations;
 
         private void Start()
         {
-            x.text = GameManager.Instance.cursorX.ToString();
-            y.text = GameManager.Instance.cursorY.ToString();
-            z.text = GameManager.Instance.cursorZ.ToString();
+            X.text = GameManager.Instance.Cursor.transform.position.x.ToString();
+            Y.text = GameManager.Instance.Cursor.transform.position.z.ToString();
             UpdateRoomTypes();
+            UpdateConstructionOrganizations();
         }
 
         private void Update()
         {
-            if (GameManager.IsShortcutsActive)
+            if (GameManager.ShortcutsActive)
             {
                 if (Keyboard.current.enterKey.wasPressedThisFrame)
                 {
@@ -41,13 +43,24 @@ namespace Side
                 }
                 else if (Keyboard.current.tKey.wasPressedThisFrame)
                 {
-                    if (roomTypes.value == roomTypes.options.Count - 1)
+                    if (RoomTypes.value == RoomTypes.options.Count - 1)
                     {
-                        roomTypes.value = 0;
+                        RoomTypes.value = 0;
                     }
                     else
                     {
-                        roomTypes.value++;
+                        RoomTypes.value++;
+                    }
+                }
+                else if (Keyboard.current.bKey.wasPressedThisFrame)
+                {
+                    if (ConstructionOrganizations.value == ConstructionOrganizations.options.Count - 1)
+                    {
+                        ConstructionOrganizations.value = 0;
+                    }
+                    else
+                    {
+                        ConstructionOrganizations.value++;
                     }
                 }
             }
@@ -55,18 +68,36 @@ namespace Side
 
         public void UpdateRoomTypeDescription()
         {
-            description.text = _roomTypes
-                .Where(x => x.ToCaption() == roomTypes.captionText.text)
+            Description.text = _roomTypes
+                .Where(x => x.ToCaption() == RoomTypes.captionText.text)
                 .FirstOrDefault()?
                 .ToString();
         }
 
-        public void UpdateRoomTypes()
+        public void UpdateConstructionOrganizationDescription()
+        {
+            Description.text = _constructionOrganizations
+                .Where(x => x.ToCaption() == ConstructionOrganizations.captionText.text)
+                .FirstOrDefault()?
+                .ToString();
+        }
+
+        private void UpdateRoomTypes()
         {
             StartCoroutine(NetworkManager.Instance.Request("room-types", "", (result) => {
                 _roomTypes = JsonUtility.FromJson<RoomTypesResponse>(result).room_types;
-                roomTypes.AddOptions(_roomTypes
+                RoomTypes.AddOptions(_roomTypes
                     .Where(x => x.id != 14) // нельзя строить "construction site"
+                    .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
+                    .ToList());
+            }));
+        }
+
+        private void UpdateConstructionOrganizations()
+        {
+            StartCoroutine(NetworkManager.Instance.Request("organizations", $"type_id={11}", (result) => {
+                _constructionOrganizations = JsonUtility.FromJson<OrganizationsResponse>(result).organizations;
+                ConstructionOrganizations.AddOptions(_constructionOrganizations
                     .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
                     .ToList());
             }));
@@ -75,24 +106,41 @@ namespace Side
         public void Accept()
         {
             var roomType = _roomTypes
-                .Where(x => x.ToCaption() == roomTypes.captionText.text)
+                .Where(x => x.ToCaption() == RoomTypes.captionText.text)
                 .FirstOrDefault();
             if (roomType == null)
             {
+                NetworkManager.Instance.InstantiateNoticePopup("ERROR", "Не указан тип комнаты");
+                return;
+            }
+
+            var constructionOrganization = _constructionOrganizations
+                .Where(x => x.ToCaption() == ConstructionOrganizations.captionText.text)
+                .FirstOrDefault();
+            if (constructionOrganization == null)
+            {
+                NetworkManager.Instance.InstantiateNoticePopup("ERROR", "Не указана строительная организация");
                 return;
             }
 
             var size = 64;
-            if ((roomType.properties.size.w + (int.Parse(x.text) - 1) <= size) && (roomType.properties.size.h + (size - int.Parse(y.text)) <= size))
+            if ((roomType.properties.size.w + (int.Parse(X.text) - 1) <= size)
+                && (roomType.properties.size.h + (size - int.Parse(Y.text)) <= size))
             {
                 NetworkManager.Instance.CreateRoom(GameManager.Instance.currentParcel.id,
-                    roomType.id, int.Parse(x.text), int.Parse(y.text), int.Parse(z.text), roomType.properties.size.w, roomType.properties.size.h,
-                    GameManager.Instance.me.id, title.text);
+                    roomType.id, int.Parse(X.text), int.Parse(Y.text), int.Parse(Z.text),
+                    roomType.properties.size.w, roomType.properties.size.h,
+                    constructionOrganization.id, GameManager.Instance.me.id, Title.text);
                 Destroy(this.gameObject);
             }
             else
             {
-                NetworkManager.Instance.InstantiateNoticePopup("ERROR", @$"Unable to create");
+                NetworkManager.Instance.InstantiateNoticePopup("ERROR", @$"Unable to create
+roomType.properties.size.w={roomType.properties.size.w}
+roomType.properties.size.h={roomType.properties.size.h}
+({roomType.properties.size.w} + {(int.Parse(X.text) - 1)} <= {size}) = {(roomType.properties.size.w + (int.Parse(X.text) - 1) <= size)}
+({roomType.properties.size.h} + {(size - int.Parse(Y.text))} <= {size}) = {(roomType.properties.size.h + (size - int.Parse(Y.text)) <= size)}
+");
             }
         }
 

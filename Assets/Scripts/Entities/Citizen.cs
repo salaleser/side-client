@@ -16,7 +16,11 @@ namespace Entities
 
         private void OnMouseEnter()
         {
-            NetworkManager.Instance.text.text = $"\n\n{citizenItem}";
+            if (!GameManager.QuickMenuActive && !GameManager.WindowActive && !GameManager.PopupActive)
+            {
+                NetworkManager.Instance.text.text = $"\n\n{citizenItem}";
+                GameManager.Instance.Cursor.transform.SetPositionAndRotation(this.transform.position, Quaternion.identity);
+            }
         }
     }
 }

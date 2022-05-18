@@ -34,6 +34,7 @@ title={title}
 type={type}
 health={health}
 renter_id={renter_id}
+creator_id={creator_id}
 rentable={rentable}
 organization_ids.Count={organization_ids.Count}
 items.Count={items.Count}

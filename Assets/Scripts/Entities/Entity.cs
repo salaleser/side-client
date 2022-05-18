@@ -15,16 +15,11 @@ public class Entity : MonoBehaviour
         QuickButtons.Add(interactable ? new QuickButton(text, action) : null);
     }
 
-    private void OnMouseEnter()
-    {
-        // NetworkManager.Instance.text.text = $"{this}";
-    }
-
     private void OnMouseOver()
     {
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (GameObject.FindWithTag("Window") == null && GameObject.FindWithTag("Popup") == null)
+            if (!GameManager.WindowActive && !GameManager.PopupActive)
             {
                 NetworkManager.Instance.InstantiateQuickMenu(this.transform);
             }

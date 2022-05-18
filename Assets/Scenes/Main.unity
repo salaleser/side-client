@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
+  m_IndirectSpecularColor: {r: 0.4366753, g: 0.48427093, b: 0.5645238, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -236,7 +236,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -67.3376, y: -42.8593}
+  m_AnchoredPosition: {x: -409.3, y: -46.6}
   m_SizeDelta: {x: 134.6352, y: 83.7187}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &152935538
@@ -396,11 +396,11 @@ MonoBehaviour:
       properties:
         in_items: []
         out_items: []
-        tasks: []
     properties:
       membership_fee: 0
       join_type_id: 0
     is_active: 0
+    tasks: []
     pages: []
     members: []
   currentCitizen:
@@ -408,11 +408,8 @@ MonoBehaviour:
     name: 
     account_id: 0
     active_task_id: 0
-    organization_id: 0
     room_id: 0
     parcel_id: 0
-    floor_id: 0
-    z: 0
     root_item_id: 0
     delivery_address: 0
     items: []
@@ -425,13 +422,22 @@ MonoBehaviour:
     room:
       title: 
       id: 0
-      type_id: 0
-      type_title: 
+      type:
+        id: 0
+        title: 
+        properties:
+          color: {r: 0, g: 0, b: 0, a: 0}
+          size:
+            w: 0
+            h: 0
+          durability: 0
+          tasks: []
       x: 0
       y: 0
       z: 0
       w: 0
       h: 0
+      health: 0
       creator_id: 0
       renter_id: 0
       item_id: 0
@@ -443,23 +449,14 @@ MonoBehaviour:
       messages: []
       properties:
         type_id: 0
-      type_properties:
-        color: {r: 0, g: 0, b: 0, a: 0}
-        size:
-          w: 0
-          h: 0
-        category: 
     rented_rooms: []
   me:
     id: 0
     name: 
     account_id: 0
     active_task_id: 0
-    organization_id: 0
     room_id: 0
     parcel_id: 0
-    floor_id: 0
-    z: 0
     root_item_id: 0
     delivery_address: 0
     items: []
@@ -472,13 +469,22 @@ MonoBehaviour:
     room:
       title: 
       id: 0
-      type_id: 0
-      type_title: 
+      type:
+        id: 0
+        title: 
+        properties:
+          color: {r: 0, g: 0, b: 0, a: 0}
+          size:
+            w: 0
+            h: 0
+          durability: 0
+          tasks: []
       x: 0
       y: 0
       z: 0
       w: 0
       h: 0
+      health: 0
       creator_id: 0
       renter_id: 0
       item_id: 0
@@ -490,63 +496,35 @@ MonoBehaviour:
       messages: []
       properties:
         type_id: 0
-      type_properties:
-        color: {r: 0, g: 0, b: 0, a: 0}
-        size:
-          w: 0
-          h: 0
-        category: 
     rented_rooms: []
   currentRentedRoom:
     title: 
     id: 0
-    type_id: 0
+    type:
+      id: 0
+      title: 
+      properties:
+        color: {r: 0, g: 0, b: 0, a: 0}
+        size:
+          w: 0
+          h: 0
+        durability: 0
+        tasks: []
     x: 0
     y: 0
     w: 0
     h: 0
-    type_title: 
     renter_id: 0
     item_id: 0
     organization_ids: 
-  currentItem:
-    id: 0
-    parent_id: 0
-    type_id: 0
-    owner_id: 0
-    type_title: 
-    quantity: 0
-    price: 0
-    children_count: 0
   currentPage:
     id: 0
     organization_id: 0
     content: 
     path: 
-  newOrganization:
-    id: 0
-    title: 
-    attached_rooms: []
-    type:
-      id: 0
-      title: 
-      requirements:
-        room_types: []
-        room_type_ids: 
-      properties:
-        in_items: []
-        out_items: []
-        tasks: []
-    properties:
-      membership_fee: 0
-      join_type_id: 0
-    is_active: 0
-    pages: []
-    members: []
-  cursorX: 0
-  cursorY: 0
-  cursorZ: 0
-  shortcutsActiveSign: {fileID: 152935536}
+  CursorPrefab: {fileID: 9040041545605410619, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
+  ChatPrefab: {fileID: 3180324904303522590, guid: 396b4fce2d9894e5ca425b35b7fc24df, type: 3}
+  ShortcutsActiveSign: {fileID: 152935536}
 --- !u!4 &559488106
 Transform:
   m_ObjectHideFlags: 0
@@ -598,63 +576,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1001 &1015806963
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410616, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9040041545605410619, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
-      propertyPath: m_Name
-      value: Cursor
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
 --- !u!1 &1207886746
 GameObject:
   m_ObjectHideFlags: 0
@@ -845,14 +766,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1468858875}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 300, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1561466738
 GameObject:
   m_ObjectHideFlags: 0
@@ -884,27 +805,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainButtonsPanelPrefab: {fileID: 4986402042970637749, guid: 3265e76a060fa43898fa60b7254c8794, type: 3}
   quickMenuPrefab: {fileID: 6657676188238830695, guid: c3ace36d5551e4b118710cdc24625288, type: 3}
-  quickButtonPrefab: {fileID: 1343136061256876229, guid: 61c154883dbc74fc99f914614b9216a0, type: 3}
   dealPopupPrefab: {fileID: 2130151071311696967, guid: 4aa0c94f0746d4346a8d7d40ba3d4b82, type: 3}
   createRoomPopupPrefab: {fileID: 2130151071311696967, guid: 91778e3526d294319b6b93bf0e6348ce, type: 3}
   noticePopupPrefab: {fileID: 2130151071311696967, guid: 411be8ea80c7a475290182270c3c7ae4, type: 3}
   loginPopupPrefab: {fileID: 2130151071311696967, guid: 821cf549b71da46c296859cdc8c3e911, type: 3}
-  chatPanelPrefab: {fileID: 3180324904303522590, guid: 396b4fce2d9894e5ca425b35b7fc24df, type: 3}
   organizationWindowPrefab: {fileID: 5675518160032065541, guid: e23ec2cfa44c54970bd4c29bb9a4f0d8, type: 3}
   citizenWindowPrefab: {fileID: 5675518160032065541, guid: c83e14f86d7944249b7bd0d42b827ef8, type: 3}
   computerWindowPrefab: {fileID: 5675518160032065541, guid: 7bee1e4f612574b88802571278907e54, type: 3}
   uiCanvas: {fileID: 645576251}
   mapCanvas: {fileID: 1987155250}
   text: {fileID: 1881210457}
-  itemPrefab: {fileID: 5523004236194669490, guid: 08357065c8fef4b758747ac4cd69ab11, type: 3}
-  taskPrefab: {fileID: 5523004236194669490, guid: b8a559821a352483ea82726f49f02d9e, type: 3}
-  positionPrefab: {fileID: 5523004236194669490, guid: 8af27ef854ee94e729ae4821219d79b6, type: 3}
-  lotPrefab: {fileID: 5523004236194669490, guid: 6b53c80b129cb4a7d83121372e4ee58e, type: 3}
-  organizationTypePrefab: {fileID: 5523004236194669490, guid: 9f1ed22b7328b4c8289ea7f5c97cd319, type: 3}
-  organizationPrefab: {fileID: 5523004236194669490, guid: 75cebe38af4c14b4ab0973f0e7fdc69e, type: 3}
-  roomTypePrefab: {fileID: 5523004236194669490, guid: 4e39da44a664f4e5da60ec30b6c9484a, type: 3}
-  rentedRoomPrefab: {fileID: 9040041545605410619, guid: 842f10b2fdc3d4f18aad8f7cea1b902e, type: 3}
-  requiredRoomTypePrefab: {fileID: 5523004236194669490, guid: 47539598142d147acb5920835b3a8bb3, type: 3}
   galaxyExploredPrefab: {fileID: 9040041545605410619, guid: d6646e7fd24f14301a4564be0f646d6b, type: 3}
   galaxyUnknownPrefab: {fileID: 9040041545605410619, guid: 45475fbb4724549e19c5da2dda983889, type: 3}
   systemExploredPrefab: {fileID: 9040041545605410619, guid: 7a743e356384b442f9f9896972b0ed01, type: 3}
@@ -924,11 +834,10 @@ MonoBehaviour:
   blockUnknownPrefab: {fileID: 9040041545605410619, guid: aefcb71dd1a734ecd80d9051271f1b2e, type: 3}
   parcelExploredPrefab: {fileID: 9040041545605410619, guid: 21208443521d644769f2dcbfaeea662b, type: 3}
   parcelUnknownPrefab: {fileID: 9040041545605410619, guid: 9d5266acacc214b859e66d40c8ab19b0, type: 3}
-  floorGroundPrefab: {fileID: 9040041545605410619, guid: 842f10b2fdc3d4f18aad8f7cea1b902e, type: 3}
-  floorPrefab: {fileID: 9040041545605410619, guid: 66780b5603f30497abfa4fac4363e38c, type: 3}
+  RoomGroundPrefab: {fileID: 9040041545605410619, guid: 842f10b2fdc3d4f18aad8f7cea1b902e, type: 3}
   openRoomPrefab: {fileID: 9040041545605410619, guid: 31e570a0693444af68b2610cbc4fd5da, type: 3}
   closedRoomPrefab: {fileID: 9040041545605410619, guid: 4d2faf986b5d644a9aeeffd27acb34d5, type: 3}
-  citizenPrefab: {fileID: 9040041545605410619, guid: 634fbc60833f8483c94ddca97232a269, type: 3}
+  citizenPrefab: {fileID: 7193849013774511120, guid: 1af9e59a2ca3c4bc3ae37d1dafa8876c, type: 3}
 --- !u!4 &1561466740
 Transform:
   m_ObjectHideFlags: 0

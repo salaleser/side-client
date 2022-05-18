@@ -24,7 +24,11 @@ namespace Entities.Cells
 
         private void OnMouseEnter()
         {
-            NetworkManager.Instance.text.text = $"\n\n{planetItem}";
+            if (!GameManager.QuickMenuActive && !GameManager.WindowActive && !GameManager.PopupActive)
+            {
+                NetworkManager.Instance.text.text = $"\n\n{planetItem}";
+                GameManager.Instance.Cursor.transform.SetPositionAndRotation(this.transform.position, Quaternion.identity);
+            }
         }
     }
 }

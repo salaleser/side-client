@@ -15,7 +15,7 @@ namespace Side
 
         private void Update()
         {
-            if (GameManager.IsShortcutsActive)
+            if (GameManager.ShortcutsActive)
             {
                 if (Keyboard.current.enterKey.wasPressedThisFrame)
                 {
