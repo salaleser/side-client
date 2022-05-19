@@ -23,7 +23,7 @@ namespace Side
 
         public void Start()
         {
-            citizenName.text = GameManager.Instance.me.name;
+            citizenName.text = GameManager.Instance.me.title;
 
             UpdateFriends();
             UpdateDeliveryAddress();
@@ -51,8 +51,8 @@ namespace Side
                 {
                     GameManager.Instance.me.delivery_address = rentedRoom.id;
                     deliveryAddressId.text = rentedRoom.id.ToString();
-                    var query = $"citizen_id={GameManager.Instance.me.id}&room_id={rentedRoom.id}";
-		            StartCoroutine(NetworkManager.Instance.Request("citizen-delivery-address", query, (result) => {}));
+                    var args = new string[]{GameManager.Instance.me.id.ToString(), rentedRoom.id.ToString()};
+		            StartCoroutine(NetworkManager.Instance.Request("citizen-delivery-address", args, (result) => {}));
                     break;
                 }
             }

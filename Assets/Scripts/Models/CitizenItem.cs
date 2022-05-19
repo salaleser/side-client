@@ -4,22 +4,19 @@ using System.Collections.Generic;
 namespace Models
 {
     [System.Serializable]
-    public class CitizenItem
+    public class CitizenItem : Item
     {
-        public int id;
-        public string name;
         public int account_id;
         public int active_task_id;
-        public int room_id;
         public int parcel_id;
-        public int root_item_id;
+        public int item_id;
         public int delivery_address;
         public List<ItemItem> items;
         public List<FriendItem> friends;
         public List<ActionItem> actions;
         public List<StatusItem> statuses;
         public List<CharacteristicItem> characteristics;
-        public List<OrganizationItem> organizations;
+        public List<OrganizationSimpleItem> organizations;
         public List<EmailItem> emails;
         public RoomItem room;
         public List<RentedRoomItem> rented_rooms;
@@ -46,7 +43,7 @@ namespace Models
 
         public override string ToString() => @$"[citizen]:
 id={id}
-name={name}
+title={title}
 active_task_id={active_task_id}
 delivery_address={delivery_address}
 {Characteristics()}

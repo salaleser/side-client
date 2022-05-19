@@ -6,7 +6,6 @@ namespace Models
     [System.Serializable]
     public class GalaxyItem : Item
     {
-        public int id;
         public int number;
         public int explorer_id;
         public List<SystemItem> systems;

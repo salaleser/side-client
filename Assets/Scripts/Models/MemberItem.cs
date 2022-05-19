@@ -1,20 +1,19 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 
 namespace Models
 {
     [System.Serializable]
-    public class MemberItem
+    public class MemberItem : Item
     {
-        public int id;
         public int organization_id;
-        public int citizen_id;
-        public DateTime created_at;
+        public CitizenSimpleItem citizen;
+        public string created_at;
 
-        public override string ToString() => @$"Member:
-        ID: {id}
-        Organization ID: {organization_id}
-        Citizen ID: {citizen_id}
-        Created At: {created_at}";
+        public override string ToString() => @$"[member]:
+organization_id={organization_id}
+citizen={citizen}
+created_at={created_at}";
     }
 }

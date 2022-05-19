@@ -84,7 +84,8 @@ namespace Side
 
         private void UpdateRoomTypes()
         {
-            StartCoroutine(NetworkManager.Instance.Request("room-types", "", (result) => {
+            var args = new string[]{};
+            StartCoroutine(NetworkManager.Instance.Request("room-types", args, (result) => {
                 _roomTypes = JsonUtility.FromJson<RoomTypesResponse>(result).room_types;
                 RoomTypes.AddOptions(_roomTypes
                     .Where(x => x.id != 14) // нельзя строить "construction site"
@@ -95,7 +96,8 @@ namespace Side
 
         private void UpdateConstructionOrganizations()
         {
-            StartCoroutine(NetworkManager.Instance.Request("organizations", $"type_id={11}", (result) => {
+            var args = new string[]{11.ToString()};
+            StartCoroutine(NetworkManager.Instance.Request("organizations", args, (result) => {
                 _constructionOrganizations = JsonUtility.FromJson<OrganizationsResponse>(result).organizations;
                 ConstructionOrganizations.AddOptions(_constructionOrganizations
                     .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
@@ -124,22 +126,22 @@ namespace Side
             }
 
             var size = 64;
-            if ((roomType.properties.size.w + (int.Parse(X.text) - 1) <= size)
-                && (roomType.properties.size.h + (size - int.Parse(Y.text)) <= size))
+            if ((roomType.properties.w + (int.Parse(X.text) - 1) <= size)
+                && (roomType.properties.h + (size - int.Parse(Y.text)) <= size))
             {
                 NetworkManager.Instance.CreateRoom(GameManager.Instance.currentParcel.id,
                     roomType.id, int.Parse(X.text), int.Parse(Y.text), int.Parse(Z.text),
-                    roomType.properties.size.w, roomType.properties.size.h,
+                    roomType.properties.w, roomType.properties.h,
                     constructionOrganization.id, GameManager.Instance.me.id, Title.text);
                 Destroy(this.gameObject);
             }
             else
             {
                 NetworkManager.Instance.InstantiateNoticePopup("ERROR", @$"Unable to create
-roomType.properties.size.w={roomType.properties.size.w}
-roomType.properties.size.h={roomType.properties.size.h}
-({roomType.properties.size.w} + {(int.Parse(X.text) - 1)} <= {size}) = {(roomType.properties.size.w + (int.Parse(X.text) - 1) <= size)}
-({roomType.properties.size.h} + {(size - int.Parse(Y.text))} <= {size}) = {(roomType.properties.size.h + (size - int.Parse(Y.text)) <= size)}
+roomType.properties.w={roomType.properties.w}
+roomType.properties.h={roomType.properties.h}
+({roomType.properties.w} + {(int.Parse(X.text) - 1)} <= {size}) = {(roomType.properties.w + (int.Parse(X.text) - 1) <= size)}
+({roomType.properties.h} + {(size - int.Parse(Y.text))} <= {size}) = {(roomType.properties.h + (size - int.Parse(Y.text)) <= size)}
 ");
             }
         }

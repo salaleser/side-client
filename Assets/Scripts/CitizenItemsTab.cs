@@ -28,7 +28,7 @@ namespace Side
         private void Start()
         {
             List<TMP_Dropdown.OptionData> options = new();
-            options.Add(new TMP_Dropdown.OptionData($"{GameManager.Instance.me.name}"));
+            options.Add(new TMP_Dropdown.OptionData($"{GameManager.Instance.me.ToCaption()}"));
             options.Add(new TMP_Dropdown.OptionData($"{GameManager.Instance.me.room.type.title} {GameManager.Instance.me.room.title}"));
             Inventories.AddOptions(options);
         }
@@ -58,6 +58,34 @@ namespace Side
                         {
                             Inventories.value++;
                         }
+                    }
+                }
+                else if (Keyboard.current.sKey.wasPressedThisFrame)
+                {
+                    if (SplitButton.interactable)
+                    {
+                        Split();
+                    }
+                }
+                else if (Keyboard.current.kKey.wasPressedThisFrame)
+                {
+                    if (StackButton.interactable)
+                    {
+                        Stack();
+                    }
+                }
+                else if (Keyboard.current.dKey.wasPressedThisFrame)
+                {
+                    if (DropButton.interactable)
+                    {
+                        Drop();
+                    }
+                }
+                else if (Keyboard.current.gKey.wasPressedThisFrame)
+                {
+                    if (TakeButton.interactable)
+                    {
+                        Take();
                     }
                 }
             }
@@ -129,32 +157,32 @@ namespace Side
 
         public void Split()
         {
-            var query = $"item_id={_item.id}&quantity={Quantity.text}";
-            StartCoroutine(NetworkManager.Instance.Request("item-split", query, (result) => {
+            var args = new string[]{_item.id.ToString(), Quantity.text};
+            StartCoroutine(NetworkManager.Instance.Request("item-split", args, (result) => {
                 NetworkManager.Instance.Citizen(GameManager.Instance.me.id);
             }));
         }
 
         public void Stack()
         {
-            var query = $"item_id={_item.id}";
-            StartCoroutine(NetworkManager.Instance.Request("item-stack", query, (result) => {
+            var args = new string[]{_item.id.ToString()};
+            StartCoroutine(NetworkManager.Instance.Request("item-stack", args, (result) => {
                 NetworkManager.Instance.Citizen(GameManager.Instance.me.id);
             }));
         }
 
         public void Drop()
         {
-            var query = $"item_id={_item.id}&root_item_id={GameManager.Instance.me.room.item_id}";
-            StartCoroutine(NetworkManager.Instance.Request("item-drop", query, (result) => {
+            var args = new string[]{_item.id.ToString(), GameManager.Instance.me.room.item_id.ToString()};
+            StartCoroutine(NetworkManager.Instance.Request("item-drop", args, (result) => {
                 NetworkManager.Instance.Citizen(GameManager.Instance.me.id);
             }));
         }
 
         public void Take()
         {
-            var query = $"item_id={_item.id}&root_item_id={GameManager.Instance.me.root_item_id}";
-            StartCoroutine(NetworkManager.Instance.Request("item-take", query, (result) => {
+            var args = new string[]{_item.id.ToString(), GameManager.Instance.me.item_id.ToString()};
+            StartCoroutine(NetworkManager.Instance.Request("item-take", args, (result) => {
                 NetworkManager.Instance.Citizen(GameManager.Instance.me.id);
             }));
         }

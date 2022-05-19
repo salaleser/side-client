@@ -47,7 +47,7 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
         {
             case "buy":
                 NetworkManager.Instance.DealCreate(GameManager.Instance.currentPage.organization_id, GameManager.Instance.me.account_id,
-                    GameManager.Instance.me.delivery_address != 0 ? GameManager.Instance.me.delivery_address : GameManager.Instance.me.room_id,
+                    GameManager.Instance.me.delivery_address != 0 ? GameManager.Instance.me.delivery_address : GameManager.Instance.me.room.id,
                     int.Parse(parameters[0]), int.Parse(parameters[1]), int.Parse(parameters[2]));
                 break;
             default:

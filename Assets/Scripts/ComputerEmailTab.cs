@@ -73,7 +73,8 @@ namespace Side
             {
                 return;
             }
-            StartCoroutine(NetworkManager.Instance.Request("email-delete", $"email_id={email.id}", (json) =>
+            var args = new string[]{email.id.ToString()};
+            StartCoroutine(NetworkManager.Instance.Request("email-delete", args, (json) =>
             {
                 UpdateEmails();
             }));
@@ -81,7 +82,8 @@ namespace Side
 
         public void UpdateEmails()
         {
-            StartCoroutine(NetworkManager.Instance.Request("emails", $"citizen_id={GameManager.Instance.me.id}", (json) =>
+            var args = new string[]{GameManager.Instance.me.id.ToString()};
+            StartCoroutine(NetworkManager.Instance.Request("emails", args, (json) =>
             {
                 var emails = JsonUtility.FromJson<EmailsResponse>(json).emails;
                 Emails.ClearOptions();

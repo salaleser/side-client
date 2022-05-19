@@ -120,24 +120,24 @@ namespace Side
 
         public void Sell()
         {
-            var query = $"item_id={_item.id}&price={Price.text}";
-            StartCoroutine(NetworkManager.Instance.Request("item-sell", query, (result) => {
+            var args = new string[]{_item.id.ToString(), Price.text};
+            StartCoroutine(NetworkManager.Instance.Request("item-sell", args, (result) => {
                 NetworkManager.Instance.Organization(GameManager.Instance.currentOrganization.id);
             }));
         }
 
         public void Split()
         {
-            var query = $"item_id={_item.id}&quantity={Quantity.text}";
-            StartCoroutine(NetworkManager.Instance.Request("item-split", query, (result) => {
+            var args = new string[]{_item.id.ToString(), Quantity.text};
+            StartCoroutine(NetworkManager.Instance.Request("item-split", args, (result) => {
                 NetworkManager.Instance.Organization(GameManager.Instance.currentOrganization.id);
             }));
         }
 
         public void Stack()
         {
-            var query = $"item_id={_item.id}";
-            StartCoroutine(NetworkManager.Instance.Request("item-stack", query, (result) => {
+            var args = new string[]{_item.id.ToString()};
+            StartCoroutine(NetworkManager.Instance.Request("item-stack", args, (result) => {
                 NetworkManager.Instance.Organization(GameManager.Instance.currentOrganization.id);
             }));
         }

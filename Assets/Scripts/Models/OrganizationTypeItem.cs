@@ -4,14 +4,10 @@ using System.Collections.Generic;
 namespace Models
 {
     [System.Serializable]
-    public class OrganizationTypeItem
+    public class OrganizationTypeItem : Item
     {
-        public int id;
-        public string title;
         public OrganizationRequirements requirements;
         public OrganizationTypeProperties properties;
-
-        public string ToCaption() => $"{title}";
 
         public override string ToString() => @$"[organization_type]:
 id={id}
@@ -23,7 +19,7 @@ requirements.room_types.Count={requirements.room_types.Count}";
     [System.Serializable]
     public class OrganizationRequirements
     {
-        public List<RoomTypeItem> room_types;
+        public List<RoomTypeSimpleItem> room_types;
         public List<int> room_type_ids;
     }
 

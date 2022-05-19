@@ -6,7 +6,6 @@ namespace Models
     [System.Serializable]
     public class UniverseItem : Item
     {
-        public int id;
         public int number;
         public List<GalaxyItem> galaxies;
 

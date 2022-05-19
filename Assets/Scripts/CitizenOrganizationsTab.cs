@@ -96,7 +96,8 @@ namespace Side
 
         public void UpdateOrganizationTypes()
         {
-            StartCoroutine(NetworkManager.Instance.Request("organization-types", "", (result) => {
+            var args = new string[]{};
+            StartCoroutine(NetworkManager.Instance.Request("organization-types", args, (result) => {
                 _organizationTypes = JsonUtility.FromJson<OrganizationTypesResponse>(result).organization_types;
                 organizationTypes.AddOptions(_organizationTypes
                     .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
@@ -111,8 +112,7 @@ namespace Side
                 .FirstOrDefault();
             if (organization != null)
             {
-                GameManager.Instance.currentOrganization = organization;
-                NetworkManager.Instance.InstantiateOrganization();
+                NetworkManager.Instance.Organization(organization.id);
                 Destroy(this.gameObject);
             }
         }

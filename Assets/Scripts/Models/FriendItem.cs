@@ -4,15 +4,12 @@ using System.Collections.Generic;
 namespace Models
 {
     [System.Serializable]
-    public class FriendItem
+    public class FriendItem : Item
     {
-        public int id;
-        public int citizen_id;
-        public string citizen_name;
+        public CitizenSimpleItem citizen;
 
         public override string ToString() => @$"[friend]:
 id={id}
-citizen_id={citizen_id}
-citizen_name={citizen_name}";
+citizen={citizen}";
     }
 }

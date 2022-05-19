@@ -6,7 +6,6 @@ namespace Models
     [System.Serializable]
     public class TaskItem : Item
     {
-        public int id;
         public int type_id;
         public int organization_id;
         public int room_id;

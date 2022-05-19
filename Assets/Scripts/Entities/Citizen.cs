@@ -11,7 +11,6 @@ namespace Entities
 
         private void Start()
         {
-            AddButton($"Inventory ({citizenItem.name})", () => NetworkManager.Instance.Inventory(citizenItem.root_item_id));
         }
 
         private void OnMouseEnter()

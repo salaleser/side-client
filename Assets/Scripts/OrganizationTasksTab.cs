@@ -28,8 +28,8 @@ namespace Side
 
         public void SetProperties()
         {
-            var query = $"task_id={_task.id}&wage={Wage.text}";
-            StartCoroutine(NetworkManager.Instance.Request("task-set-properties", query, (result) => {
+            var args = new string[]{_task.id.ToString(), Wage.text};
+            StartCoroutine(NetworkManager.Instance.Request("task-set-properties", args, (result) => {
                 GameManager.Instance.currentOrganization = JsonUtility.FromJson<OrganizationResponse>(result).organization;
                 UpdateTasks();
             }));

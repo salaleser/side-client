@@ -14,9 +14,9 @@ namespace Entities.Cells
         private void Start()
         {
             AddButton($"Create Room", () => NetworkManager.Instance.InstantiateCreateRoomPopup(roomItem.z + 1));
-            if (GameManager.Instance.me.room_id == roomItem.id)
+            if (GameManager.Instance.me.room.id == roomItem.id)
             {
-                AddButton($"Inventory", () => NetworkManager.Instance.Inventory(roomItem.item_id));
+                AddButton($"Inventory", () => NetworkManager.Instance.InstantiateCitizen("Items"));
                 switch (roomItem.type.id)
                 {
                     case 1:

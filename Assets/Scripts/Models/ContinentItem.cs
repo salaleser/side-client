@@ -6,7 +6,6 @@ namespace Models
     [System.Serializable]
     public class ContinentItem : Item
     {
-        public int id;
         public int number;
         public int explorer_id;
         public int planet_id;

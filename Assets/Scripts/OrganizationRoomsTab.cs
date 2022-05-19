@@ -96,8 +96,6 @@ namespace Side
                 RequiredRoomTypeItem rrt = new();
                 rrt.title = roomType.title;
                 rrt.room_type_id = roomType.id;
-                rrt.w = roomType.properties.size.w;
-                rrt.h = roomType.properties.size.h;
                 rrt.organization_id = organization.id;
                 foreach (var attachedRoom in organization.attached_rooms.Where(x => x.type.id == roomType.id))
                 {

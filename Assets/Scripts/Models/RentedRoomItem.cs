@@ -6,7 +6,6 @@ namespace Models
     [System.Serializable]
     public class RentedRoomItem : Item
     {
-        public int id;
         public RoomTypeItem type;
         public int x;
         public int y;

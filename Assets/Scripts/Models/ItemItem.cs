@@ -4,9 +4,8 @@ using System.Collections.Generic;
 namespace Models
 {
     [System.Serializable]
-    public class ItemItem
+    public class ItemItem : Item
     {
-        public int id;
         public int parent_id;
         public ItemTypeItem type;
         public int quantity;

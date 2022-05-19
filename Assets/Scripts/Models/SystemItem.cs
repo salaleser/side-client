@@ -6,11 +6,10 @@ namespace Models
     [System.Serializable]
     public class SystemItem : Item
     {
-        public int id;
         public int number;
         public int explorer_id;
         public int galaxy_id;
-        public List<PlanetItem> planets;
+        public List<PlanetSimpleItem> planets;
         public int planets_count;
 
         public override string ToString() => @$"[system]:

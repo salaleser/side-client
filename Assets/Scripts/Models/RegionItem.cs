@@ -6,7 +6,6 @@ namespace Models
     [System.Serializable]
     public class RegionItem : Item
     {
-        public int id;
         public int x;
         public int y;
         public int z;

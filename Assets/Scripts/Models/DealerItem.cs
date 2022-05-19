@@ -4,10 +4,8 @@ using System.Collections.Generic;
 namespace Models
 {
     [System.Serializable]
-    public class DealerItem
+    public class DealerItem : Item
     {
-        public int id;
-        public string title;
         public int account_id;
         public RoomItem room;
 

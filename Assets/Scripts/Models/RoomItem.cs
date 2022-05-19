@@ -6,7 +6,6 @@ namespace Models
     [System.Serializable]
     public class RoomItem : Item
     {
-        public int id;
         public RoomTypeItem type;
         public int x;
         public int y;
@@ -20,13 +19,10 @@ namespace Models
         public int parcel_id;
         public bool rentable;
         public List<int> organization_ids = new();
-
         public List<ItemItem> items = new();
-        public List<CitizenItem> citizens = new();
+        public List<CitizenSimpleItem> citizens = new();
         public List<MessageItem> messages = new();
         public RoomProperties properties;
-
-        public string ToCaption() => $"{title} ({id})";
 
         public override string ToString() => @$"[room]:
 id={id}

@@ -368,9 +368,10 @@ public class NetworkManager : Manager
 		}
 	}
 
-	public IEnumerator Request(string endpoint, string query, Action<string> result)
+	public IEnumerator Request(string endpoint, string[] args, Action<string> result)
 	{
-		var url = $"http://{Host}:{Port}/{endpoint}?{query}";
+		var url = $"http://{Host}:{Port}/{endpoint}?args={string.Join("⎮", args)}";
+		Debug.Log(url);
 
 		var pages = url.Split('/');
 		var page = pages.Length - 1;
@@ -388,18 +389,10 @@ public class NetworkManager : Manager
 			case UnityWebRequest.Result.DataProcessingError:
 				Debug.LogError(pages[page] + ": Error: " + request.error);
 				InstantiateNoticePopup("ERROR", $"Error: {request.error}");
-				if (result != null)
-				{
-					result(request.error);
-				}
 				break;
 			case UnityWebRequest.Result.ProtocolError:
-				Debug.LogError(pages[page] + ": HTTP Error: " + request.error);
-				InstantiateNoticePopup("ERROR", $"HTTP Error: {request.error}");
-				if (result != null)
-				{
-					result(request.error);
-				}
+				Debug.LogError($"{pages[page]} {request.downloadHandler.text}");
+				InstantiateNoticePopup("ERROR", $"{pages[page]} {request.downloadHandler.text}");
 				break;
 			case UnityWebRequest.Result.Success:
 				Debug.Log(pages[page] + ":\nReceived: " + request.downloadHandler.text);
@@ -421,8 +414,8 @@ public class NetworkManager : Manager
 
 	public void Login(int citizenId)
 	{
-		var query = $"citizen_id={citizenId}";
-		StartCoroutine(Request("citizen", query, (result) => {
+		var args = new string[]{citizenId.ToString()};
+		StartCoroutine(Request("citizen", args, (result) => {
 			ProcessMe(result);
 			CenterMeButton();
 			
@@ -434,175 +427,170 @@ public class NetworkManager : Manager
 
 	public void Exec(string command, string[] parameters)
 	{
-		var query = $"citizen_id={GameManager.Instance.me.id}&command={command}&parameters={string.Join(",", parameters)}";
-		StartCoroutine(Request("exec", query, ProcessExec));
+		var args = new string[]{GameManager.Instance.me.id.ToString() , command, string.Join(",", parameters)};
+		StartCoroutine(Request("exec", args, ProcessExec));
 	}
 
 	public void OrganizationPagesItemsPublish(int organizationId, int roomId)
 	{
-		var query = $"organization_id={organizationId}&room_id={roomId}";
-		StartCoroutine(Request("organization-pages-items-publish", query, ProcessOrganization));
+		var args = new string[]{organizationId.ToString(), roomId.ToString()};
+		StartCoroutine(Request("organization-pages-items-publish", args, (json) => ProcessOrganization(json, "Pages")));
 	}
 
 	public void Me()
     {
-		var query = $"citizen_id={GameManager.Instance.me.id}";
-		StartCoroutine(Request("citizen", query, ProcessMe));
+		var args = new string[]{GameManager.Instance.me.id.ToString()};
+		StartCoroutine(Request("citizen", args, ProcessMe));
 	}
 
 	public void Universe()
     {
-		StartCoroutine(Request("universe", "", ProcessUniverse));
+		var args = new string[]{};
+		StartCoroutine(Request("universe", args, ProcessUniverse));
 	}
 
 	public void Galaxy(int galaxyId)
     {
-		var query = $"galaxy_id={galaxyId}";
-		StartCoroutine(Request("galaxy", query, ProcessGalaxy));
+		var args = new string[]{galaxyId.ToString()};
+		StartCoroutine(Request("galaxy", args, ProcessGalaxy));
 	}
 
 	public void GalaxyExplore(int galaxyId)
     {
-		var query = $"galaxy_id={galaxyId}&explorer_id={GameManager.Instance.me.id}";
-		StartCoroutine(Request("galaxy-explore", query, ProcessUniverse));
+		var args = new string[]{galaxyId.ToString(), GameManager.Instance.me.id.ToString()};
+		StartCoroutine(Request("galaxy-explore", args, ProcessUniverse));
 	}
 
 	public void System(int systemId)
     {
-		var query = $"system_id={systemId}";
-		StartCoroutine(Request("system", query, ProcessSystem));
+		var args = new string[]{systemId.ToString()};
+		StartCoroutine(Request("system", args, ProcessSystem));
 	}
 
 	public void SystemExplore(int systemId)
     {
-		var query = $"system_id={systemId}&explorer_id={GameManager.Instance.me.id}";
-		StartCoroutine(Request("system-explore", query, ProcessGalaxy));
+		var args = new string[]{systemId.ToString(), GameManager.Instance.me.id.ToString()};
+		StartCoroutine(Request("system-explore", args, ProcessGalaxy));
 	}
 
 	public void Planet(int planetId)
     {
-		var query = $"planet_id={planetId}";
-		StartCoroutine(Request("planet", query, ProcessPlanet));
+		var args = new string[]{planetId.ToString()};
+		StartCoroutine(Request("planet", args, ProcessPlanet));
 	}
 
 	public void PlanetExplore(int planetId)
     {
-		var query = $"planet_id={planetId}&explorer_id={GameManager.Instance.me.id}";
-		StartCoroutine(Request("planet-explore", query, ProcessSystem));
+		var args = new string[]{planetId.ToString(), GameManager.Instance.me.id.ToString()};
+		StartCoroutine(Request("planet-explore", args, ProcessSystem));
 	}
 
 	public void Continent(int continentId)
     {
-		var query = $"continent_id={continentId}";
-		StartCoroutine(Request("continent", query, ProcessContinent));
+		var args = new string[]{continentId.ToString()};
+		StartCoroutine(Request("continent", args, ProcessContinent));
 	}
 
 	public void ContinentExplore(int continentId)
     {
-		var query = $"continent_id={continentId}&explorer_id={GameManager.Instance.me.id}";
-		StartCoroutine(Request("continent-explore", query, ProcessPlanet));
+		var args = new string[]{continentId.ToString(), GameManager.Instance.me.id.ToString()};
+		StartCoroutine(Request("continent-explore", args, ProcessPlanet));
 	}
 
 	public void Region(int regionId)
     {
-		var query = $"region_id={regionId}";
-		StartCoroutine(Request("region", query, ProcessRegion));
+		var args = new string[]{regionId.ToString()};
+		StartCoroutine(Request("region", args, ProcessRegion));
 	}
 
 	public void RegionExplore(int regionId)
     {
-		var query = $"region_id={regionId}&explorer_id={GameManager.Instance.me.id}";
-		StartCoroutine(Request("region-explore", query, ProcessContinent));
+		var args = new string[]{regionId.ToString(), GameManager.Instance.me.id.ToString()};
+		StartCoroutine(Request("region-explore", args, ProcessContinent));
 	}
 
 	public void City(int cityId)
     {
-		var query = $"city_id={cityId}";
-		StartCoroutine(Request("city", query, ProcessCity));
+		var args = new string[]{cityId.ToString()};
+		StartCoroutine(Request("city", args, ProcessCity));
 	}
 
 	public void Block(int blockId)
     {
-		var query = $"block_id={blockId}";
-		StartCoroutine(Request("block", query, ProcessBlock));
+		var args = new string[]{blockId.ToString()};
+		StartCoroutine(Request("block", args, ProcessBlock));
 	}
 
 	public void Parcel(int parcelId)
     {
-		var query = $"parcel_id={parcelId}";
-		StartCoroutine(Request("parcel", query, ProcessParcel));
+		var args = new string[]{parcelId.ToString()};
+		StartCoroutine(Request("parcel", args, ProcessParcel));
 	}
 
 	public void CityExplore(int cityId)
     {
-		var query = $"city_id={cityId}&explorer_id={GameManager.Instance.me.id}";
-		StartCoroutine(Request("city-explore", query, ProcessRegion));
+		var args = new string[]{cityId.ToString(), GameManager.Instance.me.id.ToString()};
+		StartCoroutine(Request("city-explore", args, ProcessRegion));
 	}
 
 	public void BlockExplore(int blockId)
     {
-		var query = $"block_id={blockId}&explorer_id={GameManager.Instance.me.id}";
-		StartCoroutine(Request("block-explore", query, ProcessCity));
-	}
-
-	public void ParcelClaim(int parcelId)
-    {
-		var query = $"parcel_id={parcelId}&owner_id={GameManager.Instance.me.id}";
-		StartCoroutine(Request("parcel-claim", query, ProcessBlock));
+		var args = new string[]{blockId.ToString(), GameManager.Instance.me.id.ToString()};
+		StartCoroutine(Request("block-explore", args, ProcessCity));
 	}
 
 	public void CreateRoom(int parcelId, int typeId, int x, int y, int z, int w, int h, int organizationId, int creatorId, string title)
     {
-		var query = $"parcel_id={parcelId}&type_id={typeId}&x={x}&y={y}&z={z}&w={w}&h={h}&organization_id={organizationId}&creator_id={creatorId}&title={title}";
-		StartCoroutine(Request("room-create", query, ProcessParcel));
+		var args = new string[]{parcelId.ToString(), typeId.ToString(), x.ToString(), y.ToString(), z.ToString(), w.ToString(), h.ToString(), organizationId.ToString(), creatorId.ToString(), title};
+		StartCoroutine(Request("room-create", args, ProcessParcel));
 	}
 
 	public void Organization(int organizationId)
     {
-		var query = $"organization_id={organizationId}";
-		StartCoroutine(Request("organization", query, ProcessOrganizationItems));
+		var args = new string[]{organizationId.ToString()};
+		StartCoroutine(Request("organization", args, (json) => ProcessOrganization(json, "Items")));
 	}
 
 	public void Citizen(int citizenId)
     {
-		var query = $"citizen_id={citizenId}";
-		StartCoroutine(Request("citizen", query, ProcessCitizenItems));
+		var args = new string[]{citizenId.ToString()};
+		StartCoroutine(Request("citizen", args, (json) => ProcessCitizen(json)));
 	}
 
 	public void OrganizationAttachRoom(int organizationId, int roomId)
     {
-		var query = $"organization_id={organizationId}&room_id={roomId}";
-		StartCoroutine(Request("organization-attach-room", query, ProcessOrganizationRooms));
+		var args = new string[]{organizationId.ToString(), roomId.ToString()};
+		StartCoroutine(Request("organization-attach-room", args, (json) => ProcessOrganization(json, "Rooms")));
 	}
 
 	public void MemberCreate(int organizationId, int citizenId)
     {
-		var query = $"organization_id={organizationId}&citizen_id={citizenId}";
-		StartCoroutine(Request("member-create", query, ProcessOrganization));
+		var args = new string[]{organizationId.ToString(), citizenId.ToString()};
+		StartCoroutine(Request("member-create", args, (json) => ProcessOrganization(json, "Members")));
 	}
 	
 	public void MemberDelete(int organizationId, int citizenId)
     {
-		var query = $"organization_id={organizationId}&citizen_id={citizenId}";
-		StartCoroutine(Request("member-delete", query, ProcessOrganization));
+		var args = new string[]{organizationId.ToString(), citizenId.ToString()};
+		StartCoroutine(Request("member-delete", args, (json) => ProcessOrganization(json, "Members")));
 	}
 
 	public void MoveIntoRoom(int citizenId, int roomId)
     {
-		var query = $"citizen_id={citizenId}&room_id={roomId}";
-		StartCoroutine(Request("move-into-room", query, ProcessMoveIntoRoom));
+		var args = new string[]{citizenId.ToString(), roomId.ToString()};
+		StartCoroutine(Request("move-into-room", args, ProcessMoveIntoRoom));
 	}
 
-	public void OrganizationSetProperties(int organizationId, OrganizationProperties properties)
+	public void OrganizationSetProperties(int organizationId, OrganizationProperties properties, string tabName = "Main")
     {
-		var query = $"organization_id={organizationId}&properties={Escape(JsonUtility.ToJson(properties))}";
-		StartCoroutine(Request("organization-set-properties", query, null));
+		var args = new string[]{organizationId.ToString(), Escape(JsonUtility.ToJson(properties))};
+		StartCoroutine(Request("organization-set-properties", args, (json) => ProcessOrganization(json, tabName)));
 	}
 
 	public void OrganizationSetTitle(int organizationId, string title)
     {
-		var query = $"organization_id={organizationId}&title={Escape(title)}";
-		StartCoroutine(Request("organization-set-title", query, null));
+		var args = new string[]{organizationId.ToString(), Escape(title)};
+		StartCoroutine(Request("organization-set-title", args, null));
 	}
 
 	public void Page(string address, string path)
@@ -614,8 +602,8 @@ public class NetworkManager : Manager
 			return;
 		}
 
-		var query = $"organization_id={organizationId}&path={path}";
-		StartCoroutine(Request("page", query, ProcessPage));
+		var args = new string[]{organizationId.ToString(), path};
+		StartCoroutine(Request("page", args, ProcessPage));
 	}
 
 	public void ProcessPage(string json)
@@ -640,45 +628,38 @@ public class NetworkManager : Manager
 
 	public void PageCreate(int organizationId, string content, string path)
     {
-		var query = $"organization_id={organizationId}&content={Escape(content)}&path={path}";
-
-		StartCoroutine(Request("page-create", query, ProcessOrganization));
-	}
-
-	public void Inventory(int rootItemId)
-    {
-		var query = $"root_item_id={rootItemId}";
-		StartCoroutine(Request("inventory", query, (r) => {}));
+		var args = new string[]{organizationId.ToString(), Escape(content), path};
+		StartCoroutine(Request("page-create", args, (json) => ProcessOrganization(json, "Pages")));
 	}
 
 	public void OrganizationDetachRoom(int organizationId, int roomId)
 	{
-		var query = $"organization_id={organizationId}&room_id={roomId}";
-		StartCoroutine(Request("organization-detach-room", query, ProcessOrganizationRooms));
+		var args = new string[]{organizationId.ToString(), roomId.ToString()};
+		StartCoroutine(Request("organization-detach-room", args, (json) => ProcessOrganization(json, "Rooms")));
 	}
 
 	public void OrganizationCreate(int organizationTypeId)
 	{
-		var query = $"organization_type_id={organizationTypeId}&owner_id={GameManager.Instance.me.id}";
-		StartCoroutine(Request("organization-create", query, ProcessOrganization));
+		var args = new string[]{organizationTypeId.ToString(), GameManager.Instance.me.id.ToString()};
+		StartCoroutine(Request("organization-create", args, (json) => ProcessOrganization(json, "Main")));
 	}
 
 	public void DealCreate(int marketId, int buyerAccountId, int deliveryAddress, int sellerAccountId, int itemId, int price)
     {
-		var query = $"market_id={marketId}&buyer_account_id={buyerAccountId}&delivery_address={deliveryAddress}&seller_account_id={sellerAccountId}&item_id={itemId}&price={price}";
-		StartCoroutine(Request("deal-create", query, ProcessDealCreate));
+		var args = new string[]{marketId.ToString(), buyerAccountId.ToString(), deliveryAddress.ToString(), sellerAccountId.ToString(), itemId.ToString(), price.ToString()};
+		StartCoroutine(Request("deal-create", args, ProcessDealCreate));
 	}
 
 	public void DealAccept(int dealId, int quantity)
     {
-		var query = $"deal_id={dealId}&quantity={quantity}";
-		StartCoroutine(Request("deal-accept", query, ProcessDealAccept));
+		var args = new string[]{dealId.ToString(), quantity.ToString()};
+		StartCoroutine(Request("deal-accept", args, ProcessDealAccept));
 	}
 
 	public void DealDecline(int dealId)
     {
-		var query = $"deal_id={dealId}";
-		StartCoroutine(Request("deal-decline", query, (result) => {}));
+		var args = new string[]{dealId.ToString()};
+		StartCoroutine(Request("deal-decline", args, (result) => {}));
 	}
 
 	private void ProcessDealCreate(string json)
@@ -777,8 +758,8 @@ public class NetworkManager : Manager
 
 	public void Chat(int citizenId, int roomId, string text)
     {
-		var query = $"citizen_id={citizenId}&room_id={roomId}&text={Escape(text)}";
-		StartCoroutine(Request("chat", query, (result) =>
+		var args = new string[]{citizenId.ToString(), roomId.ToString(), Escape(text)};
+		StartCoroutine(Request("chat", args, (result) =>
 		{
 			var c = JsonUtility.FromJson<ChatResponse>(result);
 			GameObject.Find("Chat(Clone)").GetComponentInChildren<Side.ChatController>()
@@ -799,14 +780,14 @@ public class NetworkManager : Manager
 			value += $",{organizationId}";
 		}
 
-		var query = $"organization_id={value.Substring(1)}";
-		StartCoroutine(Request("tasks", query, (result) => InstantiateOrganization("Tasks")));
+		var args = new string[]{value.Substring(1)};
+		StartCoroutine(Request("tasks", args, (result) => InstantiateOrganization("Tasks")));
 	}
 
 	public void TaskAccept(int citizenId, int taskId)
 	{
-		var query = $"citizen_id={citizenId}&task_id={taskId}";
-		StartCoroutine(Request("task-accept", query, (result) => {}));
+		var args = new string[]{citizenId.ToString(), taskId.ToString()};
+		StartCoroutine(Request("task-accept", args, (result) => {}));
 	}
 
 	private void ProcessMoveIntoRoom(string json)
@@ -898,7 +879,7 @@ public class NetworkManager : Manager
 
 			var instance = Instantiate(prefab, new Vector3(x, 0, 0), Quaternion.identity, mapCanvas.transform);
 			instance.name = $"Planet#{planet.id} ({planet.number})";
-			instance.GetComponent<Entities.Cells.Planet>().planetItem = planet;
+			instance.GetComponent<Entities.Cells.Planet>().planetItem = new Models.PlanetItem(planet);
 		}
 	}
 
@@ -1142,17 +1123,6 @@ public class NetworkManager : Manager
 				}
 			}
 		}
-
-		foreach(var room in parcel.rooms)
-		{
-			if (room.id != GameManager.Instance.me.room_id)
-			{
-				continue;
-			}
-
-			GameObject.Find("Chat(Clone)").GetComponentInChildren<Side.ChatController>()
-				.ReplaceChat(room.messages);
-		}
 	}
 
 	private void InstantiateGround(GroundItem ground, Vector3 pos)
@@ -1167,7 +1137,7 @@ public class NetworkManager : Manager
 
 	private void InstantiateRoom(RoomItem room, Vector3 pos)
 	{
-		var prefab = room.id == GameManager.Instance.me.room_id ? openRoomPrefab : closedRoomPrefab;
+		var prefab = room.id == GameManager.Instance.me.room.id ? openRoomPrefab : closedRoomPrefab;
 		var instance = Instantiate(prefab, pos, Quaternion.identity, mapCanvas.transform);
 		instance.name = $"Room#{room.id} ({room.x}/{room.y}/{room.z})";
 		var component = instance.GetComponent<Entities.Cells.Room>();
@@ -1188,7 +1158,7 @@ public class NetworkManager : Manager
 		// }
 	}
 
-	public void ProcessOrganization(string json)
+	public void ProcessOrganization(string json, string tabName = "Main")
 	{
 		var response = JsonUtility.FromJson<OrganizationResponse>(json);
         if (response == null)
@@ -1197,34 +1167,10 @@ public class NetworkManager : Manager
         }
 
 		GameManager.Instance.currentOrganization = response.organization;
-		InstantiateOrganization();
+		InstantiateOrganization(tabName);
 	}
 
-	private void ProcessOrganizationRooms(string json)
-	{
-		var response = JsonUtility.FromJson<OrganizationResponse>(json);
-        if (response == null)
-        {
-            return;
-        }
-
-		GameManager.Instance.currentOrganization = response.organization;
-		InstantiateOrganization("Rooms");
-	}
-
-	private void ProcessOrganizationItems(string json)
-	{
-		var response = JsonUtility.FromJson<OrganizationResponse>(json);
-        if (response == null)
-        {
-            return;
-        }
-
-		GameManager.Instance.currentOrganization = response.organization;
-		InstantiateOrganization("Items");
-	}
-
-	private void ProcessCitizenItems(string json)
+	private void ProcessCitizen(string json, string tabName = "Main")
 	{
 		var response = JsonUtility.FromJson<CitizenResponse>(json);
         if (response == null)
