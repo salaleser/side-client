@@ -14,7 +14,6 @@ namespace Side
         public List<Button> buttons;
 
         public GameObject[] _hotkeys;
-        private bool isLeftControlDown;
         
         private void Start()
         {
@@ -25,7 +24,7 @@ namespace Side
         {
             if (GameManager.ShortcutsActive)
             {
-                if (GameObject.FindWithTag("Popup") == null)
+                if (!GameManager.PopupActive)
                 {
                     if (Keyboard.current.qKey.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame)
                     {
@@ -44,31 +43,14 @@ namespace Side
                 
                 if (Keyboard.current.tabKey.wasPressedThisFrame)
                 {
-                    SwitchTab(-1);
-                }
-                else if (Keyboard.current.digit1Key.wasPressedThisFrame)
-                {
-                    SwitchTab(1);
-                }
-                else if (Keyboard.current.digit2Key.wasPressedThisFrame)
-                {
-                    SwitchTab(2);
-                }
-                else if (Keyboard.current.digit3Key.wasPressedThisFrame)
-                {
-                    SwitchTab(3);
-                }
-                else if (Keyboard.current.digit4Key.wasPressedThisFrame)
-                {
-                    SwitchTab(4);
-                }
-                else if (Keyboard.current.digit5Key.wasPressedThisFrame)
-                {
-                    SwitchTab(5);
-                }
-                else if (Keyboard.current.digit6Key.wasPressedThisFrame)
-                {
-                    SwitchTab(6);
+                    if (Keyboard.current.leftShiftKey.isPressed)
+                    {
+                        PreviousTab();
+                    }
+                    else
+                    {
+                        NextTab();
+                    }
                 }
             }
         }
@@ -103,27 +85,47 @@ namespace Side
             }
         }
 
+        public void NextTab()
+        {
+            var number = 0;
+            for (var i = 0; i < windows.Count; i++)
+            {
+                if (windows[i].activeSelf)
+                {
+                    number = i + 1 + 1;
+                    if (number > windows.Count)
+                    {
+                        number = 1;
+                    }
+                    break;
+                }
+            }
+            SwitchTab(number);
+        }
+
+        public void PreviousTab()
+        {
+            var number = 0;
+            for (var i = 0; i < windows.Count; i++)
+            {
+                if (windows[i].activeSelf)
+                {
+                    number = i;
+                    if (number == 0)
+                    {
+                        number = windows.Count;
+                    }
+                    break;
+                }
+            }
+            SwitchTab(number);
+        }
+
         public void SwitchTab(int number)
         {
             if (number > windows.Count)
             {
                 return;
-            }
-
-            if (number < 0)
-            {
-                for (var i = 0; i < windows.Count; i++)
-                {
-                    if (windows[i].activeSelf)
-                    {
-                        number = i + 1 + 1;
-                        if (number > windows.Count)
-                        {
-                            number = 1;
-                        }
-                        break;
-                    }
-                }
             }
 
             for (var i = 0; i < windows.Count; i++)

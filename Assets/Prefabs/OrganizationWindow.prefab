@@ -3913,10 +3913,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b05a98807376c47e89c2221636cd824b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  path: {fileID: 4849768735513626470}
-  content: {fileID: 1350473974862878272}
-  contentPreview: {fileID: 1611445343632756890}
-  pages: {fileID: 513627541009007990}
+  Path: {fileID: 4849768735513626470}
+  Content: {fileID: 1350473974862878272}
+  ContentPreview: {fileID: 1611445343632756890}
+  Pages: {fileID: 513627541009007990}
 --- !u!222 &6120363648447571564
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -18060,7 +18060,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000061035156, y: 0.0001450725}
+  m_AnchoredPosition: {x: -0.000061035156, y: -0.000013688422}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &5874671515128955841

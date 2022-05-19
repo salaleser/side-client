@@ -15,7 +15,7 @@ namespace Models
         public string body;
         public int status; // 0 - новое; 1 - прочитанное
 
-        public string ToCaption() => $"{subject} ({from_name}) [{status}]";
+        public string ToCaption() => $"({id}) {from_name}: {subject}";
 
         public override string ToString() => @$"[{date_formatted}] {subject}:
 {body}

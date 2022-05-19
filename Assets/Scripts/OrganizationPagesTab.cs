@@ -10,10 +10,10 @@ namespace Side
 {
     public class OrganizationPagesTab : MonoBehaviour
     {
-        public TMP_InputField path;
-        public TMP_InputField content;
-        public TMP_Text contentPreview;
-        public TMP_Dropdown pages;
+        public TMP_InputField Path;
+        public TMP_InputField Content;
+        public TMP_Text ContentPreview;
+        public TMP_Dropdown Pages;
 
         private void Start()
         {
@@ -31,24 +31,36 @@ namespace Side
         {
             if (GameManager.ShortcutsActive)
             {
+                if (Keyboard.current.leftShiftKey.wasReleasedThisFrame)
+                {
+                    Pages.Hide();
+                }
+
                 if (Keyboard.current.pKey.wasPressedThisFrame)
                 {
-                    path.Select();
+                    Path.Select();
                 }
                 else if (Keyboard.current.aKey.wasPressedThisFrame)
                 {
-                    if (pages.value == pages.options.Count - 1)
+                    if (Keyboard.current.leftShiftKey.isPressed)
                     {
-                        pages.value = 0;
+                        Pages.Show();
                     }
                     else
                     {
-                        pages.value++;
+                        if (Pages.value == Pages.options.Count - 1)
+                        {
+                            Pages.value = 0;
+                        }
+                        else
+                        {
+                            Pages.value++;
+                        }
                     }
                 }
                 else if (Keyboard.current.cKey.wasPressedThisFrame)
                 {
-                    content.Select();
+                    Content.Select();
                 }
                 else if (Keyboard.current.uKey.wasPressedThisFrame)
                 {
@@ -59,32 +71,32 @@ namespace Side
 
         public void UpdatePreview()
         {
-            contentPreview.text = content.text;
+            ContentPreview.text = Content.text;
         }
 
         public void CreatePage()
         {
-            NetworkManager.Instance.PageCreate(GameManager.Instance.currentOrganization.id, content.text, path.text);
-            contentPreview.text = "(Preview)";
+            NetworkManager.Instance.PageCreate(GameManager.Instance.currentOrganization.id, Content.text, Path.text);
+            ContentPreview.text = "(Preview)";
         }
 
         public void UpdatePages()
         {
-            pages.AddOptions(GameManager.Instance.currentOrganization.pages.Select(x => new TMP_Dropdown.OptionData(x.path.ToString())).ToList());
+            Pages.AddOptions(GameManager.Instance.currentOrganization.pages.Select(x => new TMP_Dropdown.OptionData(x.path.ToString())).ToList());
         }
 
         public void LoadPage(string name)
         {
             if (name == "")
             {
-                name = pages.captionText.text;
+                name = Pages.captionText.text;
             }
             foreach (var page in GameManager.Instance.currentOrganization.pages)
             {
                 if (page.path == name)
                 {
-                    path.text = page.path;
-                    content.text = page.content;
+                    Path.text = page.path;
+                    Content.text = page.content;
                     break;
                 }
             }

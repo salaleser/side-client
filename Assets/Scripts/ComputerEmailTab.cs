@@ -69,6 +69,10 @@ namespace Side
             var email = GameManager.Instance.me.emails
                 .Where(x => x.ToCaption() == Emails.captionText.text)
                 .FirstOrDefault();
+            if (email == null)
+            {
+                return;
+            }
             StartCoroutine(NetworkManager.Instance.Request("email-delete", $"email_id={email.id}", (json) =>
             {
                 UpdateEmails();

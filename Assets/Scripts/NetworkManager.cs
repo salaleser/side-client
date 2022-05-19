@@ -450,12 +450,6 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("citizen", query, ProcessMe));
 	}
 
-	public void Citizen(int citizenId)
-    {
-		var query = $"citizen_id={citizenId}";
-		StartCoroutine(Request("citizen", query, ProcessCitizen));
-	}
-
 	public void Universe()
     {
 		StartCoroutine(Request("universe", "", ProcessUniverse));
@@ -567,6 +561,12 @@ public class NetworkManager : Manager
     {
 		var query = $"organization_id={organizationId}";
 		StartCoroutine(Request("organization", query, ProcessOrganizationItems));
+	}
+
+	public void Citizen(int citizenId)
+    {
+		var query = $"citizen_id={citizenId}";
+		StartCoroutine(Request("citizen", query, ProcessCitizenItems));
 	}
 
 	public void OrganizationAttachRoom(int organizationId, int roomId)
@@ -1224,6 +1224,18 @@ public class NetworkManager : Manager
 		InstantiateOrganization("Items");
 	}
 
+	private void ProcessCitizenItems(string json)
+	{
+		var response = JsonUtility.FromJson<CitizenResponse>(json);
+        if (response == null)
+        {
+            return;
+        }
+
+		GameManager.Instance.me = response.citizen;
+		InstantiateCitizen("Items");
+	}
+
 	public void InstantiateOrganization(string tabName = "Main")
 	{
 		DestroyWindows();
@@ -1254,17 +1266,6 @@ public class NetworkManager : Manager
 		}
 
 		GameObject.Find("ComputerWindow(Clone)").GetComponentInChildren<Side.ComputerInternetTab>().content.text = response.result;
-	}
-
-	private void ProcessCitizen(string json)
-	{
-		var response = JsonUtility.FromJson<CitizenResponse>(json);
-        if (response == null)
-        {
-            return;
-        }
-
-		GameManager.Instance.currentCitizen = response.citizen;
 	}
 
 	private void ProcessMe(string json)

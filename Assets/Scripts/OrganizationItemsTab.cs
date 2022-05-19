@@ -26,15 +26,27 @@ namespace Side
         {
             if (GameManager.ShortcutsActive)
             {
+                if (Keyboard.current.leftShiftKey.wasReleasedThisFrame)
+                {
+                    AttachedRooms.Hide();
+                }
+
                 if (Keyboard.current.rKey.wasPressedThisFrame)
                 {
-                    if (AttachedRooms.value == AttachedRooms.options.Count - 1)
+                    if (Keyboard.current.leftShiftKey.isPressed)
                     {
-                        AttachedRooms.value = 0;
+                        AttachedRooms.Show();
                     }
                     else
                     {
-                        AttachedRooms.value++;
+                        if (AttachedRooms.value == AttachedRooms.options.Count - 1)
+                        {
+                            AttachedRooms.value = 0;
+                        }
+                        else
+                        {
+                            AttachedRooms.value++;
+                        }
                     }
                 }
             }

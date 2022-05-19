@@ -11,8 +11,7 @@ namespace Side
 {
     public class CitizenRoomsTab : MonoBehaviour
     {
-        public TMP_Dropdown rentedRooms;
-        public TMP_InputField rentedRoomsCount;
+        public TMP_Dropdown RentedRooms;
 
         public void Start()
         {
@@ -27,9 +26,8 @@ namespace Side
 
         public void UpdateRentedRooms()
         {
-            var options = GameManager.Instance.currentCitizen.rented_rooms.Select(x => new TMP_Dropdown.OptionData(x.title)).ToList();
-            rentedRooms.AddOptions(options);
-            rentedRoomsCount.text = options.Count.ToString();
+            RentedRooms.AddOptions(GameManager.Instance.me.rented_rooms
+                .Select(x => new TMP_Dropdown.OptionData(x.title)).ToList());
         }
     }
 }
