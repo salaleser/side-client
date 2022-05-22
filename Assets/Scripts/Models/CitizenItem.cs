@@ -10,7 +10,7 @@ namespace Models
         public int active_task_id;
         public int parcel_id;
         public int item_id;
-        public int delivery_address;
+        public RentedRoomItem delivery_address;
         public List<ItemItem> items;
         public List<FriendItem> friends;
         public List<ActionItem> actions;

@@ -14,7 +14,17 @@ namespace Side
         public List<Button> buttons;
 
         public GameObject[] _hotkeys;
-        
+
+        private void Awake()
+        {
+            GameManager.SetWindowActive(true);
+        }
+
+        private void OnDisable()
+        {
+            GameManager.SetWindowActive(false);
+        }
+
         private void Start()
         {
             GameManager.SetShortcutsActive(true);

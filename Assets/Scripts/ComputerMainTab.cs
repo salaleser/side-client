@@ -7,11 +7,7 @@ using TMPro;
 
 namespace Side
 {
-    public class ComputerWindow : Window
+    public class ComputerMainTab : MonoBehaviour
     {
-        private void Awake()
-        {
-            GameManager.SetWindowActive(true);
-        }
     }
 }

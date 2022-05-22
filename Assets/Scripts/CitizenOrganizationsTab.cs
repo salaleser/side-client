@@ -12,14 +12,15 @@ namespace Side
 {
     public class CitizenOrganizationsTab : MonoBehaviour
     {
-        public TMP_Dropdown organizations;
-        public TMP_Dropdown organizationTypes;
-        public TMP_Text description;
+        public TMP_Dropdown Organizations;
+        public TMP_Dropdown OrganizationTypes;
 
+        private TMP_Text _description;
         private List<OrganizationTypeItem> _organizationTypes;
 
         private void Start()
         {
+            _description = GameObject.Find("MainDescription").GetComponent<TMP_Text>();
             UpdateOrganizations();
             UpdateOrganizationTypes();
         }
@@ -36,25 +37,25 @@ namespace Side
             {
                 if (Keyboard.current.leftShiftKey.wasReleasedThisFrame)
                 {
-                    organizations.Hide();
-                    organizationTypes.Hide();
+                    Organizations.Hide();
+                    OrganizationTypes.Hide();
                 }
 
                 if (Keyboard.current.oKey.wasPressedThisFrame)
                 {
                     if (Keyboard.current.leftShiftKey.isPressed)
                     {
-                        organizations.Show();
+                        Organizations.Show();
                     }
                     else
                     {
-                        if (organizations.value == organizations.options.Count - 1)
+                        if (Organizations.value == Organizations.options.Count - 1)
                         {
-                            organizations.value = 0;
+                            Organizations.value = 0;
                         }
                         else
                         {
-                            organizations.value++;
+                            Organizations.value++;
                         }
                     }
                 }
@@ -62,17 +63,17 @@ namespace Side
                 {
                     if (Keyboard.current.leftShiftKey.isPressed)
                     {
-                        organizationTypes.Show();
+                        OrganizationTypes.Show();
                     }
                     else
                     {
-                        if (organizationTypes.value == organizationTypes.options.Count - 1)
+                        if (OrganizationTypes.value == OrganizationTypes.options.Count - 1)
                         {
-                            organizationTypes.value = 0;
+                            OrganizationTypes.value = 0;
                         }
                         else
                         {
-                            organizationTypes.value++;
+                            OrganizationTypes.value++;
                         }
                     }
                 }
@@ -89,7 +90,7 @@ namespace Side
 
         public void UpdateOrganizations()
         {
-            organizations.AddOptions(GameManager.Instance.me.organizations
+            Organizations.AddOptions(GameManager.Instance.me.organizations
                 .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
                 .ToList());
         }
@@ -99,7 +100,7 @@ namespace Side
             var args = new string[]{};
             StartCoroutine(NetworkManager.Instance.Request("organization-types", args, (result) => {
                 _organizationTypes = JsonUtility.FromJson<OrganizationTypesResponse>(result).organization_types;
-                organizationTypes.AddOptions(_organizationTypes
+                OrganizationTypes.AddOptions(_organizationTypes
                     .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
                     .ToList());
             }));
@@ -108,7 +109,7 @@ namespace Side
         public void ManageOrganization()
         {
             var organization = GameManager.Instance.me.organizations
-                .Where(x => x.ToCaption() == organizations.captionText.text)
+                .Where(x => x.ToCaption() == Organizations.captionText.text)
                 .FirstOrDefault();
             if (organization != null)
             {
@@ -120,7 +121,7 @@ namespace Side
         public void CreateOrganization()
         {
             var organizationTypeId = _organizationTypes
-                .Where(x => x.ToCaption() == organizationTypes.captionText.text)
+                .Where(x => x.ToCaption() == OrganizationTypes.captionText.text)
                 .Select(x => x.id)
                 .FirstOrDefault();
             NetworkManager.Instance.OrganizationCreate(organizationTypeId);
@@ -128,16 +129,16 @@ namespace Side
 
         public void UpdateOrganizationTypeDescription()
         {
-            description.text = _organizationTypes
-                .Where(x => x.ToCaption() == organizationTypes.captionText.text)
+            _description.text = _organizationTypes
+                .Where(x => x.ToCaption() == OrganizationTypes.captionText.text)
                 .FirstOrDefault()
                 ?.ToString();
         }
 
         public void UpdateOrganizationDescription()
         {
-            description.text = GameManager.Instance.me.organizations
-                .Where(x => x.ToCaption() == organizations.captionText.text)
+            _description.text = GameManager.Instance.me.organizations
+                .Where(x => x.ToCaption() == Organizations.captionText.text)
                 .FirstOrDefault()
                 ?.ToString();
         }

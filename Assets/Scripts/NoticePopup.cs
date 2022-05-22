@@ -8,7 +8,7 @@ using TMPro;
 
 namespace Side
 {
-    public class NoticePopup : Popup
+    public class NoticePopup : MonoBehaviour
     {
         public TMP_Text caption;
         public TMP_Text description;

@@ -10,17 +10,39 @@ using TMPro;
 
 namespace Side
 {
-    public class OrganizationItemsTab : MonoBehaviour
+    public class OrganizationItemsTab : OrganizationTab
     {
         public TMP_Dropdown AttachedRooms;
         public TMP_InputField Price;
         public TMP_InputField Quantity;
         public GameObject ItemPrefab;
         public GameObject Content;
-        public TMP_Text Description;
-        
+
+        private TMP_Text _description;
         private ItemItem _item;
         private List<GameObject> _items = new();
+
+        private void Awake()
+        {
+            _allowed_position_ids.Add(1);
+        }
+
+        private void OnEnable()
+        {
+            gameObject.SetActive(GameManager.Instance.currentOrganization.positions
+                .Where(x => _allowed_position_ids.Contains(x.type.id))
+                .Where(x => x.citizen.id == GameManager.Instance.me.id)
+                .Any());
+            UpdateItems();
+            this.GetComponentInParent<WindowManager>()
+                .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
+        }
+
+        public void Start()
+        {
+            _description = GameObject.Find("MainDescription").GetComponent<TMP_Text>();
+            UpdateAttachedRooms();
+        }
 
         private void Update()
         {
@@ -50,14 +72,6 @@ namespace Side
                     }
                 }
             }
-        }
-
-        private void OnEnable()
-        {
-            UpdateAttachedRooms();
-            UpdateItems();
-            this.GetComponentInParent<WindowManager>()
-                .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
         }
 
         public void UpdateItems()
@@ -105,7 +119,7 @@ namespace Side
                 button.GetComponentInChildren<TMP_Text>().text = $"{item.type.title} x{item.quantity} ={item.price}";
                 button.onClick.AddListener(() => {
                     _item = item;
-                    Description.text = _item.ToString();
+                    _description.text = _item.ToString();
                 });
 
                 row++;

@@ -16,17 +16,18 @@ namespace Side
         public TMP_InputField Quantity;
         public GameObject ItemPrefab;
         public GameObject Content;
-        public TMP_Text Description;
         public Button SplitButton;
         public Button StackButton;
         public Button DropButton;
         public Button TakeButton;
         
+        private TMP_Text _description;
         private ItemItem _item;
         private List<GameObject> _items = new();
 
         private void Start()
         {
+            _description = GameObject.Find("MainDescription").GetComponent<TMP_Text>();
             List<TMP_Dropdown.OptionData> options = new();
             options.Add(new TMP_Dropdown.OptionData($"{GameManager.Instance.me.ToCaption()}"));
             options.Add(new TMP_Dropdown.OptionData($"{GameManager.Instance.me.room.type.title} {GameManager.Instance.me.room.title}"));
@@ -147,7 +148,7 @@ namespace Side
                 button.GetComponentInChildren<TMP_Text>().text = $"{item.type.title} x{item.quantity} ={item.price}";
                 button.onClick.AddListener(() => {
                     _item = item;
-                    Description.text = _item.ToString();
+                    _description.text = _item.ToString();
                     UpdateButtons();
                 });
 
@@ -158,32 +159,32 @@ namespace Side
         public void Split()
         {
             var args = new string[]{_item.id.ToString(), Quantity.text};
-            StartCoroutine(NetworkManager.Instance.Request("item-split", args, (result) => {
-                NetworkManager.Instance.Citizen(GameManager.Instance.me.id);
+            StartCoroutine(NetworkManager.Instance.Request("item-split", args, (json) => {
+                NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
             }));
         }
 
         public void Stack()
         {
             var args = new string[]{_item.id.ToString()};
-            StartCoroutine(NetworkManager.Instance.Request("item-stack", args, (result) => {
-                NetworkManager.Instance.Citizen(GameManager.Instance.me.id);
+            StartCoroutine(NetworkManager.Instance.Request("item-stack", args, (json) => {
+                NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
             }));
         }
 
         public void Drop()
         {
             var args = new string[]{_item.id.ToString(), GameManager.Instance.me.room.item_id.ToString()};
-            StartCoroutine(NetworkManager.Instance.Request("item-drop", args, (result) => {
-                NetworkManager.Instance.Citizen(GameManager.Instance.me.id);
+            StartCoroutine(NetworkManager.Instance.Request("item-drop", args, (json) => {
+                NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
             }));
         }
 
         public void Take()
         {
             var args = new string[]{_item.id.ToString(), GameManager.Instance.me.item_id.ToString()};
-            StartCoroutine(NetworkManager.Instance.Request("item-take", args, (result) => {
-                NetworkManager.Instance.Citizen(GameManager.Instance.me.id);
+            StartCoroutine(NetworkManager.Instance.Request("item-take", args, (json) => {
+                NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
             }));
         }
     }

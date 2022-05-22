@@ -8,7 +8,7 @@ using TMPro;
 
 namespace Side
 {
-    public class LoginPopup : Popup
+    public class LoginPopup : MonoBehaviour
     {
         public TMP_InputField CitizenId;
 

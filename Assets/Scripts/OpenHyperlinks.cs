@@ -9,18 +9,17 @@ using TMPro;
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
 {
-	public GameObject dealPopupPrefab;
-    public TMP_Text content;
+    public TMP_Text Content;
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        int linkIndex = TMP_TextUtilities.FindIntersectingLink(content, Mouse.current.position.ReadValue(), null);
+        int linkIndex = TMP_TextUtilities.FindIntersectingLink(Content, Mouse.current.position.ReadValue(), null);
         if (linkIndex == -1)
         {
             return;
         }
 
-        TMP_LinkInfo linkInfo = content.textInfo.linkInfo[linkIndex];
+        TMP_LinkInfo linkInfo = Content.textInfo.linkInfo[linkIndex];
         var linkId = linkInfo.GetLinkID();
         var linkText = linkInfo.GetLinkText();
         if (linkId.StartsWith("?"))
@@ -37,21 +36,33 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
     {
         var c = linkId.Substring(1).Split(":");
         var command = c[0];
-        var parameters = new string[]{};
+        var args = new string[]{};
         if (c.Length > 1)
         {
-            parameters = c[1].Split(",");
+            args = c[1].Split(",");
         }
 
         switch (command)
         {
-            case "buy":
+            case "deal":
                 NetworkManager.Instance.DealCreate(GameManager.Instance.currentPage.organization_id, GameManager.Instance.me.account_id,
-                    GameManager.Instance.me.delivery_address != 0 ? GameManager.Instance.me.delivery_address : GameManager.Instance.me.room.id,
-                    int.Parse(parameters[0]), int.Parse(parameters[1]), int.Parse(parameters[2]));
+                    GameManager.Instance.me.delivery_address.id != 0 ? GameManager.Instance.me.delivery_address.id : GameManager.Instance.me.room.id,
+                    int.Parse(args[0]), int.Parse(args[1]), int.Parse(args[2]));
+                break;
+            case "invite":
+                StartCoroutine(NetworkManager.Instance.Request("invite", new string[]{args[0]}, (json) => {
+                    var invite = JsonUtility.FromJson<InviteResponse>(json).invite;
+                    NetworkManager.Instance.InstantiateInvitePopup(invite);
+                }));
+                break;
+            case "offer":
+                StartCoroutine(NetworkManager.Instance.Request("offer", new string[]{args[0]}, (json) => {
+                    var offer = JsonUtility.FromJson<OfferResponse>(json).offer;
+                    NetworkManager.Instance.InstantiateOfferPopup(offer);
+                }));
                 break;
             default:
-                NetworkManager.Instance.Exec(command, parameters);
+                NetworkManager.Instance.Exec(command, args);
                 break;
         }
     }
@@ -68,6 +79,12 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
             path = a[1];
         }
 
-        NetworkManager.Instance.Page(address, path);
+        var args = new string[]{address, path};
+        StartCoroutine(NetworkManager.Instance.Request("page", args, (json) => {
+            var page = JsonUtility.FromJson<PageResponse>(json).page;
+            GameObject.Find("ComputerWindow(Clone)")
+                .GetComponentInChildren<Side.ComputerInternetTab>()
+                .Content.text = page.content;
+        }));
     }
 }

@@ -8,7 +8,7 @@ using TMPro;
 
 namespace Side
 {
-    public class CreateRoomPopup : Popup
+    public class CreateRoomPopup : MonoBehaviour
     {
         public TMP_InputField X;
         public TMP_InputField Y;

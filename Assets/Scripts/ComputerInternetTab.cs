@@ -13,22 +13,22 @@ namespace Side
 {
     public class ComputerInternetTab : MonoBehaviour
     {
-        public TMP_InputField addressBar;
-        public TMP_InputField searchBar;
-        public TMP_Text content;
+        public TMP_InputField AddressBar;
+        public TMP_InputField SearchBar;
+        public TMP_Text Content;
 
         private void OnEnable()
         {
-            addressBar.onSubmit.AddListener(LoadPage);
-            searchBar.onSubmit.AddListener(Search);
+            AddressBar.onSubmit.AddListener(LoadPage);
+            SearchBar.onSubmit.AddListener(Search);
             this.GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
         }
 
         private void OnDisable()
         {
-            addressBar.onSubmit.RemoveListener(LoadPage);
-            searchBar.onSubmit.RemoveListener(Search);
+            AddressBar.onSubmit.RemoveListener(LoadPage);
+            SearchBar.onSubmit.RemoveListener(Search);
         }
 
         private void Update()
@@ -37,18 +37,22 @@ namespace Side
             {
                 if (Keyboard.current.aKey.wasPressedThisFrame)
                 {
-                    addressBar.Select();
+                    AddressBar.Select();
                 }
                 else if (Keyboard.current.sKey.wasPressedThisFrame)
                 {
-                    searchBar.Select();
+                    SearchBar.Select();
                 }
             }
         }
 
         public void Search(string text)
         {
-            NetworkManager.Instance.Exec("search", new string[]{"q",text});
+            var args = new string[]{text};
+            StartCoroutine(NetworkManager.Instance.Request("page-search", args, (json) => {
+                var searchResult = JsonUtility.FromJson<SearchResultResponse>(json).search_result;
+                Content.text = searchResult;
+            }));
         }
 
         public void LoadPage(string text)
@@ -57,13 +61,24 @@ namespace Side
 
             var address = a[0];
 
-            var path = "";
+            var path = "root";
             if (a.Length > 1)
             {
                 path = a[1];
             }
 
-            NetworkManager.Instance.Page(address, path);
+            int organizationId;
+            if (!int.TryParse(address, out organizationId))
+            {
+                Debug.LogWarning("Текстовые адреса пока не поддерживаются");
+                return;
+            }
+
+            var args = new string[]{organizationId.ToString(), path};
+            StartCoroutine(NetworkManager.Instance.Request("page", args, (json) => {
+                var page = JsonUtility.FromJson<PageResponse>(json).page;
+                Content.text = page.content;
+            }));
         }
     }
 }

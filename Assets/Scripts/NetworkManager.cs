@@ -24,6 +24,8 @@ public class NetworkManager : Manager
 	public GameObject mainButtonsPanelPrefab;
 	public GameObject quickMenuPrefab;
 	public GameObject dealPopupPrefab;
+	public GameObject InvitePopupPrefab;
+	public GameObject OfferPopupPrefab;
 	public GameObject createRoomPopupPrefab;
 	public GameObject noticePopupPrefab;
 	public GameObject loginPopupPrefab;
@@ -34,7 +36,7 @@ public class NetworkManager : Manager
 	public GameObject uiCanvas;
 	public GameObject mapCanvas;
 
-	public Text text;
+	public TMP_Text text;
 
 	public GameObject galaxyExploredPrefab;
 	public GameObject galaxyUnknownPrefab;
@@ -545,28 +547,22 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("room-create", args, ProcessParcel));
 	}
 
-	public void Organization(int organizationId)
+	public void Organization(int organizationId, string tabName = "Main")
     {
 		var args = new string[]{organizationId.ToString()};
-		StartCoroutine(Request("organization", args, (json) => ProcessOrganization(json, "Items")));
+		StartCoroutine(Request("organization", args, (json) => ProcessOrganization(json, tabName)));
 	}
 
-	public void Citizen(int citizenId)
+	public void Citizen(int citizenId, string tabName = "Main")
     {
 		var args = new string[]{citizenId.ToString()};
-		StartCoroutine(Request("citizen", args, (json) => ProcessCitizen(json)));
+		StartCoroutine(Request("citizen", args, (json) => ProcessCitizen(json, tabName)));
 	}
 
 	public void OrganizationAttachRoom(int organizationId, int roomId)
     {
 		var args = new string[]{organizationId.ToString(), roomId.ToString()};
 		StartCoroutine(Request("organization-attach-room", args, (json) => ProcessOrganization(json, "Rooms")));
-	}
-
-	public void MemberCreate(int organizationId, int citizenId)
-    {
-		var args = new string[]{organizationId.ToString(), citizenId.ToString()};
-		StartCoroutine(Request("member-create", args, (json) => ProcessOrganization(json, "Members")));
 	}
 	
 	public void MemberDelete(int organizationId, int citizenId)
@@ -591,39 +587,6 @@ public class NetworkManager : Manager
     {
 		var args = new string[]{organizationId.ToString(), Escape(title)};
 		StartCoroutine(Request("organization-set-title", args, null));
-	}
-
-	public void Page(string address, string path)
-    {
-		int organizationId;
-		if (!int.TryParse(address, out organizationId))
-		{
-			Debug.LogWarning("Текстовые адреса пока не поддерживаются");
-			return;
-		}
-
-		var args = new string[]{organizationId.ToString(), path};
-		StartCoroutine(Request("page", args, ProcessPage));
-	}
-
-	public void ProcessPage(string json)
-	{
-		var response = JsonUtility.FromJson<PageResponse>(json);
-		if (response == null)
-		{
-			return;
-		}
-
-		var content = response.page.content;
-		if (content == "")
-		{
-			content = "Page not found";
-		}
-
-		GameManager.Instance.currentPage = response.page;
-		GameObject.Find("ComputerWindow(Clone)")
-			.GetComponentInChildren<Side.ComputerInternetTab>()
-			.content.text = content;
 	}
 
 	public void PageCreate(int organizationId, string content, string path)
@@ -659,7 +622,7 @@ public class NetworkManager : Manager
 	public void DealDecline(int dealId)
     {
 		var args = new string[]{dealId.ToString()};
-		StartCoroutine(Request("deal-decline", args, (result) => {}));
+		StartCoroutine(Request("deal-decline", args, null));
 	}
 
 	private void ProcessDealCreate(string json)
@@ -693,11 +656,68 @@ public class NetworkManager : Manager
 
 	private void InstantiateDealPopup(DealItem deal)
 	{
-		var dealPopup = Instantiate(dealPopupPrefab, uiCanvas.transform)
-			.GetComponent<Side.DealPopup>();
-		dealPopup.caption.text = "DEAL";
-		dealPopup.description.text = $"Buy item?";
-		dealPopup.deal = deal;
+		Instantiate(dealPopupPrefab, uiCanvas.transform)
+			.GetComponent<Side.DealPopup>().Deal = deal;
+	}
+
+	public void InviteCreate(int inviterId, int organizationId, int citizenId)
+    {
+		var args = new string[]{inviterId.ToString(), organizationId.ToString(), citizenId.ToString()};
+		StartCoroutine(Request("invite-create", args, null));
+	}
+
+	public void InviteAccept(int inviteId)
+    {
+		var args = new string[]{inviteId.ToString()};
+		StartCoroutine(Request("invite-accept", args, ProcessInviteAccept));
+	}
+
+	public void InviteDecline(int inviteId)
+    {
+		var args = new string[]{inviteId.ToString()};
+		StartCoroutine(Request("invite-decline", args, null));
+	}
+
+	public void InstantiateInvitePopup(InviteItem invite)
+	{
+		Instantiate(InvitePopupPrefab, uiCanvas.transform)
+			.GetComponent<Side.InvitePopup>().Invite = invite;
+	}
+
+	public void OfferCreate(int offererId, int positionId, int citizenId)
+    {
+		var args = new string[]{offererId.ToString(), positionId.ToString(), citizenId.ToString()};
+		StartCoroutine(Request("offer-create", args, null));
+	}
+
+	public void OfferAccept(int offerId)
+    {
+		var args = new string[]{offerId.ToString()};
+		StartCoroutine(Request("offer-accept", args, ProcessOfferAccept));
+	}
+
+	public void OfferDecline(int offerId)
+    {
+		var args = new string[]{offerId.ToString()};
+		StartCoroutine(Request("offer-decline", args, null));
+	}
+
+	public void InstantiateOfferPopup(OfferItem offer)
+	{
+		Instantiate(OfferPopupPrefab, uiCanvas.transform)
+			.GetComponent<Side.OfferPopup>().Offer = offer;
+	}
+
+	public void ProcessOfferAccept(string json)
+	{
+		var response = JsonUtility.FromJson<OfferAcceptResponse>(json);
+		InstantiateNoticePopup("STATUS", response.status);
+	}
+
+	public void ProcessInviteAccept(string json)
+	{
+		var response = JsonUtility.FromJson<InviteAcceptResponse>(json);
+		InstantiateNoticePopup("STATUS", response.status);
 	}
 
 	private void ProcessDealAccept(string json)
@@ -1170,7 +1190,7 @@ public class NetworkManager : Manager
 		InstantiateOrganization(tabName);
 	}
 
-	private void ProcessCitizen(string json, string tabName = "Main")
+	public void ProcessCitizen(string json, string tabName = "Main")
 	{
 		var response = JsonUtility.FromJson<CitizenResponse>(json);
         if (response == null)
@@ -1211,7 +1231,8 @@ public class NetworkManager : Manager
 			return;
 		}
 
-		GameObject.Find("ComputerWindow(Clone)").GetComponentInChildren<Side.ComputerInternetTab>().content.text = response.result;
+		GameObject.Find("ComputerWindow(Clone)")
+			.GetComponentInChildren<Side.ComputerInternetTab>().Content.text = response.result;
 	}
 
 	private void ProcessMe(string json)

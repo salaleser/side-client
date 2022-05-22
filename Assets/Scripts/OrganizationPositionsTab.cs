@@ -10,26 +10,41 @@ using TMPro;
 
 namespace Side
 {
-    public class OrganizationPositionsTab : MonoBehaviour
+    public class OrganizationPositionsTab : OrganizationTab
     {
         public TMP_Dropdown PositionTypes;
-
         public GameObject PositionPrefab;
         public GameObject Positions;
         public Button FireButton;
-        public TMP_Text Description;
         public TMP_InputField Salary;
+        public TMP_InputField CitizenId;
 
+        private TMP_Text _description;
         private List<GameObject> _positions = new();
         private PositionItem _position;
         private List<PositionTypeItem> _positionTypes;
 
+        private void Awake()
+        {
+            _allowed_position_ids.Add(1);
+            _allowed_position_ids.Add(2);
+        }
+
         private void OnEnable()
         {
-            UpdatePositionTypes();
+            gameObject.SetActive(GameManager.Instance.currentOrganization.positions
+                .Where(x => _allowed_position_ids.Contains(x.type.id))
+                .Where(x => x.citizen.id == GameManager.Instance.me.id)
+                .Any());
             UpdateButtons();
             this.GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
+        }
+
+        public void Start()
+        {
+            _description = GameObject.Find("MainDescription").GetComponent<TMP_Text>();
+            UpdatePositionTypes();
         }
 
         private void Update()
@@ -73,13 +88,23 @@ namespace Side
 
         public void Fire()
         {
-            NetworkManager.Instance.MemberDelete(GameManager.Instance.currentOrganization.id, _position.citizen.id);
+            var args = new string[]{_position.id.ToString(), ""};
+            StartCoroutine(NetworkManager.Instance.Request("position-set-citizen", args, (json) => {
+                NetworkManager.Instance.ProcessOrganization(json, "Positions");
+            }));
+        }
+
+        public void Offer()
+        {
+            NetworkManager.Instance.OfferCreate(GameManager.Instance.me.id, _position.id, int.Parse(CitizenId.text));
         }
 
         public void SetProperties()
         {
             var args = new string[]{Salary.text};
-            StartCoroutine(NetworkManager.Instance.Request("position-set-properties", args, (json) => NetworkManager.Instance.ProcessOrganization(json, "Positions")));
+            StartCoroutine(NetworkManager.Instance.Request("position-set-properties", args, (json) => {
+                NetworkManager.Instance.ProcessOrganization(json, "Positions");
+            }));
         }
 
         public void UpdatePositionTypes()
@@ -110,6 +135,7 @@ namespace Side
                 var position = positions[i];
 
                 var instance = Instantiate(PositionPrefab);
+                instance.GetComponent<Image>().color = position.citizen.id == 0 ? Color.grey : Color.blue;
                 _positions.Add(instance);
                 var rectTransform = instance.transform.GetComponent<RectTransform>();
                 rectTransform.transform.SetParent(Positions.transform.GetComponent<RectTransform>());
@@ -118,10 +144,10 @@ namespace Side
                 rectTransform.anchoredPosition = new Vector3(x, y, 0);
 
                 var button = instance.GetComponent<Button>();
-                button.GetComponentInChildren<TMP_Text>().text = $"{position.type.title} {position.citizen.ToCaption()}";
+                button.GetComponentInChildren<TMP_Text>().text = $"{position.type.title}: {(position.citizen.id == 0 ? "(vacant)" : position.citizen.ToCaption())}";
                 button.onClick.AddListener(() => {
                     _position = position;
-                    Description.text = _position.ToString();
+                    _description.text = _position.ToString();
                     UpdateButtons();
                     Salary.text = _position.salary.ToString();
                 });

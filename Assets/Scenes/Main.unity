@@ -153,7 +153,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1881210456}
+  - {fileID: 1345216648}
   m_Father: {fileID: 1207886750}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -308,28 +308,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   state: 0
   currentUniverse:
-    title: 
     id: 0
+    title: 
     number: 0
     galaxies: []
   currentGalaxy:
-    title: 
     id: 0
+    title: 
     number: 0
     explorer_id: 0
     systems: []
     systems_count: 0
   currentSystem:
-    title: 
     id: 0
+    title: 
     number: 0
     explorer_id: 0
     galaxy_id: 0
     planets: []
     planets_count: 0
   currentPlanet:
-    title: 
     id: 0
+    title: 
     number: 0
     explorer_id: 0
     system_id: 0
@@ -337,16 +337,16 @@ MonoBehaviour:
     continents: []
     continents_count: 0
   currentContinent:
-    title: 
     id: 0
+    title: 
     number: 0
     explorer_id: 0
     planet_id: 0
     regions: []
     regions_count: 0
   currentRegion:
-    title: 
     id: 0
+    title: 
     x: 0
     y: 0
     z: 0
@@ -355,8 +355,8 @@ MonoBehaviour:
     cities: []
     cities_count: 0
   currentCity:
-    title: 
     id: 0
+    title: 
     x: 0
     y: 0
     explorer_id: 0
@@ -364,8 +364,8 @@ MonoBehaviour:
     blocks: []
     blocks_count: 0
   currentBlock:
-    title: 
     id: 0
+    title: 
     x: 0
     y: 0
     city_id: 0
@@ -373,8 +373,8 @@ MonoBehaviour:
     parcels: []
     parcels_count: 0
   currentParcel:
-    title: 
     id: 0
+    title: 
     x: 0
     y: 0
     explorer_id: 0
@@ -402,63 +402,33 @@ MonoBehaviour:
     is_active: 0
     tasks: []
     pages: []
+    positions: []
     members: []
-  currentCitizen:
-    id: 0
-    name: 
-    account_id: 0
-    active_task_id: 0
-    room_id: 0
-    parcel_id: 0
-    root_item_id: 0
-    delivery_address: 0
-    items: []
-    friends: []
-    actions: []
-    statuses: []
-    characteristics: []
-    organizations: []
-    emails: []
-    room:
-      title: 
-      id: 0
-      type:
-        id: 0
-        title: 
-        properties:
-          color: {r: 0, g: 0, b: 0, a: 0}
-          size:
-            w: 0
-            h: 0
-          durability: 0
-          tasks: []
-      x: 0
-      y: 0
-      z: 0
-      w: 0
-      h: 0
-      health: 0
-      creator_id: 0
-      renter_id: 0
-      item_id: 0
-      parcel_id: 0
-      rentable: 0
-      organization_ids: 
-      items: []
-      citizens: []
-      messages: []
-      properties:
-        type_id: 0
-    rented_rooms: []
   me:
     id: 0
-    name: 
+    title: 
     account_id: 0
     active_task_id: 0
-    room_id: 0
     parcel_id: 0
-    root_item_id: 0
-    delivery_address: 0
+    item_id: 0
+    delivery_address:
+      id: 0
+      title: 
+      type:
+        id: 0
+        title: 
+        properties:
+          color: {r: 0, g: 0, b: 0, a: 0}
+          w: 0
+          h: 0
+          durability: 0
+      x: 0
+      y: 0
+      w: 0
+      h: 0
+      renter_id: 0
+      item_id: 0
+      organization_ids: 
     items: []
     friends: []
     actions: []
@@ -467,18 +437,16 @@ MonoBehaviour:
     organizations: []
     emails: []
     room:
-      title: 
       id: 0
+      title: 
       type:
         id: 0
         title: 
         properties:
           color: {r: 0, g: 0, b: 0, a: 0}
-          size:
-            w: 0
-            h: 0
+          w: 0
+          h: 0
           durability: 0
-          tasks: []
       x: 0
       y: 0
       z: 0
@@ -498,18 +466,16 @@ MonoBehaviour:
         type_id: 0
     rented_rooms: []
   currentRentedRoom:
-    title: 
     id: 0
+    title: 
     type:
       id: 0
       title: 
       properties:
         color: {r: 0, g: 0, b: 0, a: 0}
-        size:
-          w: 0
-          h: 0
+        w: 0
+        h: 0
         durability: 0
-        tasks: []
     x: 0
     y: 0
     w: 0
@@ -519,6 +485,7 @@ MonoBehaviour:
     organization_ids: 
   currentPage:
     id: 0
+    title: 
     organization_id: 0
     content: 
     path: 
@@ -680,6 +647,141 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1345216647
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1345216648}
+  - component: {fileID: 1345216650}
+  - component: {fileID: 1345216649}
+  m_Layer: 5
+  m_Name: MainDescription
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1345216648
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345216647}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 26508636}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1345216649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345216647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
+  m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 24
+  m_fontSizeBase: 24
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1345216650
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345216647}
+  m_CullTransparentMesh: 1
 --- !u!1 &1468858875
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,6 +908,8 @@ MonoBehaviour:
   mainButtonsPanelPrefab: {fileID: 4986402042970637749, guid: 3265e76a060fa43898fa60b7254c8794, type: 3}
   quickMenuPrefab: {fileID: 6657676188238830695, guid: c3ace36d5551e4b118710cdc24625288, type: 3}
   dealPopupPrefab: {fileID: 2130151071311696967, guid: 4aa0c94f0746d4346a8d7d40ba3d4b82, type: 3}
+  InvitePopupPrefab: {fileID: 2130151071311696967, guid: f7f910e09d02545ce8ccae9f0d2ec280, type: 3}
+  OfferPopupPrefab: {fileID: 2130151071311696967, guid: 72ce45ed392a8486183db2452d84c937, type: 3}
   createRoomPopupPrefab: {fileID: 2130151071311696967, guid: 91778e3526d294319b6b93bf0e6348ce, type: 3}
   noticePopupPrefab: {fileID: 2130151071311696967, guid: 411be8ea80c7a475290182270c3c7ae4, type: 3}
   loginPopupPrefab: {fileID: 2130151071311696967, guid: 821cf549b71da46c296859cdc8c3e911, type: 3}
@@ -814,7 +918,7 @@ MonoBehaviour:
   computerWindowPrefab: {fileID: 5675518160032065541, guid: 7bee1e4f612574b88802571278907e54, type: 3}
   uiCanvas: {fileID: 645576251}
   mapCanvas: {fileID: 1987155250}
-  text: {fileID: 1881210457}
+  text: {fileID: 1345216649}
   galaxyExploredPrefab: {fileID: 9040041545605410619, guid: d6646e7fd24f14301a4564be0f646d6b, type: 3}
   galaxyUnknownPrefab: {fileID: 9040041545605410619, guid: 45475fbb4724549e19c5da2dda983889, type: 3}
   systemExploredPrefab: {fileID: 9040041545605410619, guid: 7a743e356384b442f9f9896972b0ed01, type: 3}
@@ -1084,86 +1188,6 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1719722359}
-  m_CullTransparentMesh: 1
---- !u!1 &1881210455
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1881210456}
-  - component: {fileID: 1881210458}
-  - component: {fileID: 1881210457}
-  m_Layer: 5
-  m_Name: Text
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1881210456
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1881210455}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 26508636}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1881210457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1881210455}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 12800000, guid: 8a2b9e2a607dd2143b58c44bc32410b4, type: 3}
-    m_FontSize: 20
-    m_FontStyle: 1
-    m_BestFit: 0
-    m_MinSize: 0
-    m_MaxSize: 40
-    m_Alignment: 0
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: New Text
---- !u!222 &1881210458
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1881210455}
   m_CullTransparentMesh: 1
 --- !u!1 &1896813001
 GameObject:

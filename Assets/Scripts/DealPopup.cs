@@ -8,18 +8,17 @@ using TMPro;
 
 namespace Side
 {
-    public class DealPopup : Popup
+    public class DealPopup : MonoBehaviour
     {
-        public TMP_Text caption;
-        public TMP_Text description;
-        public DealItem deal;
-        public TMP_InputField quantity;
-        public TMP_InputField deliveryAddress;
+        public TMP_Text Description;
+        public DealItem Deal;
+        public TMP_InputField Quantity;
+        public TMP_InputField DeliveryAddress;
 
         private void Start()
         {
-            description.text = deal.ToString();
-            deliveryAddress.text = deal.buyer.room.id.ToString();
+            Description.text = Deal.ToString();
+            DeliveryAddress.text = Deal.buyer.room.id.ToString();
         }
 
         private void Update()
@@ -39,19 +38,19 @@ namespace Side
 
         public void Accept()
         {
-            if (int.Parse(quantity.text) > deal.item.quantity)
+            if (int.Parse(Quantity.text) > Deal.item.quantity)
             {
                 NetworkManager.Instance.InstantiateNoticePopup("ERROR", "Нельзя купить больше чем доступно");
                 return;
             }
 
-            NetworkManager.Instance.DealAccept(deal.id, int.Parse(quantity.text));
+            NetworkManager.Instance.DealAccept(Deal.id, int.Parse(Quantity.text));
             Destroy(this.gameObject);
         }
 
         public void Decline()
         {
-            NetworkManager.Instance.DealDecline(deal.id);
+            NetworkManager.Instance.DealDecline(Deal.id);
             Destroy(this.gameObject);
         }
     }

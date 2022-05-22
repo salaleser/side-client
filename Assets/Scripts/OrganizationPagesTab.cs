@@ -8,23 +8,32 @@ using TMPro;
 
 namespace Side
 {
-    public class OrganizationPagesTab : MonoBehaviour
+    public class OrganizationPagesTab : OrganizationTab
     {
         public TMP_InputField Path;
         public TMP_InputField Content;
         public TMP_Text ContentPreview;
         public TMP_Dropdown Pages;
 
-        private void Start()
+        private void Awake()
         {
-            UpdatePages();
-            LoadPage("");
+            _allowed_position_ids.Add(1);
         }
 
         private void OnEnable()
         {
+            gameObject.SetActive(GameManager.Instance.currentOrganization.positions
+                .Where(x => _allowed_position_ids.Contains(x.type.id))
+                .Where(x => x.citizen.id == GameManager.Instance.me.id)
+                .Any());
             this.GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
+        }
+
+        private void Start()
+        {
+            UpdatePages();
+            LoadPage("");
         }
 
         private void Update()

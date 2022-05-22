@@ -10,29 +10,38 @@ using TMPro;
 
 namespace Side
 {
-    public class OrganizationMembersTab : MonoBehaviour
+    public class OrganizationMembersTab : OrganizationTab
     {
         public GameObject MemberPrefab;
         public GameObject Members;
-        public TMP_Text Description;
-
+        public TMP_Dropdown JoinType;
         public Button KickButton;
+        public TMP_InputField CitizenId;
 
+        private TMP_Text _description;
         private MemberItem _member;
+
+        private void Awake()
+        {
+            _allowed_position_ids.Add(2);
+        }
 
         private void OnEnable()
         {
+            gameObject.SetActive(GameManager.Instance.currentOrganization.positions
+                .Where(x => _allowed_position_ids.Contains(x.type.id))
+                .Where(x => x.citizen.id == GameManager.Instance.me.id)
+                .Any());
             UpdateMembers();
             UpdateButtons();
             this.GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
         }
 
-        private void Update()
+        public void Start()
         {
-            if (GameManager.ShortcutsActive)
-            {
-            }
+            _description = GameObject.Find("MainDescription").GetComponent<TMP_Text>();
+            JoinType.value = GameManager.Instance.currentOrganization.properties.join_type_id;
         }
 
         public void UpdateButtons()
@@ -43,6 +52,18 @@ namespace Side
         public void Kick()
         {
             NetworkManager.Instance.MemberDelete(GameManager.Instance.currentOrganization.id, _member.citizen.id);
+        }
+
+        public void Invite()
+        {
+            NetworkManager.Instance.InviteCreate(GameManager.Instance.me.id, GameManager.Instance.currentOrganization.id, int.Parse(CitizenId.text));
+        }
+
+        public void SetJoinType()
+        {
+            OrganizationProperties properties = GameManager.Instance.currentOrganization.properties;
+            properties.join_type_id = JoinType.value;
+            NetworkManager.Instance.OrganizationSetProperties(GameManager.Instance.currentOrganization.id, properties, "Members");
         }
 
         public void UpdateMembers()
@@ -66,7 +87,7 @@ namespace Side
                 button.GetComponentInChildren<TMP_Text>().text = $"{member.title} {member.citizen.ToCaption()}";
                 button.onClick.AddListener(() => {
                     _member = member;
-                    Description.text = _member.ToString();
+                    _description.text = _member.ToString();
                     UpdateButtons();
                 });
 

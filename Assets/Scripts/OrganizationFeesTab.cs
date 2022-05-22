@@ -10,14 +10,22 @@ using TMPro;
 
 namespace Side
 {
-    public class OrganizationFeesTab : MonoBehaviour
+    public class OrganizationFeesTab : OrganizationTab
     {
         public TMP_InputField MembershipFee;
 
+        private void Awake()
+        {
+            _allowed_position_ids.Add(3);
+        }
+
         private void OnEnable()
         {
-            var properties = GameManager.Instance.currentOrganization.properties;
-            MembershipFee.text = properties.membership_fee.ToString();
+            gameObject.SetActive(GameManager.Instance.currentOrganization.positions
+                .Where(x => _allowed_position_ids.Contains(x.type.id))
+                .Where(x => x.citizen.id == GameManager.Instance.me.id)
+                .Any());
+            MembershipFee.text = GameManager.Instance.currentOrganization.properties.membership_fee.ToString();
             this.GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
         }
