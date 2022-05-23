@@ -36,8 +36,6 @@ public class NetworkManager : Manager
 	public GameObject uiCanvas;
 	public GameObject mapCanvas;
 
-	public TMP_Text text;
-
 	public GameObject galaxyExploredPrefab;
 	public GameObject galaxyUnknownPrefab;
 	public GameObject systemExploredPrefab;
@@ -129,13 +127,13 @@ public class NetworkManager : Manager
 
 	private void Start()
 	{
-		Instantiate(mainButtonsPanelPrefab, uiCanvas.transform);
+		// Instantiate(mainButtonsPanelPrefab, uiCanvas.transform);
 		Instantiate(loginPopupPrefab, uiCanvas.transform);
 	}
 
 	private void Update()
 	{
-		if (GameManager.ShortcutsActive && GameObject.FindWithTag("Window") == null)
+		if (GameManager.ShortcutsActive && !GameManager.WindowActive && !GameManager.PopupActive)
 		{
 			if (Keyboard.current.mKey.wasPressedThisFrame)
 			{
@@ -173,12 +171,38 @@ public class NetworkManager : Manager
 			{
 				ComputerButton();
 			}
+			else if (Keyboard.current.spaceKey.wasPressedThisFrame)
+			{
+				CenterCameraButton();
+			}
 		}
 	}
 
 	public void ProfileButton()
 	{
 		InstantiateCitizen();
+	}
+
+	public void CenterCameraButton()
+	{
+		switch (GameManager.Instance.state)
+		{
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+				Camera.main.transform.localPosition = Vector3.zero;
+				Camera.main.transform.localRotation = Quaternion.Euler(20, 45, 0);
+				break;
+			case 9:
+				Camera.main.transform.localPosition = new Vector3(GameManager.Instance.me.room.x + Mathf.Floor(GameManager.Instance.me.room.w / 2), 0, GameManager.Instance.me.room.y - Mathf.Floor(GameManager.Instance.me.room.h / 2));
+				Camera.main.transform.localRotation = Quaternion.Euler(20, 45, 0);
+				break;
+		}
 	}
 
 	public void ItemsButton()
@@ -279,55 +303,6 @@ public class NetworkManager : Manager
 		Parcel(GameManager.Instance.me.parcel_id);
 	}
 
-	public void ShowButtons(Transform transform)
-	{
-		text.text = "";
-		foreach(var ground in transform.GetComponentsInChildren<Entities.Cells.Ground>())
-		{
-			text.text += $"\n{ground.groundItem}";
-		}
-		foreach(var galaxy in transform.GetComponentsInChildren<Entities.Cells.Galaxy>())
-		{
-			text.text += $"\n{galaxy.galaxyItem}";
-		}
-		foreach(var system in transform.GetComponentsInChildren<Entities.Cells.System>())
-		{
-			text.text += $"\n{system.systemItem}";
-		}
-		foreach(var planet in transform.GetComponentsInChildren<Entities.Cells.Planet>())
-		{
-			text.text += $"\n{planet.planetItem}";
-		}
-		foreach(var continent in transform.GetComponentsInChildren<Entities.Cells.Continent>())
-		{
-			text.text += $"\n{continent.continentItem}";
-		}
-		foreach(var region in transform.GetComponentsInChildren<Entities.Cells.Region>())
-		{
-			text.text += $"\n{region.regionItem}";
-		}
-		foreach(var city in transform.GetComponentsInChildren<Entities.Cells.City>())
-		{
-			text.text += $"\n{city.cityItem}";
-		}
-		foreach(var block in transform.GetComponentsInChildren<Entities.Cells.Block>())
-		{
-			text.text += $"\n{block.blockItem}";
-		}
-		foreach(var parcel in transform.GetComponentsInChildren<Entities.Cells.Parcel>())
-		{
-			text.text += $"\n{parcel.parcelItem}";
-		}
-		foreach(var room in transform.GetComponentsInChildren<Entities.Cells.Room>())
-		{
-			text.text += $"\n{room.roomItem}";
-		}
-		foreach(var citizen in transform.GetComponentsInChildren<Entities.Citizen>())
-		{
-			text.text += $"\n{citizen.citizenItem}";
-		}
-	}
-
 	private void DestroyCells()
 	{
 		DestroyAll<Entities.Cells.Galaxy>();
@@ -351,7 +326,6 @@ public class NetworkManager : Manager
 
 	private void DestroyAll<T>() where T : Entity
 	{
-        text.text = "—";
 		var objects = GameObject.FindGameObjectsWithTag("Side");
 		foreach(var o in objects)
 		{
@@ -541,9 +515,9 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("block-explore", args, ProcessCity));
 	}
 
-	public void CreateRoom(int parcelId, int typeId, int x, int y, int z, int w, int h, int organizationId, int creatorId, string title)
+	public void CreateRoom(int parcelId, int typeId, int x, int y, int z, int w, int h, int constructionOrganizationId, int creatorId, string title)
     {
-		var args = new string[]{parcelId.ToString(), typeId.ToString(), x.ToString(), y.ToString(), z.ToString(), w.ToString(), h.ToString(), organizationId.ToString(), creatorId.ToString(), title};
+		var args = new string[]{parcelId.ToString(), typeId.ToString(), x.ToString(), y.ToString(), z.ToString(), w.ToString(), h.ToString(), constructionOrganizationId.ToString(), creatorId.ToString(), title};
 		StartCoroutine(Request("room-create", args, ProcessParcel));
 	}
 

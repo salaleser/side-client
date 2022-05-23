@@ -12,8 +12,6 @@ public class GameManager : MonoBehaviour
 	public const int GroundLevel = 1;
 
 	public const int Organization = -3;
-	public const int Market = -2;
-	public const int Inventory = -1;
 	public const int Universe = 1;
 	public const int Galaxy = 2;
 	public const int System = 3;
@@ -44,6 +42,12 @@ public class GameManager : MonoBehaviour
 	public GameObject CursorPrefab;
 	public GameObject Cursor { get; private set; }
 
+	public GameObject DescriptionPrefab;
+	public GameObject Description { get; private set; }
+
+	public GameObject MiniMapPrefab;
+	public static GameObject MiniMap { get; private set; }
+
 	public GameObject ChatPrefab;
 	public static GameObject Chat { get; private set; }
 
@@ -70,6 +74,8 @@ public class GameManager : MonoBehaviour
 
 	private void Start()
 	{
+		Description = Instantiate(DescriptionPrefab, NetworkManager.Instance.uiCanvas.transform);
+		MiniMap = Instantiate(MiniMapPrefab, NetworkManager.Instance.uiCanvas.transform);
 		Chat = Instantiate(ChatPrefab, NetworkManager.Instance.uiCanvas.transform);
 		Cursor = Instantiate(CursorPrefab, NetworkManager.Instance.uiCanvas.transform);
 		SetShortcutsActive(true);
@@ -80,6 +86,11 @@ public class GameManager : MonoBehaviour
 		ShortcutsActive = isActive;
 		Instance.ShortcutsActiveSign.GetComponent<Image>().color = isActive ? Color.green : Color.red;
 		Instance.ShortcutsActiveSign.GetComponentInChildren<TMP_Text>().text = isActive ? "SHORCUTS ENABLED" : "SHORCUTS DISABLED";
+	}
+
+	public static void SetDescription(string text)
+	{
+		Instance.Description.GetComponentInChildren<TMP_Text>().text = text;
 	}
 
 	public static void SetQuickMenuActive(bool isActive)

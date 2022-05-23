@@ -16,7 +16,6 @@ namespace Side
         public GameObject Tasks;
         public TMP_InputField Wage;
 
-        private TMP_Text _description;
         private TaskItem _task;
 
         private void Awake()
@@ -36,9 +35,8 @@ namespace Side
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
         }
 
-        public void Start()
+        private void Start()
         {
-            _description = GameObject.Find("MainDescription").GetComponent<TMP_Text>();
         }
 
         public void SetProperties()
@@ -70,7 +68,7 @@ namespace Side
                 button.GetComponentInChildren<TMP_Text>().text = $"\"{task.title}\" ({task.organization_id}-{task.room_id}) ={task.wage} [{(task.is_free ? "O" : "X")}]";
                 button.onClick.AddListener(() => {
                     _task = task;
-                    _description.text = _task.ToString();
+                    GameManager.SetDescription(_task.ToString());
                 });
 
                 row++;

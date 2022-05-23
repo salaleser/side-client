@@ -14,6 +14,7 @@ namespace Side
         public TMP_InputField Y;
         public TMP_InputField Z;
         public TMP_InputField Title;
+        public TMP_InputField Price;
         public TMP_Dropdown RoomTypes;
         public TMP_Dropdown ConstructionOrganizations;
         public TMP_Text Description;
@@ -41,7 +42,7 @@ namespace Side
                 {
                     Decline();
                 }
-                else if (Keyboard.current.tKey.wasPressedThisFrame)
+                else if (Keyboard.current.rKey.wasPressedThisFrame)
                 {
                     if (RoomTypes.value == RoomTypes.options.Count - 1)
                     {
@@ -52,7 +53,7 @@ namespace Side
                         RoomTypes.value++;
                     }
                 }
-                else if (Keyboard.current.bKey.wasPressedThisFrame)
+                else if (Keyboard.current.oKey.wasPressedThisFrame)
                 {
                     if (ConstructionOrganizations.value == ConstructionOrganizations.options.Count - 1)
                     {
@@ -85,8 +86,8 @@ namespace Side
         private void UpdateRoomTypes()
         {
             var args = new string[]{};
-            StartCoroutine(NetworkManager.Instance.Request("room-types", args, (result) => {
-                _roomTypes = JsonUtility.FromJson<RoomTypesResponse>(result).room_types;
+            StartCoroutine(NetworkManager.Instance.Request("room-types", args, (json) => {
+                _roomTypes = JsonUtility.FromJson<RoomTypesResponse>(json).room_types;
                 RoomTypes.AddOptions(_roomTypes
                     .Where(x => x.id != 14) // нельзя строить "construction site"
                     .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
@@ -103,6 +104,19 @@ namespace Side
                     .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
                     .ToList());
             }));
+        }
+
+        public void UpdatePrice()
+        {
+            var roomType = _roomTypes
+                .Where(x => x.ToCaption() == RoomTypes.captionText.text)
+                .FirstOrDefault();
+            
+            var constructionOrganization = _constructionOrganizations
+                .Where(x => x.ToCaption() == ConstructionOrganizations.captionText.text)
+                .FirstOrDefault();
+            
+            Price.text = (roomType?.properties.durability * constructionOrganization?.properties.price).ToString();
         }
 
         public void Accept()
@@ -125,30 +139,25 @@ namespace Side
                 return;
             }
 
-            var size = 64;
-            if ((roomType.properties.w + (int.Parse(X.text) - 1) <= size)
-                && (roomType.properties.h + (size - int.Parse(Y.text)) <= size))
+            const int Size = 64;
+            if ((roomType.properties.w + (int.Parse(X.text) - 1) <= Size)
+                && (roomType.properties.h + (Size - int.Parse(Y.text)) <= Size))
             {
                 NetworkManager.Instance.CreateRoom(GameManager.Instance.currentParcel.id,
                     roomType.id, int.Parse(X.text), int.Parse(Y.text), int.Parse(Z.text),
                     roomType.properties.w, roomType.properties.h,
                     constructionOrganization.id, GameManager.Instance.me.id, Title.text);
-                Destroy(this.gameObject);
+                Destroy(gameObject);
             }
             else
             {
-                NetworkManager.Instance.InstantiateNoticePopup("ERROR", @$"Unable to create
-roomType.properties.w={roomType.properties.w}
-roomType.properties.h={roomType.properties.h}
-({roomType.properties.w} + {(int.Parse(X.text) - 1)} <= {size}) = {(roomType.properties.w + (int.Parse(X.text) - 1) <= size)}
-({roomType.properties.h} + {(size - int.Parse(Y.text))} <= {size}) = {(roomType.properties.h + (size - int.Parse(Y.text)) <= size)}
-");
+                NetworkManager.Instance.InstantiateNoticePopup("ERROR", "Not enough space");
             }
         }
 
         public void Decline()
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 }

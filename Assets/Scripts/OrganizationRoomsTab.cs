@@ -18,8 +18,6 @@ namespace Side
         public GameObject RentedRoomPrefab;
         public GameObject RentedRooms;
 
-        private TMP_Text _description;
-
         private void Awake()
         {
             _allowed_position_ids.Add(1);
@@ -38,7 +36,6 @@ namespace Side
 
         public void Start()
         {
-            _description = GameObject.Find("MainDescription").GetComponent<TMP_Text>();
             UpdateRequiredRoomTypes();
         }
 
@@ -135,7 +132,7 @@ namespace Side
                 button.GetComponentInChildren<TMP_Text>().text = $"{rentedRoom.type.title} {rentedRoom.title}";
                 button.onClick.AddListener(() => {
                     GameManager.Instance.currentRentedRoom = rentedRoom;
-                    _description.text = rentedRoom.ToString();
+                    GameManager.SetDescription(rentedRoom.ToString());
                 });
 
                 row++;

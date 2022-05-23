@@ -19,7 +19,6 @@ namespace Side
         public TMP_InputField Salary;
         public TMP_InputField CitizenId;
 
-        private TMP_Text _description;
         private List<GameObject> _positions = new();
         private PositionItem _position;
         private List<PositionTypeItem> _positionTypes;
@@ -43,7 +42,6 @@ namespace Side
 
         public void Start()
         {
-            _description = GameObject.Find("MainDescription").GetComponent<TMP_Text>();
             UpdatePositionTypes();
         }
 
@@ -147,7 +145,7 @@ namespace Side
                 button.GetComponentInChildren<TMP_Text>().text = $"{position.type.title}: {(position.citizen.id == 0 ? "(vacant)" : position.citizen.ToCaption())}";
                 button.onClick.AddListener(() => {
                     _position = position;
-                    _description.text = _position.ToString();
+                    GameManager.SetDescription(_position.ToString());
                     UpdateButtons();
                     Salary.text = _position.salary.ToString();
                 });

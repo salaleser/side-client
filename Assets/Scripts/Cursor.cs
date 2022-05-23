@@ -31,23 +31,44 @@ namespace Side
                     _camera.transform.localPosition = transform.position;
                 }
 
-                if (_mouse.position.x.ReadValue() > Screen.width - 50)
+                if (_keyboard.leftBracketKey.wasPressedThisFrame)
+                {
+                    _camera.transform.RotateAround(transform.position, new Vector3(0, 1, 0), 90);
+                }
+                else if (_keyboard.rightBracketKey.wasPressedThisFrame)
+                {
+                    _camera.transform.RotateAround(transform.position, new Vector3(0, -1, 0), 90);
+                }
+
+                if (_mouse.rightButton.isPressed)
+                {
+                    if (_mouse.position.x.ReadValue() > Screen.width / 2 + 100)
+                    {
+                        _camera.transform.RotateAround(transform.position, new Vector3(0, 1, 0), 100 * (_keyboard.leftShiftKey.isPressed ? M : 1) * Time.deltaTime);
+                    }
+                    else if (_mouse.position.x.ReadValue() < Screen.width / 2 - 100)
+                    {
+                        _camera.transform.RotateAround(transform.position, new Vector3(0, -1, 0), 100 * (_keyboard.leftShiftKey.isPressed ? M : 1) * Time.deltaTime);
+                    }
+                }
+
+                if (_mouse.position.x.ReadValue() > Screen.width - 5)
                 {
                     MoveDown(0.05f);
                     MoveRight(0.05f);
                 }
-                else if (_mouse.position.x.ReadValue() < 50)
+                else if (_mouse.position.x.ReadValue() < 5)
                 {
                     MoveLeft(0.05f);
                     MoveUp(0.05f);
                 }
 
-                if (_mouse.position.y.ReadValue() > Screen.height - 50)
+                if (_mouse.position.y.ReadValue() > Screen.height - 5)
                 {
                     MoveUp(0.05f);
                     MoveRight(0.05f);
                 }
-                else if (_mouse.position.y.ReadValue() < 50)
+                else if (_mouse.position.y.ReadValue() < 5)
                 {
                     MoveLeft(0.05f);
                     MoveDown(0.05f);
@@ -75,12 +96,6 @@ namespace Side
                 {
                     MoveDown();
                     MoveRight();
-                }
-                
-                if (_keyboard.spaceKey.wasPressedThisFrame)
-                {
-                    var room = GameManager.Instance.me.room;
-                    _camera.transform.localPosition = new Vector3(room.x + Mathf.Floor(room.w / 2), 0, room.y - Mathf.Floor(room.h / 2));
                 }
             }
         }

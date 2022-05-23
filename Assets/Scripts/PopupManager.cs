@@ -24,7 +24,9 @@ namespace Side
         {
             if (GameManager.ShortcutsActive)
             {
-                if (Keyboard.current.qKey.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame)
+                if (Keyboard.current.qKey.wasPressedThisFrame
+                    || Keyboard.current.escapeKey.wasPressedThisFrame
+                    || Mouse.current.rightButton.wasPressedThisFrame)
                 {
                     ClosePopup();
                 }

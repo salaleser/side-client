@@ -18,7 +18,6 @@ namespace Side
         public GameObject ItemPrefab;
         public GameObject Content;
 
-        private TMP_Text _description;
         private ItemItem _item;
         private List<GameObject> _items = new();
 
@@ -34,13 +33,12 @@ namespace Side
                 .Where(x => x.citizen.id == GameManager.Instance.me.id)
                 .Any());
             UpdateItems();
-            this.GetComponentInParent<WindowManager>()
+            GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
         }
 
         public void Start()
         {
-            _description = GameObject.Find("MainDescription").GetComponent<TMP_Text>();
             UpdateAttachedRooms();
         }
 
@@ -119,7 +117,7 @@ namespace Side
                 button.GetComponentInChildren<TMP_Text>().text = $"{item.type.title} x{item.quantity} ={item.price}";
                 button.onClick.AddListener(() => {
                     _item = item;
-                    _description.text = _item.ToString();
+                    GameManager.SetDescription(_item.ToString());
                 });
 
                 row++;

@@ -21,13 +21,11 @@ namespace Side
         public Button DropButton;
         public Button TakeButton;
         
-        private TMP_Text _description;
         private ItemItem _item;
         private List<GameObject> _items = new();
 
         private void Start()
         {
-            _description = GameObject.Find("MainDescription").GetComponent<TMP_Text>();
             List<TMP_Dropdown.OptionData> options = new();
             options.Add(new TMP_Dropdown.OptionData($"{GameManager.Instance.me.ToCaption()}"));
             options.Add(new TMP_Dropdown.OptionData($"{GameManager.Instance.me.room.type.title} {GameManager.Instance.me.room.title}"));
@@ -148,7 +146,7 @@ namespace Side
                 button.GetComponentInChildren<TMP_Text>().text = $"{item.type.title} x{item.quantity} ={item.price}";
                 button.onClick.AddListener(() => {
                     _item = item;
-                    _description.text = _item.ToString();
+                    GameManager.SetDescription(_item.ToString());
                     UpdateButtons();
                 });
 

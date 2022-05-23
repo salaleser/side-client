@@ -15,12 +15,10 @@ namespace Side
         public TMP_Dropdown Organizations;
         public TMP_Dropdown OrganizationTypes;
 
-        private TMP_Text _description;
         private List<OrganizationTypeItem> _organizationTypes;
 
         private void Start()
         {
-            _description = GameObject.Find("MainDescription").GetComponent<TMP_Text>();
             UpdateOrganizations();
             UpdateOrganizationTypes();
         }
@@ -114,7 +112,7 @@ namespace Side
             if (organization != null)
             {
                 NetworkManager.Instance.Organization(organization.id);
-                Destroy(this.gameObject);
+                Destroy(gameObject);
             }
         }
 
@@ -129,18 +127,18 @@ namespace Side
 
         public void UpdateOrganizationTypeDescription()
         {
-            _description.text = _organizationTypes
+            GameManager.SetDescription(_organizationTypes
                 .Where(x => x.ToCaption() == OrganizationTypes.captionText.text)
                 .FirstOrDefault()
-                ?.ToString();
+                ?.ToString());
         }
 
         public void UpdateOrganizationDescription()
         {
-            _description.text = GameManager.Instance.me.organizations
+            GameManager.SetDescription(GameManager.Instance.me.organizations
                 .Where(x => x.ToCaption() == Organizations.captionText.text)
                 .FirstOrDefault()
-                ?.ToString();
+                ?.ToString());
         }
     }
 }

@@ -18,7 +18,6 @@ namespace Side
         public Button KickButton;
         public TMP_InputField CitizenId;
 
-        private TMP_Text _description;
         private MemberItem _member;
 
         private void Awake()
@@ -40,7 +39,6 @@ namespace Side
 
         public void Start()
         {
-            _description = GameObject.Find("MainDescription").GetComponent<TMP_Text>();
             JoinType.value = GameManager.Instance.currentOrganization.properties.join_type_id;
         }
 
@@ -87,7 +85,7 @@ namespace Side
                 button.GetComponentInChildren<TMP_Text>().text = $"{member.title} {member.citizen.ToCaption()}";
                 button.onClick.AddListener(() => {
                     _member = member;
-                    _description.text = _member.ToString();
+                    GameManager.SetDescription(_member.ToString());
                     UpdateButtons();
                 });
 

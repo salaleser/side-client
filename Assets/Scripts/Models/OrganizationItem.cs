@@ -32,5 +32,6 @@ attached_rooms.Count={attached_rooms.Count}";
     {
         public int membership_fee;
         public int join_type_id;
+        public int price;
     }
 }

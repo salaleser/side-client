@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Models;
 
@@ -14,6 +15,7 @@ namespace Entities.Cells
         private void Start()
         {
             AddButton($"Create Room", () => NetworkManager.Instance.InstantiateCreateRoomPopup(roomItem.z + 1));
+            AddButton($"Zoom Out", () => NetworkManager.Instance.ZoomOutButton());
             if (GameManager.Instance.me.room.id == roomItem.id)
             {
                 AddButton($"Inventory", () => NetworkManager.Instance.InstantiateCitizen("Items"));
@@ -32,9 +34,12 @@ namespace Entities.Cells
 
         private void OnMouseEnter()
         {
-            if (!GameManager.QuickMenuActive && !GameManager.WindowActive && !GameManager.PopupActive)
+            if (!GameManager.QuickMenuActive
+                && !GameManager.WindowActive
+                && !GameManager.PopupActive
+                && !Mouse.current.rightButton.isPressed)
             {
-                NetworkManager.Instance.text.text = $"\n\n{roomItem}";
+                GameManager.SetDescription($"\n\n{roomItem}");
                 GameManager.Instance.Cursor.transform.SetPositionAndRotation(this.transform.position, Quaternion.identity);
             }
         }
