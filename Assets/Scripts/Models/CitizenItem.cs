@@ -9,6 +9,9 @@ namespace Models
         public int account_id;
         public int active_task_id;
         public int parcel_id;
+        public int x;
+        public int y;
+        public int z;
         public int item_id;
         public RentedRoomItem delivery_address;
         public List<ItemItem> items;
@@ -19,7 +22,6 @@ namespace Models
         public List<OrganizationSimpleItem> organizations;
         public List<EmailItem> emails;
         public RoomItem room;
-        public List<RentedRoomItem> rented_rooms;
 
         private string Characteristics()
         {
@@ -44,6 +46,9 @@ namespace Models
         public override string ToString() => @$"[citizen]:
 id={id}
 title={title}
+x={x}
+y={y}
+z={z}
 active_task_id={active_task_id}
 delivery_address={delivery_address}
 {Characteristics()}

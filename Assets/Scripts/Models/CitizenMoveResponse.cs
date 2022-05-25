@@ -5,7 +5,7 @@ using Models;
 namespace Models
 {
     [System.Serializable]
-    public class MoveIntoRoomResponse
+    public class CitizenMoveResponse
     {
         public CitizenItem citizen;
         public ParcelItem parcel;

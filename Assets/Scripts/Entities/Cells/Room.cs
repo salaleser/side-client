@@ -14,22 +14,16 @@ namespace Entities.Cells
 
         private void Start()
         {
-            AddButton($"Create Room", () => NetworkManager.Instance.InstantiateCreateRoomPopup(roomItem.z + 1));
-            AddButton($"Zoom Out", () => NetworkManager.Instance.ZoomOutButton());
-            if (GameManager.Instance.me.room.id == roomItem.id)
+            if (roomItem.creator_id == GameManager.Instance.me.id || roomItem.id == GameManager.Instance.me.room.id)
             {
-                AddButton($"Inventory", () => NetworkManager.Instance.InstantiateCitizen("Items"));
-                switch (roomItem.type.id)
-                {
-                    case 1:
-                        AddButton("Get Tasks", () => NetworkManager.Instance.Tasks(roomItem.organization_ids));
-                        break;
-                }
+                AddButton($"Move Into Room", () => NetworkManager.Instance.CitizenMove(GameManager.Instance.me.id, GameManager.Instance.me.parcel_id, (int)GameManager.Instance.Cursor.transform.position.x, (int)GameManager.Instance.Cursor.transform.position.z, roomItem.z));
             }
             else
             {
-                AddButton($"Move into {roomItem.type.title} \"{roomItem.title}\"", () => NetworkManager.Instance.MoveIntoRoom(GameManager.Instance.me.id, roomItem.id));
+                AddButton($"Enter Password", () => NetworkManager.Instance.InstantiateEnterPasswordPopup(roomItem));
             }
+            AddButton($"Zoom Out", () => NetworkManager.Instance.ZoomOutButton());
+            AddButton($"Create Room", () => NetworkManager.Instance.InstantiateCreateRoomPopup(roomItem.z + 1));
         }
 
         private void OnMouseEnter()

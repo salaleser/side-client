@@ -27,6 +27,11 @@ namespace Models
         public override string ToString() => @$"[room]:
 id={id}
 title={title}
+x={x}
+y={y}
+z={z}
+w={w}
+h={h}
 type={type}
 health={health}
 renter_id={renter_id}
@@ -42,5 +47,12 @@ messages.Count={messages.Count}";
     public class RoomProperties
     {
         public int type_id;
+        public Door door;
+    }
+
+    [System.Serializable]
+    public class Door
+    {
+        public string password;
     }
 }

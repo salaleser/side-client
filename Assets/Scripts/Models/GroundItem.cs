@@ -10,6 +10,7 @@ namespace Models
         public int x;
         public int y;
         public int z;
+        public int parcel_id;
         
         public override string ToString() => @$"[ground]:
 id={id}

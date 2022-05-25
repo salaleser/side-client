@@ -25,10 +25,10 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2186608053169788105}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0.45, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7538602724680709802}
   m_RootOrder: 0
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 6287020973663081703}
   m_Layer: 0
   m_Name: Citizen
-  m_TagString: Untagged
+  m_TagString: Side
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -109,8 +109,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7193849013774511120}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 32, y: 0, z: 32}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6984602595967862770}
@@ -131,13 +131,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   citizenItem:
     id: 0
-    name: 
+    title: 
     account_id: 0
     active_task_id: 0
-    room_id: 0
     parcel_id: 0
-    root_item_id: 0
-    delivery_address: 0
+    x: 0
+    y: 0
+    z: 0
+    item_id: 0
+    delivery_address:
+      id: 0
+      title: 
+      type:
+        id: 0
+        title: 
+        properties:
+          color: {r: 0, g: 0, b: 0, a: 0}
+          w: 0
+          h: 0
+          durability: 0
+      x: 0
+      y: 0
+      w: 0
+      h: 0
+      renter_id: 0
+      item_id: 0
+      organization_ids: 
     items: []
     friends: []
     actions: []
@@ -146,18 +165,16 @@ MonoBehaviour:
     organizations: []
     emails: []
     room:
-      title: 
       id: 0
+      title: 
       type:
         id: 0
         title: 
         properties:
           color: {r: 0, g: 0, b: 0, a: 0}
-          size:
-            w: 0
-            h: 0
+          w: 0
+          h: 0
           durability: 0
-          tasks: []
       x: 0
       y: 0
       z: 0
@@ -175,7 +192,8 @@ MonoBehaviour:
       messages: []
       properties:
         type_id: 0
-    rented_rooms: []
+        door:
+          password: 
 --- !u!136 &6287020973663081703
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -187,6 +205,6 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
-  m_Height: 1.5
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.75, z: 0}
+  m_Height: 1
+  m_Direction: 0
+  m_Center: {x: 0, y: 0, z: 0}

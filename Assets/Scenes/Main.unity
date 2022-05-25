@@ -155,7 +155,7 @@ RectTransform:
   m_Children:
   - {fileID: 1719722360}
   m_Father: {fileID: 1207886750}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -200,6 +200,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 152935536}
   m_CullTransparentMesh: 1
+--- !u!1 &447323473
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 447323474}
+  m_Layer: 5
+  m_Name: CitizenCanvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &447323474
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 447323473}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1207886750}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &559488104
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,6 +339,7 @@ MonoBehaviour:
     explorer_id: 0
     block_id: 0
     rooms: []
+    citizens: []
     rooms_count: 0
     properties:
       resources: []
@@ -334,6 +371,9 @@ MonoBehaviour:
     account_id: 0
     active_task_id: 0
     parcel_id: 0
+    x: 0
+    y: 0
+    z: 0
     item_id: 0
     delivery_address:
       id: 0
@@ -388,25 +428,8 @@ MonoBehaviour:
       messages: []
       properties:
         type_id: 0
-    rented_rooms: []
-  currentRentedRoom:
-    id: 0
-    title: 
-    type:
-      id: 0
-      title: 
-      properties:
-        color: {r: 0, g: 0, b: 0, a: 0}
-        w: 0
-        h: 0
-        durability: 0
-    x: 0
-    y: 0
-    w: 0
-    h: 0
-    renter_id: 0
-    item_id: 0
-    organization_ids: 
+        door:
+          password: 
   currentPage:
     id: 0
     title: 
@@ -563,6 +586,8 @@ RectTransform:
   m_Children:
   - {fileID: 645576252}
   - {fileID: 1987155251}
+  - {fileID: 2040496883}
+  - {fileID: 447323474}
   - {fileID: 152935537}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -700,15 +725,17 @@ MonoBehaviour:
   dealPopupPrefab: {fileID: 2130151071311696967, guid: 4aa0c94f0746d4346a8d7d40ba3d4b82, type: 3}
   InvitePopupPrefab: {fileID: 2130151071311696967, guid: f7f910e09d02545ce8ccae9f0d2ec280, type: 3}
   OfferPopupPrefab: {fileID: 2130151071311696967, guid: 72ce45ed392a8486183db2452d84c937, type: 3}
+  EnterPasswordPopupPrefab: {fileID: 2130151071311696967, guid: 11602c06e6f164746a0c1ef52b7a3a2f, type: 3}
   createRoomPopupPrefab: {fileID: 2130151071311696967, guid: 91778e3526d294319b6b93bf0e6348ce, type: 3}
   noticePopupPrefab: {fileID: 2130151071311696967, guid: 411be8ea80c7a475290182270c3c7ae4, type: 3}
   loginPopupPrefab: {fileID: 2130151071311696967, guid: 821cf549b71da46c296859cdc8c3e911, type: 3}
   organizationWindowPrefab: {fileID: 5675518160032065541, guid: e23ec2cfa44c54970bd4c29bb9a4f0d8, type: 3}
   citizenWindowPrefab: {fileID: 5675518160032065541, guid: c83e14f86d7944249b7bd0d42b827ef8, type: 3}
   computerWindowPrefab: {fileID: 5675518160032065541, guid: 7bee1e4f612574b88802571278907e54, type: 3}
-  uiCanvas: {fileID: 645576251}
-  mapCanvas: {fileID: 1987155250}
-  text: {fileID: 0}
+  UiCanvas: {fileID: 645576251}
+  GroundCanvas: {fileID: 1987155250}
+  RoomCanvas: {fileID: 2040496882}
+  CitizenCanvas: {fileID: 447323473}
   galaxyExploredPrefab: {fileID: 9040041545605410619, guid: d6646e7fd24f14301a4564be0f646d6b, type: 3}
   galaxyUnknownPrefab: {fileID: 9040041545605410619, guid: 45475fbb4724549e19c5da2dda983889, type: 3}
   systemExploredPrefab: {fileID: 9040041545605410619, guid: 7a743e356384b442f9f9896972b0ed01, type: 3}
@@ -731,7 +758,7 @@ MonoBehaviour:
   RoomGroundPrefab: {fileID: 9040041545605410619, guid: 842f10b2fdc3d4f18aad8f7cea1b902e, type: 3}
   openRoomPrefab: {fileID: 9040041545605410619, guid: 31e570a0693444af68b2610cbc4fd5da, type: 3}
   closedRoomPrefab: {fileID: 9040041545605410619, guid: 4d2faf986b5d644a9aeeffd27acb34d5, type: 3}
-  citizenPrefab: {fileID: 7193849013774511120, guid: 1af9e59a2ca3c4bc3ae37d1dafa8876c, type: 3}
+  CitizenPrefab: {fileID: 7193849013774511120, guid: 1af9e59a2ca3c4bc3ae37d1dafa8876c, type: 3}
 --- !u!4 &1561466740
 Transform:
   m_ObjectHideFlags: 0
@@ -797,7 +824,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -100
+  near clip plane: -1000
   far clip plane: 1000
   field of view: 60
   orthographic: 1
@@ -1056,7 +1083,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1987155251}
   m_Layer: 5
-  m_Name: MapCanvas
+  m_Name: GroundCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1076,6 +1103,42 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1207886750}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &2040496882
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2040496883}
+  m_Layer: 5
+  m_Name: RoomCanvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2040496883
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2040496882}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1207886750}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}

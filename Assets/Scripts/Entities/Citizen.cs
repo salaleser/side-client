@@ -10,8 +10,22 @@ namespace Entities
     {
         public CitizenItem citizenItem;
 
-        private void Start()
+        private void Update()
         {
+            if (citizenItem.id == GameManager.Instance.me.id)
+            {
+                
+            }
+
+            
+        }
+
+        private void OnGUI()
+        {
+            if (Keyboard.current.gKey.isPressed)
+            {
+                GUI.Label(new Rect(100, 100, 200, 100), "Test...");
+            }
         }
 
         private void OnMouseEnter()

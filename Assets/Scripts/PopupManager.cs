@@ -35,7 +35,7 @@ namespace Side
 
         public void ClosePopup()
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 }

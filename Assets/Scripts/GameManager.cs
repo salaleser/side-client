@@ -9,8 +9,6 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-	public const int GroundLevel = 1;
-
 	public const int Organization = -3;
 	public const int Universe = 1;
 	public const int Galaxy = 2;
@@ -36,7 +34,6 @@ public class GameManager : MonoBehaviour
 	public ParcelItem currentParcel;
     public OrganizationItem currentOrganization;
 	public CitizenItem me = new();
-    public RentedRoomItem currentRentedRoom;
     public PageItem currentPage;
     
 	public GameObject CursorPrefab;
@@ -74,10 +71,10 @@ public class GameManager : MonoBehaviour
 
 	private void Start()
 	{
-		Description = Instantiate(DescriptionPrefab, NetworkManager.Instance.uiCanvas.transform);
-		MiniMap = Instantiate(MiniMapPrefab, NetworkManager.Instance.uiCanvas.transform);
-		Chat = Instantiate(ChatPrefab, NetworkManager.Instance.uiCanvas.transform);
-		Cursor = Instantiate(CursorPrefab, NetworkManager.Instance.uiCanvas.transform);
+		Description = Instantiate(DescriptionPrefab, NetworkManager.Instance.UiCanvas.transform);
+		MiniMap = Instantiate(MiniMapPrefab, NetworkManager.Instance.UiCanvas.transform);
+		Chat = Instantiate(ChatPrefab, NetworkManager.Instance.UiCanvas.transform);
+		Cursor = Instantiate(CursorPrefab, NetworkManager.Instance.UiCanvas.transform);
 		SetShortcutsActive(true);
 	}
 

@@ -11,6 +11,7 @@ namespace Models
         public int explorer_id;
         public int block_id;
         public List<RoomItem> rooms;
+        public List<CitizenItem> citizens;
         public int rooms_count;
         public ParcelProperties properties;
 

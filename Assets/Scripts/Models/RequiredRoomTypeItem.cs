@@ -4,12 +4,10 @@ using System.Collections.Generic;
 namespace Models
 {
     [System.Serializable]
-    public class RequiredRoomTypeItem
+    public class RequiredRoomTypeItem : Item
     {
         public int room_type_id;
         public int organization_id;
-        public string title;
-        public bool is_attached;
         public RoomItem attached_room;
         public int w;
         public int h;

@@ -13,6 +13,8 @@ namespace Side
         public TMP_Dropdown DeliveryAddress;
         public TMP_InputField DeliveryAddressId;
 
+        private List<RentedRoomItem> _rentedRooms = new();
+
         public void Start()
         {
             CitizenName.text = GameManager.Instance.me.title;
@@ -21,7 +23,7 @@ namespace Side
 
         private void UpdateDeliveryAddress()
         {
-            DeliveryAddress.AddOptions(GameManager.Instance.me.rented_rooms
+            DeliveryAddress.AddOptions(_rentedRooms
                 .Where(x => x.type.id == 4)
                 .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
                 .ToList());
@@ -30,19 +32,15 @@ namespace Side
 
         public void SetProperties()
         {
-            foreach (var rentedRoom in GameManager.Instance.me.rented_rooms)
-            {
-                if (rentedRoom.ToCaption() == DeliveryAddress.captionText.text)
-                {
-                    GameManager.Instance.me.delivery_address = rentedRoom;
-                    DeliveryAddressId.text = rentedRoom.ToCaption();
-                    var args = new string[]{GameManager.Instance.me.id.ToString(), rentedRoom.id.ToString()};
-		            StartCoroutine(NetworkManager.Instance.Request("citizen-delivery-address", args, (json) => {
-                        NetworkManager.Instance.ProcessCitizen(json, "Main");
-                    }));
-                    break;
-                }
-            }
+            var rentedRoom = _rentedRooms
+                .Where(x => x.ToCaption() == DeliveryAddress.captionText.text)
+                .FirstOrDefault();
+            GameManager.Instance.me.delivery_address = rentedRoom;
+            DeliveryAddressId.text = rentedRoom.ToCaption();
+            var args = new string[]{GameManager.Instance.me.id.ToString(), rentedRoom.id.ToString()};
+            StartCoroutine(NetworkManager.Instance.Request("citizen-delivery-address", args, (json) => {
+                NetworkManager.Instance.ProcessCitizen(json, "Main");
+            }));
         }
     }
 }

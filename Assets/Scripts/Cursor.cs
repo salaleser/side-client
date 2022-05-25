@@ -52,27 +52,27 @@ namespace Side
                     }
                 }
 
-                if (_mouse.position.x.ReadValue() > Screen.width - 5)
-                {
-                    MoveDown(0.05f);
-                    MoveRight(0.05f);
-                }
-                else if (_mouse.position.x.ReadValue() < 5)
-                {
-                    MoveLeft(0.05f);
-                    MoveUp(0.05f);
-                }
+                // if (_mouse.position.x.ReadValue() > Screen.width - 5)
+                // {
+                //     MoveDown(0.05f);
+                //     MoveRight(0.05f);
+                // }
+                // else if (_mouse.position.x.ReadValue() < 5)
+                // {
+                //     MoveLeft(0.05f);
+                //     MoveUp(0.05f);
+                // }
 
-                if (_mouse.position.y.ReadValue() > Screen.height - 5)
-                {
-                    MoveUp(0.05f);
-                    MoveRight(0.05f);
-                }
-                else if (_mouse.position.y.ReadValue() < 5)
-                {
-                    MoveLeft(0.05f);
-                    MoveDown(0.05f);
-                }
+                // if (_mouse.position.y.ReadValue() > Screen.height - 5)
+                // {
+                //     MoveUp(0.05f);
+                //     MoveRight(0.05f);
+                // }
+                // else if (_mouse.position.y.ReadValue() < 5)
+                // {
+                //     MoveLeft(0.05f);
+                //     MoveDown(0.05f);
+                // }
 
                 if (_keyboard.leftArrowKey.wasPressedThisFrame)
                 {
