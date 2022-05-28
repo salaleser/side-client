@@ -16,7 +16,7 @@ namespace Entities.Cells
         {
             if (roomItem.creator_id == GameManager.Instance.me.id || roomItem.id == GameManager.Instance.me.room.id)
             {
-                AddButton($"Move Into Room", () => NetworkManager.Instance.CitizenMove(GameManager.Instance.me.id, GameManager.Instance.me.parcel_id, (int)GameManager.Instance.Cursor.transform.position.x, (int)GameManager.Instance.Cursor.transform.position.z, roomItem.z));
+                AddButton($"Move Into Room", () => NetworkManager.Instance.CitizenMove(GameManager.Instance.me.id, roomItem.parcel_id, (int)GameManager.Instance.Cursor.transform.position.x, (int)GameManager.Instance.Cursor.transform.position.z, roomItem.z));
             }
             else
             {

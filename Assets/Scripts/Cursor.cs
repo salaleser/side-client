@@ -44,11 +44,11 @@ namespace Side
                 {
                     if (_mouse.position.x.ReadValue() > Screen.width / 2 + 100)
                     {
-                        _camera.transform.RotateAround(transform.position, new Vector3(0, 1, 0), 100 * (_keyboard.leftShiftKey.isPressed ? M : 1) * Time.deltaTime);
+                        _camera.transform.RotateAround(transform.position, new Vector3(0, -1, 0), 100 * (_keyboard.leftShiftKey.isPressed ? M : 1) * Time.deltaTime);
                     }
                     else if (_mouse.position.x.ReadValue() < Screen.width / 2 - 100)
                     {
-                        _camera.transform.RotateAround(transform.position, new Vector3(0, -1, 0), 100 * (_keyboard.leftShiftKey.isPressed ? M : 1) * Time.deltaTime);
+                        _camera.transform.RotateAround(transform.position, new Vector3(0, 1, 0), 100 * (_keyboard.leftShiftKey.isPressed ? M : 1) * Time.deltaTime);
                     }
                 }
 

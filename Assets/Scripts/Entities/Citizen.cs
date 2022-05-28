@@ -16,8 +16,6 @@ namespace Entities
             {
                 
             }
-
-            
         }
 
         private void OnGUI()

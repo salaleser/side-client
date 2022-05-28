@@ -15,6 +15,8 @@ namespace Models
 
         public PlanetItem(PlanetSimpleItem planetSimple)
         {
+            id = planetSimple.id;
+            title = planetSimple.title;
             number = planetSimple.number;
             explorer_id = planetSimple.explorer_id;
             system_id = planetSimple.system_id;
