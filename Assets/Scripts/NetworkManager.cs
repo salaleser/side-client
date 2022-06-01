@@ -402,7 +402,7 @@ public class NetworkManager : Manager
 
 	public void Exec(string command, string[] parameters)
 	{
-		var args = new string[]{GameManager.Instance.me.id.ToString() , command, string.Join(",", parameters)};
+		var args = new string[]{GameManager.Instance.me.id.ToString(), command, string.Join(",", parameters)};
 		StartCoroutine(Request("exec", args, ProcessExec));
 	}
 

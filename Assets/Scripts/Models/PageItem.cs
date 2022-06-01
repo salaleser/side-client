@@ -6,8 +6,8 @@ namespace Models
     [System.Serializable]
     public class PageItem : Item
     {
-        public int organization_id;
-        public string content;
+        public string address;
         public string path;
+        public string content;
     }
 }

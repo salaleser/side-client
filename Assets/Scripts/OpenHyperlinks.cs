@@ -42,10 +42,12 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
             args = c[1].Split(",");
         }
 
+        Debug.Log(linkId);
+
         switch (command)
         {
             case "deal":
-                NetworkManager.Instance.DealCreate(GameManager.Instance.currentPage.organization_id, GameManager.Instance.me.account_id,
+                NetworkManager.Instance.DealCreate(int.Parse(GameManager.Instance.currentPage.address), GameManager.Instance.me.account_id,
                     GameManager.Instance.me.delivery_address.id != 0 ? GameManager.Instance.me.delivery_address.id : GameManager.Instance.me.room.id,
                     int.Parse(args[0]), int.Parse(args[1]), int.Parse(args[2]));
                 break;
@@ -61,8 +63,17 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                     NetworkManager.Instance.InstantiateOfferPopup(offer);
                 }));
                 break;
+            case "task":
+                StartCoroutine(NetworkManager.Instance.Request("task-accept", new string[]{GameManager.Instance.me.id.ToString(), args[0]}, null));
+                break;
+            case "member-create":
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{args[0], GameManager.Instance.me.id.ToString()}, null));
+                break;
+            case "member-delete":
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{args[0], args[1]}, null));
+                break;
             default:
-                NetworkManager.Instance.Exec(command, args);
+                // NetworkManager.Instance.Exec(command, args);
                 break;
         }
     }
@@ -79,12 +90,13 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
             path = a[1];
         }
 
-        var args = new string[]{address, path};
+        var args = new string[]{GameManager.Instance.me.id.ToString(), address, path};
         StartCoroutine(NetworkManager.Instance.Request("page", args, (json) => {
             var page = JsonUtility.FromJson<PageResponse>(json).page;
-            GameObject.Find("ComputerWindow(Clone)")
-                .GetComponentInChildren<Side.ComputerInternetTab>()
-                .Content.text = page.content;
+            var window = GameObject.Find("ComputerWindow(Clone)")
+                .GetComponentInChildren<Side.ComputerInternetTab>();
+            window.Content.text = page.content;
+            window.AddressBar.text = $"{page.address}/{page.path}";
         }));
     }
 }

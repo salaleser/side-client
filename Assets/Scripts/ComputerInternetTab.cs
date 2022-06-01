@@ -67,14 +67,9 @@ namespace Side
                 path = a[1];
             }
 
-            int organizationId;
-            if (!int.TryParse(address, out organizationId))
-            {
-                Debug.LogWarning("Текстовые адреса пока не поддерживаются");
-                return;
-            }
+            AddressBar.text = $"{address}/{path}";
 
-            var args = new string[]{organizationId.ToString(), path};
+            var args = new string[]{GameManager.Instance.me.id.ToString(), address, path};
             StartCoroutine(NetworkManager.Instance.Request("page", args, (json) => {
                 var page = JsonUtility.FromJson<PageResponse>(json).page;
                 Content.text = page.content;
