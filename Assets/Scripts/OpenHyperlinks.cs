@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -10,6 +11,14 @@ using TMPro;
 public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
 {
     public TMP_Text Content;
+
+    private Side.ComputerInternetTab _pda;
+
+    private void Start()
+    {
+        _pda = GameObject.Find("ComputerWindow(Clone)")
+            .GetComponentInChildren<Side.ComputerInternetTab>();
+    }
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -28,7 +37,7 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
         }
         else
         {
-            LoadPage(linkId);
+            _pda.LoadPage(linkId);
         }
     }
 
@@ -42,8 +51,7 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
             args = c[1].Split(",");
         }
 
-        Debug.Log(linkId);
-
+        UnityAction<string> action;
         switch (command)
         {
             case "deal":
@@ -69,42 +77,52 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                 }));
                 break;
             case "member-create":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{args[0], GameManager.Instance.me.id.ToString()}, null));
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{args[0], GameManager.Instance.me.id.ToString()}, (json) => {
+                    _pda.LoadPath("m*mb*rs");
+                }));
                 break;
             case "member-delete":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{args[0], args[1]}, null));
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{args[0], args[1]}, (json) => {
+                    _pda.ReloadPage();
+                }));
+                break;
+            case "room-input-organization-id":
+                action = (text) => StartCoroutine(NetworkManager.Instance.Request("room-attach", new string[]{args[0], text}, (json) => {
+                    NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
+                }));
+                NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization ID", action);
+                break;
+            case "room-detach":
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                    _pda.LoadPath("root");
+                }));
                 break;
             case "organization-create":
                 StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString()}, (json) => {
-                    LoadPage($"{JsonUtility.FromJson<OrganizationResponse>(json).organization.id}/root");
+                    _pda.LoadPage($"{JsonUtility.FromJson<OrganizationResponse>(json).organization.id}/root");
                 }));
+                break;
+            case "organization-input-parent-id":
+                action = (text) => StartCoroutine(NetworkManager.Instance.Request("organization-attach", new string[]{args[0], text}, (json) => {
+                    NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
+                }));
+                NetworkManager.Instance.InstantiateInputFieldPopup("Enter Parent Organization ID", action);
+                break;
+            case "organization-detach":
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                    _pda.ReloadPage;
+                }));
+                break;
+            case "organization-input-title":
+                action = (text) => StartCoroutine(NetworkManager.Instance.Request("organization-set-title", new string[]{args[0], NetworkManager.Instance.Escape(text)}, (json) => {
+                    _pda.ReloadPage();
+                }));
+		        NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization Title", action);
                 break;
             default:
                 NetworkManager.Instance.InstantiateNoticePopup("ERROR", $"Command \"{command}\" not supported");
                 // NetworkManager.Instance.Exec(command, args);
                 break;
         }
-    }
-
-    private void LoadPage(string link)
-    {
-        var a = link.Split("/");
-
-        var address = a[0];
-
-        var path = "";
-        if (a.Length > 1)
-        {
-            path = a[1];
-        }
-
-        var args = new string[]{GameManager.Instance.me.id.ToString(), address, path};
-        StartCoroutine(NetworkManager.Instance.Request("page", args, (json) => {
-            var page = JsonUtility.FromJson<PageResponse>(json).page;
-            var window = GameObject.Find("ComputerWindow(Clone)")
-                .GetComponentInChildren<Side.ComputerInternetTab>();
-            window.Content.text = page.content;
-            window.AddressBar.text = $"{page.address}/{page.path}";
-        }));
     }
 }
