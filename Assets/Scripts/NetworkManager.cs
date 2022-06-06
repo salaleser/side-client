@@ -678,7 +678,9 @@ public class NetworkManager : Manager
 	public void OfferAccept(int offerId)
     {
 		var args = new string[]{offerId.ToString()};
-		StartCoroutine(Request("offer-accept", args, ProcessOfferAccept));
+		StartCoroutine(Request("offer-accept", args, (json) => {
+			InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
+		}));
 	}
 
 	public void OfferDecline(int offerId)
@@ -693,27 +695,14 @@ public class NetworkManager : Manager
 			.GetComponent<Side.OfferPopup>().Offer = offer;
 	}
 
-	public void ProcessOfferAccept(string json)
-	{
-		var response = JsonUtility.FromJson<OfferAcceptResponse>(json);
-		InstantiateNoticePopup("STATUS", response.status);
-	}
-
 	public void ProcessInviteAccept(string json)
 	{
-		var response = JsonUtility.FromJson<InviteAcceptResponse>(json);
-		InstantiateNoticePopup("STATUS", response.status);
+		InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
 	}
 
 	private void ProcessDealAccept(string json)
 	{
-		var response = JsonUtility.FromJson<DealAcceptResponse>(json);
-		if (response == null)
-		{
-			return;
-		}
-
-		InstantiateNoticePopup("STATUS", response.status);
+		InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
 	}
 
 	public void InstantiateNoticePopup(string caption, string description)

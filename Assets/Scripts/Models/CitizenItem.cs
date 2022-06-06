@@ -7,19 +7,19 @@ namespace Models
     public class CitizenItem : Item
     {
         public int account_id;
-        public int active_task_id;
         public int parcel_id;
         public int x;
         public int y;
         public int z;
         public int item_id;
-        public RentedRoomItem delivery_address;
+        public RoomItem workplace;
+        public RoomItem delivery_address;
         public List<ItemItem> items;
         public List<FriendItem> friends;
         public List<ActionItem> actions;
         public List<StatusItem> statuses;
         public List<CharacteristicItem> characteristics;
-        public List<OrganizationSimpleItem> organizations;
+        public List<OrganizationItem> organizations;
         public List<EmailItem> emails;
         public RoomItem room;
 
@@ -49,7 +49,7 @@ title={title}
 x={x}
 y={y}
 z={z}
-active_task_id={active_task_id}
+workplace={workplace}
 delivery_address={delivery_address}
 {Characteristics()}
 {Statuses()}

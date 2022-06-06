@@ -63,8 +63,10 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                     NetworkManager.Instance.InstantiateOfferPopup(offer);
                 }));
                 break;
-            case "task":
-                StartCoroutine(NetworkManager.Instance.Request("task-accept", new string[]{GameManager.Instance.me.id.ToString(), args[0]}, null));
+            case "task-accept":
+                StartCoroutine(NetworkManager.Instance.Request("task-accept", new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                    NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
+                }));
                 break;
             case "member-create":
                 StartCoroutine(NetworkManager.Instance.Request(command, new string[]{args[0], GameManager.Instance.me.id.ToString()}, null));
@@ -72,7 +74,13 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
             case "member-delete":
                 StartCoroutine(NetworkManager.Instance.Request(command, new string[]{args[0], args[1]}, null));
                 break;
+            case "organization-create":
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString()}, (json) => {
+                    LoadPage($"{JsonUtility.FromJson<OrganizationResponse>(json).organization.id}/root");
+                }));
+                break;
             default:
+                NetworkManager.Instance.InstantiateNoticePopup("ERROR", $"Command \"{command}\" not supported");
                 // NetworkManager.Instance.Exec(command, args);
                 break;
         }

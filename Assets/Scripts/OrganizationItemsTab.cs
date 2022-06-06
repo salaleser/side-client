@@ -28,11 +28,11 @@ namespace Side
 
         private void OnEnable()
         {
-            gameObject.SetActive(GameManager.Instance.currentOrganization.positions
-                .Where(x => _allowed_position_ids.Contains(x.type.id))
-                .Where(x => x.citizen.id == GameManager.Instance.me.id)
-                .Any());
-            UpdateItems();
+            // gameObject.SetActive(GameManager.Instance.currentOrganization.positions
+            //     .Where(x => _allowed_position_ids.Contains(x.type.id))
+            //     .Where(x => x.citizen.id == GameManager.Instance.me.id)
+            //     .Any());
+            // UpdateItems();
             GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
         }

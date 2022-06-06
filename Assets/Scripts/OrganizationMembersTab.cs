@@ -27,19 +27,19 @@ namespace Side
 
         private void OnEnable()
         {
-            gameObject.SetActive(GameManager.Instance.currentOrganization.positions
-                .Where(x => _allowed_position_ids.Contains(x.type.id))
-                .Where(x => x.citizen.id == GameManager.Instance.me.id)
-                .Any());
-            UpdateMembers();
-            UpdateButtons();
+            // gameObject.SetActive(GameManager.Instance.currentOrganization.positions
+            //     .Where(x => _allowed_position_ids.Contains(x.type.id))
+            //     .Where(x => x.citizen.id == GameManager.Instance.me.id)
+            //     .Any());
+            // UpdateMembers();
+            // UpdateButtons();
             this.GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
         }
 
         public void Start()
         {
-            JoinType.value = GameManager.Instance.currentOrganization.properties.join_type_id;
+            // JoinType.value = GameManager.Instance.currentOrganization.properties.join_type_id;
         }
 
         public void UpdateButtons()
@@ -59,9 +59,9 @@ namespace Side
 
         public void SetJoinType()
         {
-            OrganizationProperties properties = GameManager.Instance.currentOrganization.properties;
-            properties.join_type_id = JoinType.value;
-            NetworkManager.Instance.OrganizationSetProperties(GameManager.Instance.currentOrganization.id, properties, "Members");
+            // OrganizationProperties properties = GameManager.Instance.currentOrganization.properties;
+            // properties.join_type_id = JoinType.value;
+            // NetworkManager.Instance.OrganizationSetProperties(GameManager.Instance.currentOrganization.id, properties, "Members");
         }
 
         public void UpdateMembers()

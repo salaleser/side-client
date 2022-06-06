@@ -13,7 +13,7 @@ namespace Side
     {
         public TMP_Dropdown RentedRooms;
 
-        private List<RentedRoomItem> _rentedRooms = new();
+        private List<RoomItem> _rentedRooms = new();
 
         public void Start()
         {
@@ -28,13 +28,13 @@ namespace Side
 
         public void UpdateRentedRooms()
         {
-            var args = new string[]{GameManager.Instance.me.id.ToString()};
-            StartCoroutine(NetworkManager.Instance.Request("rented-rooms", args, (result) => {
-                _rentedRooms = JsonUtility.FromJson<RentedRoomsResponse>(result).rented_rooms;
-                RentedRooms.AddOptions(_rentedRooms
-                    .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
-                    .ToList());
-            }));
+            // var args = new string[]{GameManager.Instance.me.id.ToString()};
+            // StartCoroutine(NetworkManager.Instance.Request("rented-rooms", args, (result) => {
+            //     _rentedRooms = JsonUtility.FromJson<RoomsResponse>(result).rented_rooms;
+            //     RentedRooms.AddOptions(_rentedRooms
+            //         .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
+            //         .ToList());
+            // }));
         }
     }
 }

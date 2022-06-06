@@ -19,8 +19,8 @@ namespace Side
         public GameObject RentedRoomPrefab;
         public GameObject RentedRoomsContent;
 
-        private List<RentedRoomItem> _rentedRooms = new();
-        private RentedRoomItem _rentedRoom;
+        private List<RoomItem> _rentedRooms = new();
+        private RoomItem _rentedRoom;
         private List<GameObject> _rentedRoomsContent = new();
         private List<RequiredRoomTypeItem> _requiredRoomTypes = new();
         private RequiredRoomTypeItem _requiredRoomType;
@@ -39,10 +39,10 @@ namespace Side
 
         private void OnEnable()
         {
-            gameObject.SetActive(GameManager.Instance.currentOrganization.positions
-                .Where(x => _allowed_position_ids.Contains(x.type.id))
-                .Where(x => x.citizen.id == GameManager.Instance.me.id)
-                .Any());
+            // gameObject.SetActive(GameManager.Instance.currentOrganization.positions
+            //     .Where(x => _allowed_position_ids.Contains(x.type.id))
+            //     .Where(x => x.citizen.id == GameManager.Instance.me.id)
+            //     .Any());
             this.GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
         }
@@ -74,27 +74,27 @@ namespace Side
 
         public void LoadRentedRooms()
         {
-            var args = new string[]{GameManager.Instance.me.id.ToString()};
-            StartCoroutine(NetworkManager.Instance.Request("rented-rooms", args, (result) => {
-                _rentedRooms = JsonUtility.FromJson<RentedRoomsResponse>(result).rented_rooms;
-                UpdateRequiredRoomTypesContent();
-            }));
+            // var args = new string[]{GameManager.Instance.me.id.ToString()};
+            // StartCoroutine(NetworkManager.Instance.Request("rented-rooms", args, (result) => {
+            //     _rentedRooms = JsonUtility.FromJson<RoomsResponse>(result).rented_rooms;
+            //     UpdateRequiredRoomTypesContent();
+            // }));
         }
 
         public void LoadRequiredRoomTypes()
         {
-            foreach(var roomType in GameManager.Instance.currentOrganization.type.requirements.room_types)
-            {
-                RequiredRoomTypeItem rrt = new();
-                rrt.title = roomType.title;
-                rrt.room_type_id = roomType.id;
-                rrt.organization_id = GameManager.Instance.currentOrganization.id;
-                foreach (var attachedRoom in GameManager.Instance.currentOrganization.attached_rooms.Where(x => x.type.id == roomType.id))
-                {
-                    rrt.attached_room = attachedRoom;
-                }
-                _requiredRoomTypes.Add(rrt);
-            }
+            // foreach(var roomType in GameManager.Instance.currentOrganization.type.requirements.room_types)
+            // {
+            //     RequiredRoomTypeItem rrt = new();
+            //     rrt.title = roomType.title;
+            //     rrt.room_type_id = roomType.id;
+            //     rrt.organization_id = GameManager.Instance.currentOrganization.id;
+            //     foreach (var attachedRoom in GameManager.Instance.currentOrganization.attached_rooms.Where(x => x.type.id == roomType.id))
+            //     {
+            //         rrt.attached_room = attachedRoom;
+            //     }
+            //     _requiredRoomTypes.Add(rrt);
+            // }
         }
 
         public void UpdateRentedRoomsContent(int requiredRoomTypeId)

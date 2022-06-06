@@ -15,7 +15,7 @@ namespace Side
         public TMP_Dropdown Organizations;
         public TMP_Dropdown OrganizationTypes;
 
-        private List<OrganizationTypeItem> _organizationTypes;
+        // private List<OrganizationTypeItem> _organizationTypes;
 
         private void Start()
         {
@@ -95,13 +95,13 @@ namespace Side
 
         public void UpdateOrganizationTypes()
         {
-            var args = new string[]{};
-            StartCoroutine(NetworkManager.Instance.Request("organization-types", args, (result) => {
-                _organizationTypes = JsonUtility.FromJson<OrganizationTypesResponse>(result).organization_types;
-                OrganizationTypes.AddOptions(_organizationTypes
-                    .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
-                    .ToList());
-            }));
+            // var args = new string[]{};
+            // StartCoroutine(NetworkManager.Instance.Request("organization-types", args, (result) => {
+            //     _organizationTypes = JsonUtility.FromJson<OrganizationTypesResponse>(result).organization_types;
+            //     OrganizationTypes.AddOptions(_organizationTypes
+            //         .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
+            //         .ToList());
+            // }));
         }
 
         public void ManageOrganization()
@@ -118,19 +118,19 @@ namespace Side
 
         public void CreateOrganization()
         {
-            var organizationTypeId = _organizationTypes
-                .Where(x => x.ToCaption() == OrganizationTypes.captionText.text)
-                .Select(x => x.id)
-                .FirstOrDefault();
-            NetworkManager.Instance.OrganizationCreate(organizationTypeId);
+            // var organizationTypeId = _organizationTypes
+            //     .Where(x => x.ToCaption() == OrganizationTypes.captionText.text)
+            //     .Select(x => x.id)
+            //     .FirstOrDefault();
+            // NetworkManager.Instance.OrganizationCreate(organizationTypeId);
         }
 
         public void UpdateOrganizationTypeDescription()
         {
-            GameManager.SetDescription(_organizationTypes
-                .Where(x => x.ToCaption() == OrganizationTypes.captionText.text)
-                .FirstOrDefault()
-                ?.ToString());
+            // GameManager.SetDescription(_organizationTypes
+            //     .Where(x => x.ToCaption() == OrganizationTypes.captionText.text)
+            //     .FirstOrDefault()
+            //     ?.ToString());
         }
 
         public void UpdateOrganizationDescription()

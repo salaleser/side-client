@@ -21,11 +21,11 @@ namespace Side
 
         private void OnEnable()
         {
-            gameObject.SetActive(GameManager.Instance.currentOrganization.positions
-                .Where(x => _allowed_position_ids.Contains(x.type.id))
-                .Where(x => x.citizen.id == GameManager.Instance.me.id)
-                .Any());
-            MembershipFee.text = GameManager.Instance.currentOrganization.properties.membership_fee.ToString();
+            // gameObject.SetActive(GameManager.Instance.currentOrganization.positions
+            //     .Where(x => _allowed_position_ids.Contains(x.type.id))
+            //     .Where(x => x.citizen.id == GameManager.Instance.me.id)
+            //     .Any());
+            // MembershipFee.text = GameManager.Instance.currentOrganization.properties.membership_fee.ToString();
             this.GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
         }

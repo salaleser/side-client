@@ -13,7 +13,7 @@ namespace Side
         public TMP_Dropdown DeliveryAddress;
         public TMP_InputField DeliveryAddressId;
 
-        private List<RentedRoomItem> _rentedRooms = new();
+        private List<RoomItem> _rentedRooms = new();
 
         public void Start()
         {

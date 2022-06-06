@@ -16,7 +16,7 @@ namespace Side
         public GameObject Tasks;
         public TMP_InputField Wage;
 
-        private TaskItem _task;
+        // private TaskItem _task;
 
         private void Awake()
         {
@@ -26,10 +26,10 @@ namespace Side
 
         private void OnEnable()
         {
-            gameObject.SetActive(GameManager.Instance.currentOrganization.positions
-                .Where(x => _allowed_position_ids.Contains(x.type.id))
-                .Where(x => x.citizen.id == GameManager.Instance.me.id)
-                .Any());
+            // gameObject.SetActive(GameManager.Instance.currentOrganization.positions
+            //     .Where(x => _allowed_position_ids.Contains(x.type.id))
+            //     .Where(x => x.citizen.id == GameManager.Instance.me.id)
+            //     .Any());
             UpdateTasks();
             this.GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
@@ -41,38 +41,38 @@ namespace Side
 
         public void SetProperties()
         {
-            var args = new string[]{_task.id.ToString(), Wage.text};
-            StartCoroutine(NetworkManager.Instance.Request("task-set-properties", args, (result) => {
-                GameManager.Instance.currentOrganization = JsonUtility.FromJson<OrganizationResponse>(result).organization;
-                UpdateTasks();
-            }));
+            // var args = new string[]{_task.id.ToString(), Wage.text};
+            // StartCoroutine(NetworkManager.Instance.Request("task-set-properties", args, (result) => {
+            //     GameManager.Instance.currentOrganization = JsonUtility.FromJson<OrganizationResponse>(result).organization;
+            //     UpdateTasks();
+            // }));
         }
 
         public void UpdateTasks()
         {
-            var col = 0;
-            var row = 0;
-            for (var i = 0; i < GameManager.Instance.currentOrganization.tasks.Count; i++)
-            {
-                var task = GameManager.Instance.currentOrganization.tasks[i];
+            // var col = 0;
+            // var row = 0;
+            // for (var i = 0; i < GameManager.Instance.currentOrganization.tasks.Count; i++)
+            // {
+            //     var task = GameManager.Instance.currentOrganization.tasks[i];
 
-                var instance = Instantiate(TaskPrefab);
-                instance.GetComponent<Image>().color = task.is_free ? Color.grey : Color.blue;
-                var rectTransform = instance.transform.GetComponent<RectTransform>();
-                rectTransform.transform.SetParent(Tasks.transform.GetComponent<RectTransform>());
-                var x = (rectTransform.rect.width * col) + rectTransform.rect.width / 2;
-                var y = -(rectTransform.rect.height * row) - rectTransform.rect.height / 2;
-                rectTransform.anchoredPosition = new Vector3(x, y, 0);
+            //     var instance = Instantiate(TaskPrefab);
+            //     instance.GetComponent<Image>().color = task.is_free ? Color.grey : Color.blue;
+            //     var rectTransform = instance.transform.GetComponent<RectTransform>();
+            //     rectTransform.transform.SetParent(Tasks.transform.GetComponent<RectTransform>());
+            //     var x = (rectTransform.rect.width * col) + rectTransform.rect.width / 2;
+            //     var y = -(rectTransform.rect.height * row) - rectTransform.rect.height / 2;
+            //     rectTransform.anchoredPosition = new Vector3(x, y, 0);
 
-                var button = instance.GetComponent<Button>();
-                button.GetComponentInChildren<TMP_Text>().text = $"\"{task.title}\" ({task.organization_id}-{task.room_id}) ={task.wage} [{(task.is_free ? "O" : "X")}]";
-                button.onClick.AddListener(() => {
-                    _task = task;
-                    GameManager.SetDescription(_task.ToString());
-                });
+            //     var button = instance.GetComponent<Button>();
+            //     button.GetComponentInChildren<TMP_Text>().text = $"\"{task.title}\" ({task.organization_id}-{task.room_id}) ={task.wage} [{(task.is_free ? "O" : "X")}]";
+            //     button.onClick.AddListener(() => {
+            //         _task = task;
+            //         GameManager.SetDescription(_task.ToString());
+            //     });
 
-                row++;
-            }
+            //     row++;
+            // }
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Models
         public int item_id;
         public int parcel_id;
         public bool rentable;
-        public List<int> organization_ids = new();
+        public int organization_id;
         public List<ItemItem> items = new();
         public List<CitizenSimpleItem> citizens = new();
         public List<MessageItem> messages = new();
@@ -37,7 +37,7 @@ health={health}
 renter_id={renter_id}
 creator_id={creator_id}
 rentable={rentable}
-organization_ids.Count={organization_ids.Count}
+organization_id={organization_id}
 items.Count={items.Count}
 citizens.Count={citizens.Count}
 messages.Count={messages.Count}";

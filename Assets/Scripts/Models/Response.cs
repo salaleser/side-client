@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace Models
 {
     [System.Serializable]
-    public class RentedRoomsResponse
+    public class Response
     {
-        public List<RentedRoomItem> rented_rooms;
+        public string status;
     }
 }
