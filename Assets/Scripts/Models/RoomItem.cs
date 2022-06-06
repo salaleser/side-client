@@ -40,7 +40,8 @@ rentable={rentable}
 organization_id={organization_id}
 items.Count={items.Count}
 citizens.Count={citizens.Count}
-messages.Count={messages.Count}";
+messages.Count={messages.Count}
+properties.door.password={properties?.door?.password}";
     }
 
     [System.Serializable]

@@ -23,26 +23,6 @@ namespace Models
         public List<EmailItem> emails;
         public RoomItem room;
 
-        private string Characteristics()
-        {
-            var result = "[characteristics]:";
-            foreach (var c in characteristics)
-            {
-                result += $"{c}";
-            }
-            return result;
-        }
-
-        private string Statuses()
-        {
-            var result = "[statuses]:";
-            foreach (var s in statuses)
-            {
-                result += $"{s},";
-            }
-            return result;
-        }
-
         public override string ToString() => @$"[citizen]:
 id={id}
 title={title}
@@ -50,11 +30,7 @@ x={x}
 y={y}
 z={z}
 workplace={workplace}
-delivery_address={delivery_address}
-{Characteristics()}
-{Statuses()}
-items.Count={items.Count}
-actions.Count={actions.Count}";
+delivery_address={delivery_address}";
     }
 
     [System.Serializable]

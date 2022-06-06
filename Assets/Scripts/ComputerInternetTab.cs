@@ -73,7 +73,23 @@ namespace Side
             StartCoroutine(NetworkManager.Instance.Request("page", args, (json) => {
                 var page = JsonUtility.FromJson<PageResponse>(json).page;
                 Content.text = page.content;
+                AddressBar.text = $"{page.address}/{page.path}";
             }));
+        }
+
+        public void ReloadPage()
+        {
+            LoadPage(AddressBar.text);
+        }
+
+        public void LoadRootPage()
+        {
+            LoadPath("root");
+        }
+
+        public void LoadPath(string path)
+        {
+            LoadPage($"{AddressBar.text.Split("/")[0]}/{path}");
         }
     }
 }

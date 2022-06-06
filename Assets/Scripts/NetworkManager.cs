@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -24,6 +25,7 @@ public class NetworkManager : Manager
 	public GameObject mainButtonsPanelPrefab;
 	public GameObject quickMenuPrefab;
 	public GameObject dealPopupPrefab;
+	public GameObject InputFieldPopupPrefab;
 	public GameObject InvitePopupPrefab;
 	public GameObject OfferPopupPrefab;
 	public GameObject EnterPasswordPopupPrefab;
@@ -639,6 +641,14 @@ public class NetworkManager : Manager
 			.GetComponent<Side.EnterPasswordPopup>().SetRoom(room);
 	}
 
+	public void InstantiateInputFieldPopup(string description, UnityAction<string> action)
+	{
+		var popup = Instantiate(InputFieldPopupPrefab, UiCanvas.transform)
+			.GetComponent<Side.InputFieldPopup>();
+		popup.Description.text = description;
+		popup.Action = action;
+	}
+
 	private void InstantiateDealPopup(DealItem deal)
 	{
 		Instantiate(dealPopupPrefab, UiCanvas.transform)
@@ -1225,7 +1235,7 @@ public class NetworkManager : Manager
 		GameManager.Instance.me = response.citizen;
 	}
 
-	private string Escape(string text)
+	public string Escape(string text)
 	{
 		text = text.Replace("'", "''");
 		text = UnityWebRequest.EscapeURL(text);

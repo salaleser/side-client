@@ -346,35 +346,53 @@ MonoBehaviour:
   currentOrganization:
     id: 0
     title: 
+    salary: 0
     attached_rooms: []
-    type:
-      id: 0
-      title: 
-      requirements:
-        room_types: []
-        room_type_ids: 
-      properties:
-        in_items: []
-        out_items: []
     properties:
       membership_fee: 0
-      join_type_id: 0
       price: 0
-    is_active: 0
-    tasks: []
     pages: []
-    positions: []
+    join_type_id: 0
     members: []
   me:
     id: 0
     title: 
     account_id: 0
-    active_task_id: 0
     parcel_id: 0
     x: 0
     y: 0
     z: 0
     item_id: 0
+    workplace:
+      id: 0
+      title: 
+      type:
+        id: 0
+        title: 
+        properties:
+          color: {r: 0, g: 0, b: 0, a: 0}
+          w: 0
+          h: 0
+          durability: 0
+      x: 0
+      y: 0
+      z: 0
+      w: 0
+      h: 0
+      health: 0
+      creator_id: 0
+      renter_id: 0
+      item_id: 0
+      parcel_id: 0
+      rentable: 0
+      organization_id: 0
+      items: []
+      citizens: []
+      messages: []
+      properties:
+        type_id: 0
+        door:
+          password: 
     delivery_address:
       id: 0
       title: 
@@ -388,11 +406,23 @@ MonoBehaviour:
           durability: 0
       x: 0
       y: 0
+      z: 0
       w: 0
       h: 0
+      health: 0
+      creator_id: 0
       renter_id: 0
       item_id: 0
-      organization_ids: 
+      parcel_id: 0
+      rentable: 0
+      organization_id: 0
+      items: []
+      citizens: []
+      messages: []
+      properties:
+        type_id: 0
+        door:
+          password: 
     items: []
     friends: []
     actions: []
@@ -422,7 +452,7 @@ MonoBehaviour:
       item_id: 0
       parcel_id: 0
       rentable: 0
-      organization_ids: 
+      organization_id: 0
       items: []
       citizens: []
       messages: []
@@ -433,9 +463,9 @@ MonoBehaviour:
   currentPage:
     id: 0
     title: 
-    organization_id: 0
-    content: 
+    address: 
     path: 
+    content: 
   CursorPrefab: {fileID: 9040041545605410619, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
   DescriptionPrefab: {fileID: 521065865709494434, guid: 05e85d39ee9354df886f6123570b5bc8, type: 3}
   MiniMapPrefab: {fileID: 3180324904303522590, guid: 854cc9f9a53c24d50ad0d20d18d154ab, type: 3}
@@ -723,6 +753,7 @@ MonoBehaviour:
   mainButtonsPanelPrefab: {fileID: 4986402042970637749, guid: 3265e76a060fa43898fa60b7254c8794, type: 3}
   quickMenuPrefab: {fileID: 6657676188238830695, guid: c3ace36d5551e4b118710cdc24625288, type: 3}
   dealPopupPrefab: {fileID: 2130151071311696967, guid: 4aa0c94f0746d4346a8d7d40ba3d4b82, type: 3}
+  InputFieldPopupPrefab: {fileID: 2130151071311696967, guid: 6c08bee4b8f794b94975317c4d109032, type: 3}
   InvitePopupPrefab: {fileID: 2130151071311696967, guid: f7f910e09d02545ce8ccae9f0d2ec280, type: 3}
   OfferPopupPrefab: {fileID: 2130151071311696967, guid: 72ce45ed392a8486183db2452d84c937, type: 3}
   EnterPasswordPopupPrefab: {fileID: 2130151071311696967, guid: 11602c06e6f164746a0c1ef52b7a3a2f, type: 3}
