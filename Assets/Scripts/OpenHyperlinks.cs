@@ -110,7 +110,7 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                 break;
             case "organization-detach":
                 StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
-                    _pda.ReloadPage;
+                    _pda.ReloadPage();
                 }));
                 break;
             case "organization-input-title":
