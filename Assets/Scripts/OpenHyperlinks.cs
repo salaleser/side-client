@@ -61,14 +61,17 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                 break;
             case "invite":
                 StartCoroutine(NetworkManager.Instance.Request("invite", new string[]{args[0]}, (json) => {
-                    var invite = JsonUtility.FromJson<InviteResponse>(json).invite;
-                    NetworkManager.Instance.InstantiateInvitePopup(invite);
+                    NetworkManager.Instance.InstantiateInvitePopup(JsonUtility.FromJson<InviteResponse>(json).invite);
                 }));
                 break;
             case "offer":
                 StartCoroutine(NetworkManager.Instance.Request("offer", new string[]{args[0]}, (json) => {
-                    var offer = JsonUtility.FromJson<OfferResponse>(json).offer;
-                    NetworkManager.Instance.InstantiateOfferPopup(offer);
+                    NetworkManager.Instance.InstantiateOfferPopup(JsonUtility.FromJson<OfferResponse>(json).offer);
+                }));
+                break;
+            case "poll":
+                StartCoroutine(NetworkManager.Instance.Request("poll", new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                    NetworkManager.Instance.InstantiatePollPopup(JsonUtility.FromJson<PollResponse>(json).poll);
                 }));
                 break;
             case "task-accept":
@@ -77,12 +80,12 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                 }));
                 break;
             case "member-create":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{args[0], GameManager.Instance.me.id.ToString()}, (json) => {
-                    _pda.LoadPath("m*mb*rs");
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                    _pda.LoadPath("community");
                 }));
                 break;
             case "member-delete":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{args[0], args[1]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
                     _pda.ReloadPage();
                 }));
                 break;
@@ -103,10 +106,20 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                 }));
                 break;
             case "organization-input-parent-id":
-                action = (text) => StartCoroutine(NetworkManager.Instance.Request("organization-attach", new string[]{args[0], text}, (json) => {
+                action = (text) => StartCoroutine(NetworkManager.Instance.Request("organization-attach", new string[]{GameManager.Instance.me.id.ToString(), args[0], text}, (json) => {
                     NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
                 }));
                 NetworkManager.Instance.InstantiateInputFieldPopup("Enter Parent Organization ID", action);
+                break;
+            case "organization-change-join-type":
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                    _pda.ReloadPage();
+                }));
+                break;
+            case "organization-change-leave-type":
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                    _pda.ReloadPage();
+                }));
                 break;
             case "organization-detach":
                 StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
@@ -118,6 +131,21 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                     _pda.ReloadPage();
                 }));
 		        NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization Title", action);
+                break;
+            case "rule-change":
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0], args[1]}, (json) => {
+                    _pda.ReloadPage();
+                }));
+                break;
+            case "poll-create":
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0], args[1]}, (json) => {
+                    _pda.LoadPath("*oll");
+                }));
+                break;
+            case "poll-delete":
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                    _pda.LoadPath("root");
+                }));
                 break;
             default:
                 NetworkManager.Instance.InstantiateNoticePopup("ERROR", $"Command \"{command}\" not supported");

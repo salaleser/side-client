@@ -17,6 +17,9 @@ namespace Side
         public TMP_InputField SearchBar;
         public TMP_Text Content;
 
+        private List<string> _history = new();
+        private int _cursor;
+
         private void OnEnable()
         {
             AddressBar.onSubmit.AddListener(LoadPage);
@@ -67,6 +70,7 @@ namespace Side
                 path = a[1];
             }
 
+            _history.Add(AddressBar.text);
             AddressBar.text = $"{address}/{path}";
 
             var args = new string[]{GameManager.Instance.me.id.ToString(), address, path};
@@ -85,6 +89,12 @@ namespace Side
         public void LoadRootPage()
         {
             LoadPath("root");
+        }
+
+        public void Back()
+        {
+            _history.RemoveAt(_history.Count() - 1);
+            LoadPage(_history.Last());
         }
 
         public void LoadPath(string path)

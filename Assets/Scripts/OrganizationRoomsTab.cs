@@ -64,12 +64,12 @@ namespace Side
 
         public void Attach()
         {
-            NetworkManager.Instance.OrganizationAttachRoom(GameManager.Instance.currentOrganization.id, _rentedRoom.id);
+            // NetworkManager.Instance.OrganizationAttachRoom(GameManager.Instance.currentOrganization.id, _rentedRoom.id);
         }
 
         public void Detach()
         {
-            NetworkManager.Instance.OrganizationDetachRoom(GameManager.Instance.currentOrganization.id, _requiredRoomType.attached_room.id);
+            // NetworkManager.Instance.OrganizationDetachRoom(GameManager.Instance.currentOrganization.id, _requiredRoomType.attached_room.id);
         }
 
         public void LoadRentedRooms()

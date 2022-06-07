@@ -756,6 +756,7 @@ MonoBehaviour:
   InputFieldPopupPrefab: {fileID: 2130151071311696967, guid: 6c08bee4b8f794b94975317c4d109032, type: 3}
   InvitePopupPrefab: {fileID: 2130151071311696967, guid: f7f910e09d02545ce8ccae9f0d2ec280, type: 3}
   OfferPopupPrefab: {fileID: 2130151071311696967, guid: 72ce45ed392a8486183db2452d84c937, type: 3}
+  PollPopupPrefab: {fileID: 2130151071311696967, guid: 94c5f84468fef48099607f569c3c4dd9, type: 3}
   EnterPasswordPopupPrefab: {fileID: 2130151071311696967, guid: 11602c06e6f164746a0c1ef52b7a3a2f, type: 3}
   createRoomPopupPrefab: {fileID: 2130151071311696967, guid: 91778e3526d294319b6b93bf0e6348ce, type: 3}
   noticePopupPrefab: {fileID: 2130151071311696967, guid: 411be8ea80c7a475290182270c3c7ae4, type: 3}

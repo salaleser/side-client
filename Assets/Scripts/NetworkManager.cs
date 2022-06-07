@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -12,6 +13,7 @@ using UnityEngine.UI;
 using TMPro;
 using Entities.Items;
 using Models;
+using WebSocketSharp;
 
 public class NetworkManager : Manager
 {
@@ -28,6 +30,7 @@ public class NetworkManager : Manager
 	public GameObject InputFieldPopupPrefab;
 	public GameObject InvitePopupPrefab;
 	public GameObject OfferPopupPrefab;
+	public GameObject PollPopupPrefab;
 	public GameObject EnterPasswordPopupPrefab;
 	public GameObject createRoomPopupPrefab;
 	public GameObject noticePopupPrefab;
@@ -66,6 +69,8 @@ public class NetworkManager : Manager
 	public GameObject closedRoomPrefab;
 
 	public GameObject CitizenPrefab;
+
+	private WebSocket _ws;
 
 	public static NetworkManager Instance { get; private set; }
 
@@ -134,6 +139,7 @@ public class NetworkManager : Manager
 	{
 		// Instantiate(mainButtonsPanelPrefab, UiCanvas.transform);
 		Instantiate(loginPopupPrefab, UiCanvas.transform);
+		StartCoroutine(StartWs());
 	}
 
 	private void Update()
@@ -349,9 +355,27 @@ public class NetworkManager : Manager
 		}
 	}
 
+	public IEnumerator StartWs()
+	{
+		_ws = new WebSocket($"ws://{Host}:65279");
+
+		_ws.OnMessage += (sender, e) => {
+			Debug.Log("Laputa says: " + e.Data);
+		};
+
+		_ws.Connect();
+
+		while (true)
+		{
+			yield return null;
+      	}
+	}
+
 	public IEnumerator Request(string endpoint, string[] args, Action<string> result)
 	{
-		var url = $"http://{Host}:{Port}/{endpoint}?args={string.Join("⎮", args)}";
+		_ws.Send($"{endpoint}/{string.Join("◊", args)}");
+
+		var url = $"http://{Host}:{Port}/{endpoint}?args={string.Join("◊", args)}";
 		Debug.Log(url);
 
 		var pages = url.Split('/');
@@ -533,12 +557,6 @@ public class NetworkManager : Manager
 		var args = new string[]{citizenId.ToString()};
 		StartCoroutine(Request("citizen", args, (json) => ProcessCitizen(json, tabName)));
 	}
-
-	public void OrganizationAttachRoom(int organizationId, int roomId)
-    {
-		var args = new string[]{organizationId.ToString(), roomId.ToString()};
-		StartCoroutine(Request("organization-attach-room", args, (json) => ProcessOrganization(json, "Rooms")));
-	}
 	
 	public void MemberDelete(int organizationId, int citizenId)
     {
@@ -574,18 +592,6 @@ public class NetworkManager : Manager
     {
 		var args = new string[]{organizationId.ToString(), Escape(content), path};
 		StartCoroutine(Request("page-create", args, (json) => ProcessOrganization(json, "Pages")));
-	}
-
-	public void OrganizationDetachRoom(int organizationId, int roomId)
-	{
-		var args = new string[]{organizationId.ToString(), roomId.ToString()};
-		StartCoroutine(Request("organization-detach-room", args, (json) => ProcessOrganization(json, "Rooms")));
-	}
-
-	public void OrganizationCreate(int organizationTypeId)
-	{
-		var args = new string[]{organizationTypeId.ToString(), GameManager.Instance.me.id.ToString()};
-		StartCoroutine(Request("organization-create", args, (json) => ProcessOrganization(json, "Main")));
 	}
 
 	public void DealCreate(int marketId, int buyerAccountId, int deliveryAddress, int sellerAccountId, int itemId, int price)
@@ -699,10 +705,22 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("offer-decline", args, null));
 	}
 
+	public void Vote(int pollId, bool vote)
+    {
+		var args = new string[]{GameManager.Instance.me.id.ToString(), pollId.ToString(), vote.ToString()};
+		StartCoroutine(Request("vote-create", args, null));
+	}
+
 	public void InstantiateOfferPopup(OfferItem offer)
 	{
 		Instantiate(OfferPopupPrefab, UiCanvas.transform)
 			.GetComponent<Side.OfferPopup>().Offer = offer;
+	}
+
+	public void InstantiatePollPopup(PollItem poll)
+	{
+		Instantiate(PollPopupPrefab, UiCanvas.transform)
+			.GetComponent<Side.PollPopup>().Poll = poll;
 	}
 
 	public void ProcessInviteAccept(string json)
