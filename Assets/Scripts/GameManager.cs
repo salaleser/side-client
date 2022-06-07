@@ -1,5 +1,6 @@
 using System.IO;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,6 +48,7 @@ public class GameManager : MonoBehaviour
 
 	public GameObject ChatPrefab;
 	public static GameObject Chat { get; private set; }
+	public ConcurrentQueue<string> ChatMessages = new();
 
 	public GameObject ShortcutsActiveSign;
 	public static bool QuickMenuActive { get; private set; }

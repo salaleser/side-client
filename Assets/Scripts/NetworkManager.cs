@@ -139,7 +139,7 @@ public class NetworkManager : Manager
 	{
 		// Instantiate(mainButtonsPanelPrefab, UiCanvas.transform);
 		Instantiate(loginPopupPrefab, UiCanvas.transform);
-		StartCoroutine(StartWs());
+		StartCoroutine(ConnectChat());
 	}
 
 	private void Update()
@@ -355,12 +355,25 @@ public class NetworkManager : Manager
 		}
 	}
 
-	public IEnumerator StartWs()
+	public IEnumerator ConnectChat()
 	{
 		_ws = new WebSocket($"ws://{Host}:65279");
 
-		_ws.OnMessage += (sender, e) => {
-			Debug.Log("Laputa says: " + e.Data);
+		_ws.OnMessage += (sender, ev) => {
+			try {
+				var data = ev.Data.Split("◊");
+				var chat = new Chat();
+				chat.CitizenId = int.Parse(data[0]);
+				chat.RoomId = int.Parse(data[1]);
+				chat.Text = data[2];
+				chat.CreatedAt = data[3];
+
+				GameManager.Instance.ChatMessages.Enqueue(chat.ToString());
+			}
+			catch (Exception e)
+			{
+				Debug.LogError($"OnMessage: {e}");
+			}
 		};
 
 		_ws.Connect();
@@ -373,8 +386,6 @@ public class NetworkManager : Manager
 
 	public IEnumerator Request(string endpoint, string[] args, Action<string> result)
 	{
-		_ws.Send($"{endpoint}/{string.Join("◊", args)}");
-
 		var url = $"http://{Host}:{Port}/{endpoint}?args={string.Join("◊", args)}";
 		Debug.Log(url);
 
@@ -781,12 +792,7 @@ public class NetworkManager : Manager
 	public void Chat(int citizenId, int roomId, string text)
     {
 		var args = new string[]{citizenId.ToString(), roomId.ToString(), Escape(text)};
-		StartCoroutine(Request("chat", args, (result) =>
-		{
-			var c = JsonUtility.FromJson<ChatResponse>(result);
-			GameObject.Find("Chat(Clone)").GetComponentInChildren<Side.ChatController>()
-				.ReplaceChat(c.messages);
-		}));
+		StartCoroutine(Request("chat", args, null));
 	}
 
 	public void Tasks(List<int> organizationIds)

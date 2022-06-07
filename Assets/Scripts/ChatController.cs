@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -12,9 +13,12 @@ namespace Side
         public TMP_InputField inputField;
         public TMP_Text displayOutput;
 
+        private ConcurrentQueue<string> _chatMessages;
+
         void OnEnable()
         {
             inputField.onSubmit.AddListener(Send);
+            _chatMessages = GameManager.Instance.ChatMessages;
         }
 
         void OnDisable()
@@ -34,21 +38,16 @@ namespace Side
                     }
                 }
             }
-        }
 
-        public void ReplaceChat(List<MessageItem> messages)
-        {
-            displayOutput.text = string.Empty;
-            foreach(var m in messages)
+            if (_chatMessages.TryDequeue(out var text))
             {
-                displayOutput.text += $"{m}\n";
+                displayOutput.text += $"\n{text}";
             }
         }
 
         public void Send(string text)
         {
             NetworkManager.Instance.Chat(GameManager.Instance.me.id, GameManager.Instance.me.room.id, text);
-            inputField.text = string.Empty;
         }
     }
 }
