@@ -364,7 +364,7 @@ public class NetworkManager : Manager
 				var data = ev.Data.Split("◊");
 				var chat = new Chat();
 				chat.CitizenId = int.Parse(data[0]);
-				chat.RoomId = int.Parse(data[1]);
+				int.TryParse(data[1], out chat.RoomId);
 				chat.Text = data[2];
 				chat.CreatedAt = data[3];
 
