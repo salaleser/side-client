@@ -130,40 +130,30 @@ namespace Side
                 .Select(x => new TMP_Dropdown.OptionData(x.ToCaption())).ToList());
         }
 
-        public void Sell()
-        {
-            var args = new string[]{_item.id.ToString(), Price.text};
-            StartCoroutine(NetworkManager.Instance.Request("item-sell", args, (result) => {
-                NetworkManager.Instance.Organization(GameManager.Instance.currentOrganization.id);
-            }));
-        }
-
         public void Split()
         {
-            var args = new string[]{_item.id.ToString(), Quantity.text};
-            StartCoroutine(NetworkManager.Instance.Request("item-split", args, (result) => {
-                NetworkManager.Instance.Organization(GameManager.Instance.currentOrganization.id);
-            }));
+            // var args = new string[]{_item.id.ToString(), Quantity.text};
+            // StartCoroutine(NetworkManager.Instance.Request("item-split", args, (result) => {
+            //     NetworkManager.Instance.Organization(GameManager.Instance.currentOrganization.id);
+            // }));
         }
 
         public void Stack()
         {
             var args = new string[]{_item.id.ToString()};
-            StartCoroutine(NetworkManager.Instance.Request("item-stack", args, (result) => {
-                NetworkManager.Instance.Organization(GameManager.Instance.currentOrganization.id);
-            }));
+            StartCoroutine(NetworkManager.Instance.Request("item-stack", args, null));
         }
 
         public void PublishItems()
         {
-            foreach (var room in GameManager.Instance.currentOrganization.attached_rooms)
-            {
-                if (room.ToCaption() == AttachedRooms.captionText.text)
-                {
-                    NetworkManager.Instance.OrganizationPagesItemsPublish(GameManager.Instance.currentOrganization.id, room.id);
-                    break;
-                }
-            }
+            // foreach (var room in GameManager.Instance.currentOrganization.attached_rooms)
+            // {
+            //     if (room.ToCaption() == AttachedRooms.captionText.text)
+            //     {
+            //         NetworkManager.Instance.OrganizationPagesItemsPublish(GameManager.Instance.currentOrganization.id, room.id);
+            //         break;
+            //     }
+            // }
         }
     }
 }

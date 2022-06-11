@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
@@ -24,7 +25,6 @@ public class NetworkManager : Manager
 	private string Host;
 	private string Port;
 
-	public GameObject mainButtonsPanelPrefab;
 	public GameObject quickMenuPrefab;
 	public GameObject dealPopupPrefab;
 	public GameObject InputFieldPopupPrefab;
@@ -35,9 +35,7 @@ public class NetworkManager : Manager
 	public GameObject createRoomPopupPrefab;
 	public GameObject noticePopupPrefab;
 	public GameObject loginPopupPrefab;
-	public GameObject organizationWindowPrefab;
-	public GameObject citizenWindowPrefab;
-	public GameObject computerWindowPrefab;
+	public GameObject PdaPrefab;
 
 	public GameObject UiCanvas;
 	public GameObject GroundCanvas;
@@ -150,17 +148,17 @@ public class NetworkManager : Manager
 			{
 				ShowMapButton();
 			}
+			else if (Keyboard.current.enterKey.wasPressedThisFrame)
+			{
+				NearbyChatButton();
+			}
 			else if (Keyboard.current.oKey.wasPressedThisFrame)
 			{
-				OrganizationsButton();
+				OrganizationChatButton();
 			}
-			else if (Keyboard.current.nKey.wasPressedThisFrame)
+			else if (Keyboard.current.cKey.wasPressedThisFrame)
 			{
-				InternetButton();
-			}
-			else if (Keyboard.current.iKey.wasPressedThisFrame)
-			{
-				ItemsButton();
+				CitizenChatButton();
 			}
 			else if (Keyboard.current.rKey.wasPressedThisFrame)
 			{
@@ -176,22 +174,13 @@ public class NetworkManager : Manager
 			}
 			else if (Keyboard.current.tabKey.wasPressedThisFrame)
 			{
-				ProfileButton();
-			}
-			else if (Keyboard.current.cKey.wasPressedThisFrame)
-			{
-				ComputerButton();
+				PdaButton();
 			}
 			else if (Keyboard.current.escapeKey.wasPressedThisFrame)
 			{
 				CenterCameraButton();
 			}
 		}
-	}
-
-	public void ProfileButton()
-	{
-		InstantiateCitizen();
 	}
 
 	public void CenterCameraButton()
@@ -216,19 +205,14 @@ public class NetworkManager : Manager
 		}
 	}
 
-	public void ItemsButton()
+	public void PdaButton()
 	{
-		InstantiateCitizen("Items");
+		InstantiatePda();
 	}
 
-	public void InternetButton()
+	public void MeButton()
 	{
-		InstantiateComputer("Internet");
-	}
-
-	public void ComputerButton()
-	{
-		InstantiateComputer();
+		InstantiatePda(GameManager.Instance.me.id.ToString());
 	}
 
 	public void ZoomOutButton()
@@ -267,11 +251,6 @@ public class NetworkManager : Manager
 	public void ShowMapButton()
 	{
 		Universe();
-	}
-
-	public void OrganizationsButton()
-	{
-		InstantiateCitizen("Organizations");
 	}
 
 	public void ReloadButton()
@@ -364,7 +343,7 @@ public class NetworkManager : Manager
 				var data = ev.Data.Split("◊");
 				var chat = new Chat();
 				chat.CitizenId = int.Parse(data[0]);
-				int.TryParse(data[1], out chat.RoomId);
+				int.TryParse(data[1], out chat.OrganizationId);
 				chat.Text = data[2];
 				chat.CreatedAt = data[3];
 
@@ -441,12 +420,6 @@ public class NetworkManager : Manager
 	{
 		var args = new string[]{GameManager.Instance.me.id.ToString(), command, string.Join(",", parameters)};
 		StartCoroutine(Request("exec", args, ProcessExec));
-	}
-
-	public void OrganizationPagesItemsPublish(int organizationId, int roomId)
-	{
-		var args = new string[]{organizationId.ToString(), roomId.ToString()};
-		StartCoroutine(Request("organization-pages-items-publish", args, (json) => ProcessOrganization(json, "Pages")));
 	}
 
 	public void Me()
@@ -557,24 +530,6 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("room-create", args, ProcessParcel));
 	}
 
-	public void Organization(int organizationId, string tabName = "Main")
-    {
-		var args = new string[]{organizationId.ToString()};
-		StartCoroutine(Request("organization", args, (json) => ProcessOrganization(json, tabName)));
-	}
-
-	public void Citizen(int citizenId, string tabName = "Main")
-    {
-		var args = new string[]{citizenId.ToString()};
-		StartCoroutine(Request("citizen", args, (json) => ProcessCitizen(json, tabName)));
-	}
-	
-	public void MemberDelete(int organizationId, int citizenId)
-    {
-		var args = new string[]{organizationId.ToString(), citizenId.ToString()};
-		StartCoroutine(Request("member-delete", args, (json) => ProcessOrganization(json, "Members")));
-	}
-
 	public void CitizenMove(int citizenId, int parcelId, int x, int y, int z)
     {
 		var args = new string[]{citizenId.ToString(), parcelId.ToString(), x.ToString(), y.ToString(), z.ToString()};
@@ -590,19 +545,13 @@ public class NetworkManager : Manager
 	public void OrganizationSetProperties(int organizationId, OrganizationProperties properties, string tabName = "Main")
     {
 		var args = new string[]{organizationId.ToString(), Escape(JsonUtility.ToJson(properties))};
-		StartCoroutine(Request("organization-set-properties", args, (json) => ProcessOrganization(json, tabName)));
+		StartCoroutine(Request("organization-set-properties", args, null));
 	}
 
 	public void OrganizationSetTitle(int organizationId, string title)
     {
 		var args = new string[]{organizationId.ToString(), Escape(title)};
 		StartCoroutine(Request("organization-set-title", args, null));
-	}
-
-	public void PageCreate(int organizationId, string content, string path)
-    {
-		var args = new string[]{organizationId.ToString(), Escape(content), path};
-		StartCoroutine(Request("page-create", args, (json) => ProcessOrganization(json, "Pages")));
 	}
 
 	public void DealCreate(int marketId, int buyerAccountId, int deliveryAddress, int sellerAccountId, int itemId, int price)
@@ -716,6 +665,41 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("offer-decline", args, null));
 	}
 
+	public void CitizenChatButton()
+	{
+		UnityAction<string> action = (text) => {
+			var s = Regex.Split(text, @"(^\d+) ");
+			if (s.Length > 2)
+			{
+				var args = new string[]{GameManager.Instance.me.id.ToString(), Escape(s[2]), GameManager.Instance.me.parcel_id.ToString(), "", s[1]};
+				StartCoroutine(Request("chat", args, null));
+			}
+		};
+		InstantiateInputFieldPopup("Citizen Chat", action);
+	}
+
+	public void OrganizationChatButton()
+	{
+		UnityAction<string> action = (text) => {
+			var s = Regex.Split(text, @"(^-\d+) ");
+			if (s.Length > 2)
+			{
+				var args = new string[]{GameManager.Instance.me.id.ToString(), Escape(s[2]), GameManager.Instance.me.parcel_id.ToString(), s[1], ""};
+				StartCoroutine(Request("chat", args, null));
+			}
+		};
+		InstantiateInputFieldPopup("Organization Chat", action);
+	}
+
+	public void NearbyChatButton()
+	{
+		UnityAction<string> action = (text) => {
+			var args = new string[]{GameManager.Instance.me.id.ToString(), Escape(text), GameManager.Instance.me.parcel_id.ToString(), "", ""};
+			StartCoroutine(Request("chat", args, null));
+		};
+		InstantiateInputFieldPopup("Nearby Chat", action);
+	}
+
 	public void Vote(int pollId, bool vote)
     {
 		var args = new string[]{GameManager.Instance.me.id.ToString(), pollId.ToString(), vote.ToString()};
@@ -787,29 +771,6 @@ public class NetworkManager : Manager
 			.GetComponent<Side.QuickMenuController>();
 		quickMenuController.Entity = transform.GetComponent<Entity>();
 		quickMenuController.UpdateButtons();
-	}
-
-	public void Chat(int citizenId, int roomId, string text)
-    {
-		var args = new string[]{citizenId.ToString(), roomId.ToString(), Escape(text)};
-		StartCoroutine(Request("chat", args, null));
-	}
-
-	public void Tasks(List<int> organizationIds)
-	{
-		if (organizationIds.Count == 0)
-		{
-			return;
-		}
-
-		var value = "";
-		foreach (var organizationId in organizationIds)
-		{
-			value += $",{organizationId}";
-		}
-
-		var args = new string[]{value.Substring(1)};
-		StartCoroutine(Request("tasks", args, (result) => InstantiateOrganization("Tasks")));
 	}
 
 	public void TaskAccept(int citizenId, int taskId)
@@ -1191,49 +1152,11 @@ public class NetworkManager : Manager
 		component.citizenItem = citizen;
 	}
 
-	public void ProcessOrganization(string json, string tabName = "Main")
-	{
-		var response = JsonUtility.FromJson<OrganizationResponse>(json);
-        if (response == null)
-        {
-            return;
-        }
-
-		GameManager.Instance.currentOrganization = response.organization;
-		InstantiateOrganization(tabName);
-	}
-
-	public void ProcessCitizen(string json, string tabName = "Main")
-	{
-		var response = JsonUtility.FromJson<CitizenResponse>(json);
-        if (response == null)
-        {
-            return;
-        }
-
-		GameManager.Instance.me = response.citizen;
-		InstantiateCitizen("Items");
-	}
-
-	public void InstantiateOrganization(string tabName = "Main")
+	public void InstantiatePda(string address = "")
 	{
 		DestroyWindows();
-		Instantiate(organizationWindowPrefab, UiCanvas.transform)
-			.GetComponent<Side.WindowManager>().SwitchTab(tabName);
-	}
-
-	public void InstantiateCitizen(string tabName = "Main")
-	{
-		DestroyWindows();
-		Instantiate(citizenWindowPrefab, UiCanvas.transform)
-			.GetComponent<Side.WindowManager>().SwitchTab(tabName);
-	}
-
-	public void InstantiateComputer(string tabName = "Main")
-	{
-		DestroyWindows();
-		Instantiate(computerWindowPrefab, UiCanvas.transform)
-			.GetComponent<Side.WindowManager>().SwitchTab(tabName);
+		Instantiate(PdaPrefab, UiCanvas.transform)
+			.GetComponent<Side.WindowManager>().SwitchTab("Internet");
 	}
 
 	private void ProcessExec(string json)

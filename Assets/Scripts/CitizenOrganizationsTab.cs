@@ -106,14 +106,14 @@ namespace Side
 
         public void ManageOrganization()
         {
-            var organization = GameManager.Instance.me.organizations
-                .Where(x => x.ToCaption() == Organizations.captionText.text)
-                .FirstOrDefault();
-            if (organization != null)
-            {
-                NetworkManager.Instance.Organization(organization.id);
-                Destroy(gameObject);
-            }
+            // var organization = GameManager.Instance.me.organizations
+            //     .Where(x => x.ToCaption() == Organizations.captionText.text)
+            //     .FirstOrDefault();
+            // if (organization != null)
+            // {
+            //     NetworkManager.Instance.Organization(organization.id);
+            //     Destroy(gameObject);
+            // }
         }
 
         public void CreateOrganization()

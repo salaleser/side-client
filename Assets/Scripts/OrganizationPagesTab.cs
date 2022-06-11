@@ -85,8 +85,8 @@ namespace Side
 
         public void CreatePage()
         {
-            NetworkManager.Instance.PageCreate(GameManager.Instance.currentOrganization.id, Content.text, Path.text);
-            ContentPreview.text = "(Preview)";
+            // NetworkManager.Instance.PageCreate(GameManager.Instance.currentOrganization.id, Content.text, Path.text);
+            // ContentPreview.text = "(Preview)";
         }
 
         public void UpdatePages()

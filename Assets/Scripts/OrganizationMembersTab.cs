@@ -49,7 +49,7 @@ namespace Side
 
         public void Kick()
         {
-            NetworkManager.Instance.MemberDelete(GameManager.Instance.currentOrganization.id, _member.citizen.id);
+            // NetworkManager.Instance.MemberDelete(GameManager.Instance.currentOrganization.id, _member.citizen.id);
         }
 
         public void Invite()

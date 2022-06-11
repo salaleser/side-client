@@ -17,10 +17,10 @@ namespace Entities.Cells
             AddButton($"Create Room", () => NetworkManager.Instance.InstantiateCreateRoomPopup(groundItem.z + 1));
             AddButton($"Reload Parcel", () => NetworkManager.Instance.ReloadButton());
             AddButton($"Zoom Out", () => NetworkManager.Instance.ZoomOutButton());
-            AddButton($"Profile", () => NetworkManager.Instance.ProfileButton());
+            AddButton($"Me", () => NetworkManager.Instance.MeButton());
             AddButton($"Center Camera", () => NetworkManager.Instance.CenterCameraButton());
             AddButton($"Move To Ground", () => NetworkManager.Instance.CitizenMove(GameManager.Instance.me.id, groundItem.parcel_id, groundItem.x, groundItem.y, groundItem.z));
-            AddButton($"Computer", () => NetworkManager.Instance.ComputerButton());
+            AddButton($"PDA", () => NetworkManager.Instance.PdaButton());
         }
 
         private void OnMouseEnter()

@@ -100,9 +100,7 @@ namespace Side
         public void SetProperties()
         {
             var args = new string[]{Salary.text};
-            StartCoroutine(NetworkManager.Instance.Request("position-set-properties", args, (json) => {
-                NetworkManager.Instance.ProcessOrganization(json, "Positions");
-            }));
+            StartCoroutine(NetworkManager.Instance.Request("position-set-properties", args, null));
         }
 
         public void UpdatePositionTypes()

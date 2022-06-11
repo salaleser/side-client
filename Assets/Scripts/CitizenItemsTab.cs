@@ -156,34 +156,34 @@ namespace Side
 
         public void Split()
         {
-            var args = new string[]{_item.id.ToString(), Quantity.text};
-            StartCoroutine(NetworkManager.Instance.Request("item-split", args, (json) => {
-                NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
-            }));
+            // var args = new string[]{_item.id.ToString(), Quantity.text};
+            // StartCoroutine(NetworkManager.Instance.Request("item-split", args, (json) => {
+            //     NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
+            // }));
         }
 
         public void Stack()
         {
-            var args = new string[]{_item.id.ToString()};
-            StartCoroutine(NetworkManager.Instance.Request("item-stack", args, (json) => {
-                NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
-            }));
+            // var args = new string[]{_item.id.ToString()};
+            // StartCoroutine(NetworkManager.Instance.Request("item-stack", args, (json) => {
+            //     NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
+            // }));
         }
 
         public void Drop()
         {
-            var args = new string[]{_item.id.ToString(), GameManager.Instance.me.room.item_id.ToString()};
-            StartCoroutine(NetworkManager.Instance.Request("item-drop", args, (json) => {
-                NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
-            }));
+            // var args = new string[]{_item.id.ToString(), GameManager.Instance.me.room.item_id.ToString()};
+            // StartCoroutine(NetworkManager.Instance.Request("item-drop", args, (json) => {
+            //     NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
+            // }));
         }
 
         public void Take()
         {
-            var args = new string[]{_item.id.ToString(), GameManager.Instance.me.item_id.ToString()};
-            StartCoroutine(NetworkManager.Instance.Request("item-take", args, (json) => {
-                NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
-            }));
+            // var args = new string[]{_item.id.ToString(), GameManager.Instance.me.item_id.ToString()};
+            // StartCoroutine(NetworkManager.Instance.Request("item-take", args, (json) => {
+            //     NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
+            // }));
         }
     }
 }

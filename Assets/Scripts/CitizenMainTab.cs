@@ -32,15 +32,15 @@ namespace Side
 
         public void SetProperties()
         {
-            var rentedRoom = _rentedRooms
-                .Where(x => x.ToCaption() == DeliveryAddress.captionText.text)
-                .FirstOrDefault();
-            GameManager.Instance.me.delivery_address = rentedRoom;
-            DeliveryAddressId.text = rentedRoom.ToCaption();
-            var args = new string[]{GameManager.Instance.me.id.ToString(), rentedRoom.id.ToString()};
-            StartCoroutine(NetworkManager.Instance.Request("citizen-delivery-address", args, (json) => {
-                NetworkManager.Instance.ProcessCitizen(json, "Main");
-            }));
+            // var rentedRoom = _rentedRooms
+            //     .Where(x => x.ToCaption() == DeliveryAddress.captionText.text)
+            //     .FirstOrDefault();
+            // GameManager.Instance.me.delivery_address = rentedRoom;
+            // DeliveryAddressId.text = rentedRoom.ToCaption();
+            // var args = new string[]{GameManager.Instance.me.id.ToString(), rentedRoom.id.ToString()};
+            // StartCoroutine(NetworkManager.Instance.Request("citizen-delivery-address", args, (json) => {
+            //     NetworkManager.Instance.ProcessCitizen(json, "Main");
+            // }));
         }
     }
 }
