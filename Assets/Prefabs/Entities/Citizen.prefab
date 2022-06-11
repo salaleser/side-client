@@ -129,16 +129,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c9632f6a53414fd982515e70db2fca1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  citizenItem:
+  DescriptionPrefab: {fileID: 521065865709494434, guid: 05e85d39ee9354df886f6123570b5bc8, type: 3}
+  RadialMenuPrefab: {fileID: 6657676188238830695, guid: c3ace36d5551e4b118710cdc24625288, type: 3}
+  Item:
     id: 0
     title: 
     account_id: 0
-    active_task_id: 0
     parcel_id: 0
     x: 0
     y: 0
     z: 0
     item_id: 0
+    workplace:
+      id: 0
+      title: 
+      type:
+        id: 0
+        title: 
+        properties:
+          color: {r: 0, g: 0, b: 0, a: 0}
+          w: 0
+          h: 0
+          durability: 0
+      x: 0
+      y: 0
+      z: 0
+      w: 0
+      h: 0
+      health: 0
+      creator_id: 0
+      renter_id: 0
+      item_id: 0
+      parcel_id: 0
+      rentable: 0
+      organization_id: 0
+      items: []
+      citizens: []
+      messages: []
+      properties:
+        type_id: 0
+        door:
+          password: 
     delivery_address:
       id: 0
       title: 
@@ -152,11 +183,23 @@ MonoBehaviour:
           durability: 0
       x: 0
       y: 0
+      z: 0
       w: 0
       h: 0
+      health: 0
+      creator_id: 0
       renter_id: 0
       item_id: 0
-      organization_ids: 
+      parcel_id: 0
+      rentable: 0
+      organization_id: 0
+      items: []
+      citizens: []
+      messages: []
+      properties:
+        type_id: 0
+        door:
+          password: 
     items: []
     friends: []
     actions: []
@@ -186,7 +229,7 @@ MonoBehaviour:
       item_id: 0
       parcel_id: 0
       rentable: 0
-      organization_ids: 
+      organization_id: 0
       items: []
       citizens: []
       messages: []

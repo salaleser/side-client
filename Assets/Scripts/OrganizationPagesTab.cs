@@ -24,7 +24,7 @@ namespace Side
         {
             // gameObject.SetActive(GameManager.Instance.currentOrganization.positions
             //     .Where(x => _allowed_position_ids.Contains(x.type.id))
-            //     .Where(x => x.citizen.id == GameManager.Instance.me.id)
+            //     .Where(x => x.citizen.id == GameManager.Instance.Me.id)
             //     .Any());
             this.GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
@@ -91,24 +91,24 @@ namespace Side
 
         public void UpdatePages()
         {
-            Pages.AddOptions(GameManager.Instance.currentOrganization.pages.Select(x => new TMP_Dropdown.OptionData(x.path.ToString())).ToList());
+            // Pages.AddOptions(GameManager.Instance.currentOrganization.pages.Select(x => new TMP_Dropdown.OptionData(x.path.ToString())).ToList());
         }
 
         public void LoadPage(string name)
         {
-            if (name == "")
-            {
-                name = Pages.captionText.text;
-            }
-            foreach (var page in GameManager.Instance.currentOrganization.pages)
-            {
-                if (page.path == name)
-                {
-                    Path.text = page.path;
-                    Content.text = page.content;
-                    break;
-                }
-            }
+            // if (name == "")
+            // {
+            //     name = Pages.captionText.text;
+            // }
+            // foreach (var page in GameManager.Instance.currentOrganization.pages)
+            // {
+            //     if (page.path == name)
+            //     {
+            //         Path.text = page.path;
+            //         Content.text = page.content;
+            //         break;
+            //     }
+            // }
         }
     }
 }

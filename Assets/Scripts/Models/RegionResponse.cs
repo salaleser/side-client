@@ -8,6 +8,6 @@ namespace Models
     public class RegionResponse
     {
         public RegionItem region;
-        public List<CityItem> cities;
+        public List<ParcelItem> parcels;
     }
 }

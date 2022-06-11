@@ -28,7 +28,7 @@ namespace Side
 
         public void UpdateRentedRooms()
         {
-            // var args = new string[]{GameManager.Instance.me.id.ToString()};
+            // var args = new string[]{GameManager.Instance.Me.id.ToString()};
             // StartCoroutine(NetworkManager.Instance.Request("rented-rooms", args, (result) => {
             //     _rentedRooms = JsonUtility.FromJson<RoomsResponse>(result).rented_rooms;
             //     RentedRooms.AddOptions(_rentedRooms

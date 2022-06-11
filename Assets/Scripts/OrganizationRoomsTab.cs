@@ -41,7 +41,7 @@ namespace Side
         {
             // gameObject.SetActive(GameManager.Instance.currentOrganization.positions
             //     .Where(x => _allowed_position_ids.Contains(x.type.id))
-            //     .Where(x => x.citizen.id == GameManager.Instance.me.id)
+            //     .Where(x => x.citizen.id == GameManager.Instance.Me.id)
             //     .Any());
             this.GetComponentInParent<WindowManager>()
                 .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
@@ -74,7 +74,7 @@ namespace Side
 
         public void LoadRentedRooms()
         {
-            // var args = new string[]{GameManager.Instance.me.id.ToString()};
+            // var args = new string[]{GameManager.Instance.Me.id.ToString()};
             // StartCoroutine(NetworkManager.Instance.Request("rented-rooms", args, (result) => {
             //     _rentedRooms = JsonUtility.FromJson<RoomsResponse>(result).rented_rooms;
             //     UpdateRequiredRoomTypesContent();
@@ -136,36 +136,36 @@ namespace Side
 
         public void UpdateRequiredRoomTypesContent()
         {
-            _requiredRoomTypesContent.ForEach(x => Destroy(x));
-            _requiredRoomTypesContent = new();
+            // _requiredRoomTypesContent.ForEach(x => Destroy(x));
+            // _requiredRoomTypesContent = new();
 
-            var col = 0;
-            var row = 0;
-            for (var i = 0; i < _requiredRoomTypes.Count; i++)
-            {
-                var requiredRoomType = _requiredRoomTypes[i];
+            // var col = 0;
+            // var row = 0;
+            // for (var i = 0; i < _requiredRoomTypes.Count; i++)
+            // {
+            //     var requiredRoomType = _requiredRoomTypes[i];
 
-                var instance = Instantiate(RequiredRoomTypePrefab);
-                _requiredRoomTypesContent.Add(instance);
-                instance.GetComponent<Image>().color = requiredRoomType.attached_room != null ? Color.green : Color.red;
-                var rectTransform = instance.transform.GetComponent<RectTransform>();
-                rectTransform.transform.SetParent(RequiredRoomTypesContent.transform.GetComponent<RectTransform>());
-                var x = (rectTransform.rect.width * col) + rectTransform.rect.width / 2;
-                var y = -(rectTransform.rect.height * row) - rectTransform.rect.height / 2;
-                rectTransform.anchoredPosition = new Vector3(x, y, 0);
+            //     var instance = Instantiate(RequiredRoomTypePrefab);
+            //     _requiredRoomTypesContent.Add(instance);
+            //     instance.GetComponent<Image>().color = requiredRoomType.attached_room != null ? Color.green : Color.red;
+            //     var rectTransform = instance.transform.GetComponent<RectTransform>();
+            //     rectTransform.transform.SetParent(RequiredRoomTypesContent.transform.GetComponent<RectTransform>());
+            //     var x = (rectTransform.rect.width * col) + rectTransform.rect.width / 2;
+            //     var y = -(rectTransform.rect.height * row) - rectTransform.rect.height / 2;
+            //     rectTransform.anchoredPosition = new Vector3(x, y, 0);
 
-                var button = instance.GetComponent<Button>();
-                button.GetComponentInChildren<TMP_Text>().text = $"{requiredRoomType.title} => {requiredRoomType.attached_room?.ToCaption()}";
-                button.onClick.AddListener(() => {
-                    _requiredRoomType = requiredRoomType;
-                    GameManager.SetDescription(_requiredRoomType.ToString());
-                    DetachButton.interactable = _requiredRoomType != null;
-                    AttachButton.interactable = _rentedRoom != null;
-                    UpdateRentedRoomsContent(_requiredRoomType.room_type_id);
-                });
+            //     var button = instance.GetComponent<Button>();
+            //     button.GetComponentInChildren<TMP_Text>().text = $"{requiredRoomType.title} => {requiredRoomType.attached_room?.ToCaption()}";
+            //     button.onClick.AddListener(() => {
+            //         _requiredRoomType = requiredRoomType;
+            //         GameManager.SetDescription(_requiredRoomType.ToString());
+            //         DetachButton.interactable = _requiredRoomType != null;
+            //         AttachButton.interactable = _rentedRoom != null;
+            //         UpdateRentedRoomsContent(_requiredRoomType.room_type_id);
+            //     });
 
-                row++;
-            }
+            //     row++;
+            // }
         }
     }
 }

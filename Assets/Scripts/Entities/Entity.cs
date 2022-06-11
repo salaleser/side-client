@@ -8,20 +8,20 @@ using Side;
 
 public class Entity : MonoBehaviour
 {
-    public List<QuickButton> QuickButtons = new();
+	public List<RadialButton> RadialButtons = new();
 
     public void AddButton(string text, UnityAction action, bool interactable = true)
     {
-        QuickButtons.Add(interactable ? new QuickButton(text, action) : null);
+        RadialButtons.Add(interactable ? new RadialButton(text, action) : null);
     }
 
     private void OnMouseOver()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (!GameManager.WindowActive && !GameManager.PopupActive)
         {
-            if (!GameManager.WindowActive && !GameManager.PopupActive)
+            if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                NetworkManager.Instance.InstantiateQuickMenu(this.transform);
+                NetworkManager.Instance.InstantiateRadialMenu(transform);
             }
         }
     }

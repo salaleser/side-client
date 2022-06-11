@@ -88,7 +88,7 @@ namespace Side
 
         public void UpdateOrganizations()
         {
-            Organizations.AddOptions(GameManager.Instance.me.organizations
+            Organizations.AddOptions(GameManager.Instance.Me.organizations
                 .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
                 .ToList());
         }
@@ -106,7 +106,7 @@ namespace Side
 
         public void ManageOrganization()
         {
-            // var organization = GameManager.Instance.me.organizations
+            // var organization = GameManager.Instance.Me.organizations
             //     .Where(x => x.ToCaption() == Organizations.captionText.text)
             //     .FirstOrDefault();
             // if (organization != null)
@@ -135,10 +135,10 @@ namespace Side
 
         public void UpdateOrganizationDescription()
         {
-            GameManager.SetDescription(GameManager.Instance.me.organizations
-                .Where(x => x.ToCaption() == Organizations.captionText.text)
-                .FirstOrDefault()
-                ?.ToString());
+            // GameManager.SetDescription(GameManager.Instance.Me.organizations
+            //     .Where(x => x.ToCaption() == Organizations.captionText.text)
+            //     .FirstOrDefault()
+            //     ?.ToString());
         }
     }
 }

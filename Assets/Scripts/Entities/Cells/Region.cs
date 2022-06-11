@@ -9,17 +9,17 @@ namespace Entities.Cells
 {
     public class Region : Entity
     {
-        public RegionItem regionItem;
+        public RegionItem Item;
 
         private void Start()
         {
-            if (regionItem.explorer_id == 0)
+            if (Item.explorer_id == 0)
             {
-                AddButton($"Explore \"{regionItem.title}\"", () => NetworkManager.Instance.RegionExplore(regionItem.id));
+                AddButton($"Explore \"{Item.title}\"", () => NetworkManager.Instance.RegionExplore(Item.id));
             }
             else
             {
-                AddButton($"Zoom in \"{regionItem.title}\"", () => NetworkManager.Instance.Region(regionItem.id));
+                AddButton($"Zoom in \"{Item.title}\"", () => NetworkManager.Instance.Region(Item.id));
             }
             AddButton($"Zoom Out", () => NetworkManager.Instance.ZoomOutButton());
             AddButton($"Center Camera", () => NetworkManager.Instance.CenterCameraButton());
@@ -28,13 +28,13 @@ namespace Entities.Cells
 
         private void OnMouseEnter()
         {
-            if (!GameManager.QuickMenuActive
+            if (!GameManager.RadialMenuActive
                 && !GameManager.WindowActive
                 && !GameManager.PopupActive
                 && !Mouse.current.rightButton.isPressed)
             {
-                GameManager.SetDescription($"\n\n{regionItem}");
-                GameManager.Instance.Cursor.transform.SetPositionAndRotation(this.transform.position, Quaternion.identity);
+                GameManager.SetDescriptionText(Item.ToString());
+                GameManager.Instance.Cursor.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
             }
         }
     }

@@ -7,41 +7,35 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Models;
 using TMPro;
+using Side;
 
 public class GameManager : MonoBehaviour
 {
-	public const int Organization = -3;
-	public const int Universe = 1;
-	public const int Galaxy = 2;
-	public const int System = 3;
-	public const int Planet = 4;
-	public const int Continent = 5;
-	public const int Region = 6;
-	public const int City = 7;
-	public const int Block = 8;
-	public const int Parcel = 9;
-	public const int Room = 11;
+	public const int StateUniverse = 1;
+	public const int StateGalaxy = 2;
+	public const int StateSystem = 3;
+	public const int StatePlanet = 4;
+	public const int StateContinent = 5;
+	public const int StateRegion = 6;
+	public const int StateParcel = 7;
 
-	public int state;
+	public int State;
 	
-	public UniverseItem currentUniverse;
-	public GalaxyItem currentGalaxy;
-	public SystemItem currentSystem;
-	public PlanetItem currentPlanet;
-	public ContinentItem currentContinent;
-	public RegionItem currentRegion;
-	public CityItem currentCity;
-	public BlockItem currentBlock;
-	public ParcelItem currentParcel;
-    public OrganizationItem currentOrganization;
-	public CitizenItem me = new();
-    public PageItem currentPage;
+	public UniverseItem Universe;
+	public GalaxyItem Galaxy;
+	public SystemItem System;
+	public PlanetItem Planet;
+	public ContinentItem Continent;
+	public RegionItem Region;
+	public ParcelItem Parcel;
+	public CitizenItem Me = new();
     
 	public GameObject CursorPrefab;
 	public GameObject Cursor { get; private set; }
 
 	public GameObject DescriptionPrefab;
-	public GameObject Description { get; private set; }
+	public static GameObject Description { get; private set; }
+	private Description _description;
 
 	public GameObject MiniMapPrefab;
 	public static GameObject MiniMap { get; private set; }
@@ -51,7 +45,7 @@ public class GameManager : MonoBehaviour
 	public ConcurrentQueue<string> ChatMessages = new();
 
 	public GameObject ShortcutsActiveSign;
-	public static bool QuickMenuActive { get; private set; }
+	public static bool RadialMenuActive { get; private set; }
 	public static bool WindowActive { get; private set; }
 	public static bool PopupActive { get; private set; }
 	public static bool ShortcutsActive { get; private set; }
@@ -73,10 +67,15 @@ public class GameManager : MonoBehaviour
 
 	private void Start()
 	{
-		Description = Instantiate(DescriptionPrefab, NetworkManager.Instance.UiCanvas.transform);
 		MiniMap = Instantiate(MiniMapPrefab, NetworkManager.Instance.UiCanvas.transform);
+
 		Chat = Instantiate(ChatPrefab, NetworkManager.Instance.UiCanvas.transform);
+
 		Cursor = Instantiate(CursorPrefab, NetworkManager.Instance.UiCanvas.transform);
+
+		Description = Instantiate(DescriptionPrefab, NetworkManager.Instance.UiCanvas.transform);
+		Description.SetActive(false);
+
 		SetShortcutsActive(true);
 	}
 
@@ -87,14 +86,19 @@ public class GameManager : MonoBehaviour
 		Instance.ShortcutsActiveSign.GetComponentInChildren<TMP_Text>().text = isActive ? "SHORCUTS ENABLED" : "SHORCUTS DISABLED";
 	}
 
-	public static void SetDescription(string text)
+	public static void SetRadialMenuActive(bool isActive)
 	{
-		Instance.Description.GetComponentInChildren<TMP_Text>().text = text;
+		RadialMenuActive = isActive;
 	}
 
-	public static void SetQuickMenuActive(bool isActive)
+	public static void SetDescriptionActive(bool isActive)
 	{
-		QuickMenuActive = isActive;
+		Description.SetActive(isActive);
+	}
+
+	public static void SetDescriptionText(string text)
+	{
+		Description.GetComponent<Description>().Text.text = text;
 	}
 
 	public static void SetWindowActive(bool isActive)
@@ -107,5 +111,20 @@ public class GameManager : MonoBehaviour
 	{
 		PopupActive = isActive;
 		Chat.SetActive(!isActive);
+	}
+
+	public static (string, string) ParseInternetAddress(string internetAddress)
+	{
+		var a = internetAddress.Split("/");
+
+        var address = a[0];
+
+        var path = "root";
+        if (a.Length > 1)
+        {
+            path = a[1];
+        }
+
+		return (address, path);
 	}
 }

@@ -30,7 +30,7 @@ namespace Side
         {
             // gameObject.SetActive(GameManager.Instance.currentOrganization.positions
             //     .Where(x => _allowed_position_ids.Contains(x.type.id))
-            //     .Where(x => x.citizen.id == GameManager.Instance.me.id)
+            //     .Where(x => x.citizen.id == GameManager.Instance.Me.id)
             //     .Any());
             // UpdateItems();
             GetComponentInParent<WindowManager>()
@@ -74,60 +74,60 @@ namespace Side
 
         public void UpdateItems()
         {
-            _items.ForEach(x => Destroy(x));
-            _items = new();
+            // _items.ForEach(x => Destroy(x));
+            // _items = new();
 
-            List<ItemItem> items = new();
-            if (AttachedRooms.value == 0)
-            {
-                items = GameManager.Instance.currentOrganization.attached_rooms
-                    .SelectMany(x => x.items)
-                    .ToList();
-            }
-            else
-            {
-                items = GameManager.Instance.currentOrganization.attached_rooms
-                    .Where(x => x.ToCaption() == AttachedRooms.captionText.text)
-                    .SelectMany(x => x.items)
-                    .ToList();
-            }
+            // List<ItemItem> items = new();
+            // if (AttachedRooms.value == 0)
+            // {
+            //     items = GameManager.Instance.currentOrganization.attached_rooms
+            //         .SelectMany(x => x.items)
+            //         .ToList();
+            // }
+            // else
+            // {
+            //     items = GameManager.Instance.currentOrganization.attached_rooms
+            //         .Where(x => x.ToCaption() == AttachedRooms.captionText.text)
+            //         .SelectMany(x => x.items)
+            //         .ToList();
+            // }
 
-            var col = 0;
-            var row = 0;
-            for (var i = 0; i < items.Count; i++)
-            {
-                if (i > 0 && i % 4 == 0)
-                {
-                    col++;
-                    row = 0;
-                }
+            // var col = 0;
+            // var row = 0;
+            // for (var i = 0; i < items.Count; i++)
+            // {
+            //     if (i > 0 && i % 4 == 0)
+            //     {
+            //         col++;
+            //         row = 0;
+            //     }
 
-                var item = items[i];
+            //     var item = items[i];
 
-                var instance = Instantiate(ItemPrefab);
-                _items.Add(instance);
-                instance.GetComponent<Image>().color = item.price == 0 ? Color.white : Color.green;
-                var rectTransform = instance.transform.GetComponent<RectTransform>();
-                rectTransform.transform.SetParent(Content.transform.GetComponent<RectTransform>());
-                var x = (rectTransform.rect.width * col) + rectTransform.rect.width / 2;
-                var y = -(rectTransform.rect.height * row) - rectTransform.rect.height / 2;
-                rectTransform.anchoredPosition = new Vector3(x, y, 0);
+            //     var instance = Instantiate(ItemPrefab);
+            //     _items.Add(instance);
+            //     instance.GetComponent<Image>().color = item.price == 0 ? Color.white : Color.green;
+            //     var rectTransform = instance.transform.GetComponent<RectTransform>();
+            //     rectTransform.transform.SetParent(Content.transform.GetComponent<RectTransform>());
+            //     var x = (rectTransform.rect.width * col) + rectTransform.rect.width / 2;
+            //     var y = -(rectTransform.rect.height * row) - rectTransform.rect.height / 2;
+            //     rectTransform.anchoredPosition = new Vector3(x, y, 0);
 
-                var button = instance.GetComponent<Button>();
-                button.GetComponentInChildren<TMP_Text>().text = $"{item.type.title} x{item.quantity} ={item.price}";
-                button.onClick.AddListener(() => {
-                    _item = item;
-                    GameManager.SetDescription(_item.ToString());
-                });
+            //     var button = instance.GetComponent<Button>();
+            //     button.GetComponentInChildren<TMP_Text>().text = $"{item.type.title} x{item.quantity} ={item.price}";
+            //     button.onClick.AddListener(() => {
+            //         _item = item;
+            //         GameManager.SetDescription(_item.ToString());
+            //     });
 
-                row++;
-            }
+            //     row++;
+            // }
         }
 
         public void UpdateAttachedRooms()
         {
-            AttachedRooms.AddOptions(GameManager.Instance.currentOrganization.attached_rooms
-                .Select(x => new TMP_Dropdown.OptionData(x.ToCaption())).ToList());
+            // AttachedRooms.AddOptions(GameManager.Instance.currentOrganization.attached_rooms
+            //     .Select(x => new TMP_Dropdown.OptionData(x.ToCaption())).ToList());
         }
 
         public void Split()

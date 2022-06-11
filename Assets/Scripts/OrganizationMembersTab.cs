@@ -29,7 +29,7 @@ namespace Side
         {
             // gameObject.SetActive(GameManager.Instance.currentOrganization.positions
             //     .Where(x => _allowed_position_ids.Contains(x.type.id))
-            //     .Where(x => x.citizen.id == GameManager.Instance.me.id)
+            //     .Where(x => x.citizen.id == GameManager.Instance.Me.id)
             //     .Any());
             // UpdateMembers();
             // UpdateButtons();
@@ -54,7 +54,7 @@ namespace Side
 
         public void Invite()
         {
-            NetworkManager.Instance.InviteCreate(GameManager.Instance.me.id, GameManager.Instance.currentOrganization.id, int.Parse(CitizenId.text));
+            // NetworkManager.Instance.InviteCreate(GameManager.Instance.Me.id, GameManager.Instance.currentOrganization.id, int.Parse(CitizenId.text));
         }
 
         public void SetJoinType()
@@ -66,31 +66,31 @@ namespace Side
 
         public void UpdateMembers()
         {
-            var members = GameManager.Instance.currentOrganization.members;
+            // var members = GameManager.Instance.currentOrganization.members;
 
-            var col = 0;
-            var row = 0;
-            for (var i = 0; i < members.Count; i++)
-            {
-                var member = members[i];
+            // var col = 0;
+            // var row = 0;
+            // for (var i = 0; i < members.Count; i++)
+            // {
+            //     var member = members[i];
 
-                var instance = Instantiate(MemberPrefab);
-                var rectTransform = instance.transform.GetComponent<RectTransform>();
-                rectTransform.transform.SetParent(Members.transform.GetComponent<RectTransform>());
-                var x = (rectTransform.rect.width * col) + rectTransform.rect.width / 2;
-                var y = -(rectTransform.rect.height * row) - rectTransform.rect.height / 2;
-                rectTransform.anchoredPosition = new Vector3(x, y, 0);
+            //     var instance = Instantiate(MemberPrefab);
+            //     var rectTransform = instance.transform.GetComponent<RectTransform>();
+            //     rectTransform.transform.SetParent(Members.transform.GetComponent<RectTransform>());
+            //     var x = (rectTransform.rect.width * col) + rectTransform.rect.width / 2;
+            //     var y = -(rectTransform.rect.height * row) - rectTransform.rect.height / 2;
+            //     rectTransform.anchoredPosition = new Vector3(x, y, 0);
 
-                var button = instance.GetComponent<Button>();
-                button.GetComponentInChildren<TMP_Text>().text = $"{member.title} {member.citizen.ToCaption()}";
-                button.onClick.AddListener(() => {
-                    _member = member;
-                    GameManager.SetDescription(_member.ToString());
-                    UpdateButtons();
-                });
+            //     var button = instance.GetComponent<Button>();
+            //     button.GetComponentInChildren<TMP_Text>().text = $"{member.title} {member.citizen.ToCaption()}";
+            //     button.onClick.AddListener(() => {
+            //         _member = member;
+            //         GameManager.SetDescription(_member.ToString());
+            //         UpdateButtons();
+            //     });
 
-                row++;
-            }
+            //     row++;
+            // }
         }
     }
 }

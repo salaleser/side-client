@@ -25,7 +25,7 @@ namespace Side
         {
             // gameObject.SetActive(GameManager.Instance.currentOrganization.positions
             //     .Where(x => _allowed_position_ids.Contains(x.type.id))
-            //     .Where(x => x.citizen.id == GameManager.Instance.me.id)
+            //     .Where(x => x.citizen.id == GameManager.Instance.Me.id)
             //     .Any());
         }
 
@@ -33,13 +33,13 @@ namespace Side
         {
             // IsActive.text = GameManager.Instance.currentOrganization.is_active.ToString();
             // IsActive.GetComponent<Image>().color = GameManager.Instance.currentOrganization.is_active ? Color.green : Color.red;
-            Title.text = GameManager.Instance.currentOrganization.title;
-            MembersCount.text = GameManager.Instance.currentOrganization.members.Count.ToString();
+            // Title.text = GameManager.Instance.currentOrganization.title;
+            // MembersCount.text = GameManager.Instance.currentOrganization.members.Count.ToString();
         }
 
         public void UpdateProperties()
         {
-            NetworkManager.Instance.OrganizationSetTitle(GameManager.Instance.currentOrganization.id, Title.text);
+            // NetworkManager.Instance.OrganizationSetTitle(GameManager.Instance.currentOrganization.id, Title.text);
         }
     }
 }

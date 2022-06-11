@@ -18,7 +18,6 @@ namespace Side
         public TMP_Text Content;
 
         private List<string> _history = new();
-        private int _cursor;
 
         private void OnEnable()
         {
@@ -60,20 +59,8 @@ namespace Side
 
         public void LoadPage(string text)
         {
-            var a = text.Split("/");
-
-            var address = a[0];
-
-            var path = "root";
-            if (a.Length > 1)
-            {
-                path = a[1];
-            }
-
-            _history.Add(AddressBar.text);
-            AddressBar.text = $"{address}/{path}";
-
-            var args = new string[]{GameManager.Instance.me.id.ToString(), address, path};
+            var (address, path) = GameManager.ParseInternetAddress(text);
+            var args = new string[]{GameManager.Instance.Me.id.ToString(), address, path};
             StartCoroutine(NetworkManager.Instance.Request("page", args, (json) => {
                 var page = JsonUtility.FromJson<PageResponse>(json).page;
                 Content.text = page.content;

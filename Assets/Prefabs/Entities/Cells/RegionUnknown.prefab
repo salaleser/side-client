@@ -60,15 +60,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1430092c67a4b405b9bd2a658465d5d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  regionItem:
-    title: 
+  DescriptionPrefab: {fileID: 521065865709494434, guid: 05e85d39ee9354df886f6123570b5bc8, type: 3}
+  RadialMenuPrefab: {fileID: 6657676188238830695, guid: c3ace36d5551e4b118710cdc24625288, type: 3}
+  Item:
     id: 0
+    title: 
     x: 0
     y: 0
     z: 0
     continent_id: 0
     explorer_id: 0
-    cities: []
+    parcels: []
     cities_count: 0
 --- !u!33 &2380224728718176321
 MeshFilter:

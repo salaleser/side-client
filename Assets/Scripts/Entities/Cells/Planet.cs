@@ -9,17 +9,17 @@ namespace Entities.Cells
 {
     public class Planet : Entity
     {
-        public PlanetItem planetItem;
+        public PlanetItem Item;
 
         private void Start()
         {
-            if (planetItem.explorer_id == 0)
+            if (Item.explorer_id == 0)
             {
-                AddButton($"Explore \"{planetItem.title}\"", () => NetworkManager.Instance.PlanetExplore(planetItem.id));
+                AddButton($"Explore \"{Item.title}\"", () => NetworkManager.Instance.PlanetExplore(Item.id));
             }
             else
             {
-                AddButton($"Zoom in \"{planetItem.title}\"", () => NetworkManager.Instance.Planet(planetItem.id));
+                AddButton($"Zoom in \"{Item.title}\"", () => NetworkManager.Instance.Planet(Item.id));
             }
             AddButton($"Zoom Out", () => NetworkManager.Instance.ZoomOutButton());
             AddButton($"Center Camera", () => NetworkManager.Instance.CenterCameraButton());
@@ -28,13 +28,13 @@ namespace Entities.Cells
 
         private void OnMouseEnter()
         {
-            if (!GameManager.QuickMenuActive
+            if (!GameManager.RadialMenuActive
                 && !GameManager.WindowActive
                 && !GameManager.PopupActive
                 && !Mouse.current.rightButton.isPressed)
             {
-                GameManager.SetDescription($"\n\n{planetItem}");
-                GameManager.Instance.Cursor.transform.SetPositionAndRotation(this.transform.position, Quaternion.identity);
+                GameManager.SetDescriptionText(Item.ToString());
+                GameManager.Instance.Cursor.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
             }
         }
     }

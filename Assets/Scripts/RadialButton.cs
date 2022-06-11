@@ -6,12 +6,12 @@ using UnityEngine.SceneManagement;
 
 namespace Side
 {
-    public class QuickButton
+    public class RadialButton
     {
         public string Text;
         public UnityAction Action;
 
-        public QuickButton(string text, UnityAction action)
+        public RadialButton(string text, UnityAction action)
         {
             Text = text;
             Action = action;

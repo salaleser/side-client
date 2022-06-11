@@ -60,14 +60,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aee84686e53b2472ebdf354aae55a4b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parcelItem:
-    title: 
+  DescriptionPrefab: {fileID: 521065865709494434, guid: 05e85d39ee9354df886f6123570b5bc8, type: 3}
+  RadialMenuPrefab: {fileID: 6657676188238830695, guid: c3ace36d5551e4b118710cdc24625288, type: 3}
+  Item:
     id: 0
+    title: 
     x: 0
     y: 0
     explorer_id: 0
-    block_id: 0
+    region_id: 0
     rooms: []
+    citizens: []
     rooms_count: 0
     properties:
       resources: []

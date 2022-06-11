@@ -6,18 +6,19 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Models;
 using TMPro;
+using Side;
 
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
 {
     public TMP_Text Content;
 
-    private Side.ComputerInternetTab _pda;
+    private ComputerInternetTab _pda;
 
     private void Start()
     {
         _pda = GameObject.Find("ComputerWindow(Clone)")
-            .GetComponentInChildren<Side.ComputerInternetTab>();
+            .GetComponentInChildren<ComputerInternetTab>();
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -31,9 +32,13 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
         TMP_LinkInfo linkInfo = Content.textInfo.linkInfo[linkIndex];
         var linkId = linkInfo.GetLinkID();
         var linkText = linkInfo.GetLinkText();
+
+        var (address, path) = GameManager.ParseInternetAddress(linkId);
+        _pda.AddressBar.text = $"{address}/{path}";
+
         if (linkId.StartsWith("?"))
         {
-            ExecCommand(linkId, linkText);
+            ExecCommand(address, linkId, linkText);
         }
         else
         {
@@ -41,7 +46,7 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    private void ExecCommand(string linkId, string linkText)
+    private void ExecCommand(string address, string linkId, string linkText)
     {
         var c = linkId.Substring(1).Split(":");
         var command = c[0];
@@ -55,8 +60,8 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
         switch (command)
         {
             case "deal":
-                NetworkManager.Instance.DealCreate(int.Parse(GameManager.Instance.currentPage.address), GameManager.Instance.me.account_id,
-                    GameManager.Instance.me.delivery_address.id != 0 ? GameManager.Instance.me.delivery_address.id : GameManager.Instance.me.room.id,
+                NetworkManager.Instance.DealCreate(int.Parse(address), GameManager.Instance.Me.account_id,
+                    GameManager.Instance.Me.delivery_address.id != 0 ? GameManager.Instance.Me.delivery_address.id : GameManager.Instance.Me.room.id,
                     int.Parse(args[0]), int.Parse(args[1]), int.Parse(args[2]));
                 break;
             case "invite":
@@ -70,22 +75,22 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                 }));
                 break;
             case "poll":
-                StartCoroutine(NetworkManager.Instance.Request("poll", new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request("poll", new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
                     NetworkManager.Instance.InstantiatePollPopup(JsonUtility.FromJson<PollResponse>(json).poll);
                 }));
                 break;
             case "task-accept":
-                StartCoroutine(NetworkManager.Instance.Request("task-accept", new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request("task-accept", new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
                     NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
                 }));
                 break;
             case "member-create":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
                     _pda.LoadPath("community");
                 }));
                 break;
             case "member-delete":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
                     _pda.ReloadPage();
                 }));
                 break;
@@ -96,33 +101,28 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                 NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization ID", action);
                 break;
             case "room-detach":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
                     _pda.LoadPath("root");
                 }));
                 break;
-            case "organization-create":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString()}, (json) => {
-                    _pda.LoadPage($"{JsonUtility.FromJson<OrganizationResponse>(json).organization.id}/root");
-                }));
-                break;
             case "organization-input-parent-id":
-                action = (text) => StartCoroutine(NetworkManager.Instance.Request("organization-attach", new string[]{GameManager.Instance.me.id.ToString(), args[0], text}, (json) => {
+                action = (text) => StartCoroutine(NetworkManager.Instance.Request("organization-attach", new string[]{GameManager.Instance.Me.id.ToString(), args[0], text}, (json) => {
                     NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
                 }));
                 NetworkManager.Instance.InstantiateInputFieldPopup("Enter Parent Organization ID", action);
                 break;
             case "organization-change-join-type":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
                     _pda.ReloadPage();
                 }));
                 break;
             case "organization-change-leave-type":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
                     _pda.ReloadPage();
                 }));
                 break;
             case "organization-detach":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
                     _pda.ReloadPage();
                 }));
                 break;
@@ -133,17 +133,17 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
 		        NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization Title", action);
                 break;
             case "rule-change":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0], args[1]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0], args[1]}, (json) => {
                     _pda.ReloadPage();
                 }));
                 break;
             case "poll-create":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0], args[1]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0], args[1]}, (json) => {
                     _pda.LoadPath("*oll");
                 }));
                 break;
             case "poll-delete":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.me.id.ToString(), args[0]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
                     _pda.LoadPath("root");
                 }));
                 break;

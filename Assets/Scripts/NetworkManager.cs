@@ -15,6 +15,7 @@ using TMPro;
 using Entities.Items;
 using Models;
 using WebSocketSharp;
+using Side;
 
 public class NetworkManager : Manager
 {
@@ -25,46 +26,42 @@ public class NetworkManager : Manager
 	private string Host;
 	private string Port;
 
-	public GameObject quickMenuPrefab;
-	public GameObject dealPopupPrefab;
+	public GameObject DealPopupPrefab;
 	public GameObject InputFieldPopupPrefab;
 	public GameObject InvitePopupPrefab;
 	public GameObject OfferPopupPrefab;
 	public GameObject PollPopupPrefab;
 	public GameObject EnterPasswordPopupPrefab;
-	public GameObject createRoomPopupPrefab;
-	public GameObject noticePopupPrefab;
-	public GameObject loginPopupPrefab;
+	public GameObject CreateRoomPopupPrefab;
+	public GameObject NoticePopupPrefab;
+	public GameObject LoginPopupPrefab;
 	public GameObject PdaPrefab;
+	public GameObject RadialMenuPrefab;
 
 	public GameObject UiCanvas;
 	public GameObject GroundCanvas;
 	public GameObject RoomCanvas;
 	public GameObject CitizenCanvas;
 
-	public GameObject galaxyExploredPrefab;
-	public GameObject galaxyUnknownPrefab;
-	public GameObject systemExploredPrefab;
-	public GameObject systemUnknownPrefab;
-	public GameObject planetExploredPrefab;
-	public GameObject planetUnknownPrefab;
-	public GameObject continentExploredPrefab;
-	public GameObject continentUnknownPrefab;
-	public GameObject regionOceanPrefab;
-	public GameObject regionCoastPrefab;
-	public GameObject regionPlainPrefab;
-	public GameObject regionMountPrefab;
-	public GameObject regionUnknownPrefab;
-	public GameObject cityExploredPrefab;
-	public GameObject cityUnknownPrefab;
-	public GameObject blockExploredPrefab;
-	public GameObject blockUnknownPrefab;
-	public GameObject parcelExploredPrefab;
-	public GameObject parcelUnknownPrefab;
+	public GameObject GalaxyExploredPrefab;
+	public GameObject GalaxyUnknownPrefab;
+	public GameObject SystemExploredPrefab;
+	public GameObject SystemUnknownPrefab;
+	public GameObject PlanetExploredPrefab;
+	public GameObject PlanetUnknownPrefab;
+	public GameObject ContinentExploredPrefab;
+	public GameObject ContinentUnknownPrefab;
+	public GameObject RegionOceanPrefab;
+	public GameObject RegionCoastPrefab;
+	public GameObject RegionPlainPrefab;
+	public GameObject RegionMountPrefab;
+	public GameObject RegionUnknownPrefab;
+	public GameObject ParcelExploredPrefab;
+	public GameObject ParcelUnknownPrefab;
 	public GameObject RoomGroundPrefab;
 
-	public GameObject openRoomPrefab;
-	public GameObject closedRoomPrefab;
+	public GameObject OpenRoomPrefab;
+	public GameObject ClosedRoomPrefab;
 
 	public GameObject CitizenPrefab;
 
@@ -136,7 +133,7 @@ public class NetworkManager : Manager
 	private void Start()
 	{
 		// Instantiate(mainButtonsPanelPrefab, UiCanvas.transform);
-		Instantiate(loginPopupPrefab, UiCanvas.transform);
+		Instantiate(LoginPopupPrefab, UiCanvas.transform);
 		StartCoroutine(ConnectChat());
 	}
 
@@ -180,12 +177,20 @@ public class NetworkManager : Manager
 			{
 				CenterCameraButton();
 			}
+			else if (Keyboard.current.iKey.wasPressedThisFrame)
+			{
+				GameManager.SetDescriptionActive(true);
+			}
+			else if (Keyboard.current.iKey.wasReleasedThisFrame)
+			{
+				GameManager.SetDescriptionActive(false);
+			}
 		}
 	}
 
 	public void CenterCameraButton()
 	{
-		switch (GameManager.Instance.state)
+		switch (GameManager.Instance.State)
 		{
 			case 1:
 			case 2:
@@ -193,13 +198,11 @@ public class NetworkManager : Manager
 			case 4:
 			case 5:
 			case 6:
-			case 7:
-			case 8:
 				Camera.main.transform.localPosition = Vector3.zero;
 				Camera.main.transform.localRotation = Quaternion.Euler(20, 45, 0);
 				break;
-			case 9:
-				Camera.main.transform.localPosition = new Vector3(GameManager.Instance.me.x, GameManager.Instance.me.z, GameManager.Instance.me.y);
+			case 7:
+				Camera.main.transform.localPosition = new Vector3(GameManager.Instance.Me.x, GameManager.Instance.Me.z, GameManager.Instance.Me.y);
 				Camera.main.transform.localRotation = Quaternion.Euler(20, 45, 0);
 				break;
 		}
@@ -212,12 +215,12 @@ public class NetworkManager : Manager
 
 	public void MeButton()
 	{
-		InstantiatePda(GameManager.Instance.me.id.ToString());
+		InstantiatePda(GameManager.Instance.Me.id.ToString());
 	}
 
 	public void ZoomOutButton()
 	{
-		switch (GameManager.Instance.state)
+		switch (GameManager.Instance.State)
 		{
 			case 1:
 				break;
@@ -225,25 +228,19 @@ public class NetworkManager : Manager
 				Universe();
 				break;
 			case 3:
-				Galaxy(GameManager.Instance.currentSystem.galaxy_id);
+				Galaxy(GameManager.Instance.System.galaxy_id);
 				break;
 			case 4:
-				System(GameManager.Instance.currentPlanet.system_id);
+				System(GameManager.Instance.Planet.system_id);
 				break;
 			case 5:
-				Planet(GameManager.Instance.currentContinent.planet_id);
+				Planet(GameManager.Instance.Continent.planet_id);
 				break;
 			case 6:
-				Continent(GameManager.Instance.currentRegion.continent_id);
+				Continent(GameManager.Instance.Region.continent_id);
 				break;
 			case 7:
-				Region(GameManager.Instance.currentCity.region_id);
-				break;
-			case 8:
-				City(GameManager.Instance.currentBlock.city_id);
-				break;
-			case 9:
-				Block(GameManager.Instance.currentParcel.block_id);
+				Region(GameManager.Instance.Parcel.region_id);
 				break;
 		}
 	}
@@ -256,41 +253,35 @@ public class NetworkManager : Manager
 	public void ReloadButton()
 	{
 		Me();
-		switch (GameManager.Instance.state)
+		switch (GameManager.Instance.State)
 		{
 			case 1:
 				Universe();
 				break;
 			case 2:
-				Galaxy(GameManager.Instance.currentGalaxy.id);
+				Galaxy(GameManager.Instance.Galaxy.id);
 				break;
 			case 3:
-				System(GameManager.Instance.currentSystem.id);
+				System(GameManager.Instance.System.id);
 				break;
 			case 4:
-				Planet(GameManager.Instance.currentPlanet.id);
+				Planet(GameManager.Instance.Planet.id);
 				break;
 			case 5:
-				Continent(GameManager.Instance.currentContinent.id);
+				Continent(GameManager.Instance.Continent.id);
 				break;
 			case 6:
-				Region(GameManager.Instance.currentRegion.id);
+				Region(GameManager.Instance.Region.id);
 				break;
 			case 7:
-				City(GameManager.Instance.currentCity.id);
-				break;
-			case 8:
-				Block(GameManager.Instance.currentBlock.id);
-				break;
-			case 9:
-				Parcel(GameManager.Instance.currentParcel.id);
+				Parcel(GameManager.Instance.Parcel.id);
 				break;
 		}
 	}
 
 	public void CenterMeButton()
 	{
-		Parcel(GameManager.Instance.me.parcel_id);
+		Parcel(GameManager.Instance.Me.parcel_id);
 	}
 
 	private void DestroyCells()
@@ -300,8 +291,6 @@ public class NetworkManager : Manager
 		DestroyAll<Entities.Cells.Planet>();
 		DestroyAll<Entities.Cells.Continent>();
 		DestroyAll<Entities.Cells.Region>();
-		DestroyAll<Entities.Cells.City>();
-		DestroyAll<Entities.Cells.Block>();
 		DestroyAll<Entities.Cells.Parcel>();
 		DestroyAll<Entities.Cells.Ground>();
 		DestroyAll<Entities.Cells.Room>();
@@ -418,13 +407,13 @@ public class NetworkManager : Manager
 
 	public void Exec(string command, string[] parameters)
 	{
-		var args = new string[]{GameManager.Instance.me.id.ToString(), command, string.Join(",", parameters)};
+		var args = new string[]{GameManager.Instance.Me.id.ToString(), command, string.Join(",", parameters)};
 		StartCoroutine(Request("exec", args, ProcessExec));
 	}
 
 	public void Me()
     {
-		var args = new string[]{GameManager.Instance.me.id.ToString()};
+		var args = new string[]{GameManager.Instance.Me.id.ToString()};
 		StartCoroutine(Request("citizen", args, ProcessMe));
 	}
 
@@ -442,7 +431,7 @@ public class NetworkManager : Manager
 
 	public void GalaxyExplore(int galaxyId)
     {
-		var args = new string[]{galaxyId.ToString(), GameManager.Instance.me.id.ToString()};
+		var args = new string[]{galaxyId.ToString(), GameManager.Instance.Me.id.ToString()};
 		StartCoroutine(Request("galaxy-explore", args, ProcessUniverse));
 	}
 
@@ -454,7 +443,7 @@ public class NetworkManager : Manager
 
 	public void SystemExplore(int systemId)
     {
-		var args = new string[]{systemId.ToString(), GameManager.Instance.me.id.ToString()};
+		var args = new string[]{systemId.ToString(), GameManager.Instance.Me.id.ToString()};
 		StartCoroutine(Request("system-explore", args, ProcessGalaxy));
 	}
 
@@ -466,7 +455,7 @@ public class NetworkManager : Manager
 
 	public void PlanetExplore(int planetId)
     {
-		var args = new string[]{planetId.ToString(), GameManager.Instance.me.id.ToString()};
+		var args = new string[]{planetId.ToString(), GameManager.Instance.Me.id.ToString()};
 		StartCoroutine(Request("planet-explore", args, ProcessSystem));
 	}
 
@@ -478,7 +467,7 @@ public class NetworkManager : Manager
 
 	public void ContinentExplore(int continentId)
     {
-		var args = new string[]{continentId.ToString(), GameManager.Instance.me.id.ToString()};
+		var args = new string[]{continentId.ToString(), GameManager.Instance.Me.id.ToString()};
 		StartCoroutine(Request("continent-explore", args, ProcessPlanet));
 	}
 
@@ -490,38 +479,14 @@ public class NetworkManager : Manager
 
 	public void RegionExplore(int regionId)
     {
-		var args = new string[]{regionId.ToString(), GameManager.Instance.me.id.ToString()};
+		var args = new string[]{regionId.ToString(), GameManager.Instance.Me.id.ToString()};
 		StartCoroutine(Request("region-explore", args, ProcessContinent));
-	}
-
-	public void City(int cityId)
-    {
-		var args = new string[]{cityId.ToString()};
-		StartCoroutine(Request("city", args, ProcessCity));
-	}
-
-	public void Block(int blockId)
-    {
-		var args = new string[]{blockId.ToString()};
-		StartCoroutine(Request("block", args, ProcessBlock));
 	}
 
 	public void Parcel(int parcelId)
     {
 		var args = new string[]{parcelId.ToString()};
 		StartCoroutine(Request("parcel", args, ProcessParcel));
-	}
-
-	public void CityExplore(int cityId)
-    {
-		var args = new string[]{cityId.ToString(), GameManager.Instance.me.id.ToString()};
-		StartCoroutine(Request("city-explore", args, ProcessRegion));
-	}
-
-	public void BlockExplore(int blockId)
-    {
-		var args = new string[]{blockId.ToString(), GameManager.Instance.me.id.ToString()};
-		StartCoroutine(Request("block-explore", args, ProcessCity));
 	}
 
 	public void CreateRoom(int parcelId, int typeId, int x, int y, int z, int w, int h, int constructionOrganizationId, int creatorId, string title)
@@ -597,7 +562,7 @@ public class NetworkManager : Manager
 
 	public void InstantiateCreateRoomPopup(int z)
 	{
-		Instantiate(createRoomPopupPrefab, UiCanvas.transform)
+		Instantiate(CreateRoomPopupPrefab, UiCanvas.transform)
 			.GetComponent<Side.CreateRoomPopup>().Z.text = z.ToString();
 	}
 
@@ -617,7 +582,7 @@ public class NetworkManager : Manager
 
 	private void InstantiateDealPopup(DealItem deal)
 	{
-		Instantiate(dealPopupPrefab, UiCanvas.transform)
+		Instantiate(DealPopupPrefab, UiCanvas.transform)
 			.GetComponent<Side.DealPopup>().Deal = deal;
 	}
 
@@ -671,7 +636,7 @@ public class NetworkManager : Manager
 			var s = Regex.Split(text, @"(^\d+) ");
 			if (s.Length > 2)
 			{
-				var args = new string[]{GameManager.Instance.me.id.ToString(), Escape(s[2]), GameManager.Instance.me.parcel_id.ToString(), "", s[1]};
+				var args = new string[]{GameManager.Instance.Me.id.ToString(), Escape(s[2]), GameManager.Instance.Me.parcel_id.ToString(), "", s[1]};
 				StartCoroutine(Request("chat", args, null));
 			}
 		};
@@ -684,7 +649,7 @@ public class NetworkManager : Manager
 			var s = Regex.Split(text, @"(^-\d+) ");
 			if (s.Length > 2)
 			{
-				var args = new string[]{GameManager.Instance.me.id.ToString(), Escape(s[2]), GameManager.Instance.me.parcel_id.ToString(), s[1], ""};
+				var args = new string[]{GameManager.Instance.Me.id.ToString(), Escape(s[2]), GameManager.Instance.Me.parcel_id.ToString(), s[1], ""};
 				StartCoroutine(Request("chat", args, null));
 			}
 		};
@@ -694,7 +659,7 @@ public class NetworkManager : Manager
 	public void NearbyChatButton()
 	{
 		UnityAction<string> action = (text) => {
-			var args = new string[]{GameManager.Instance.me.id.ToString(), Escape(text), GameManager.Instance.me.parcel_id.ToString(), "", ""};
+			var args = new string[]{GameManager.Instance.Me.id.ToString(), Escape(text), GameManager.Instance.Me.parcel_id.ToString(), "", ""};
 			StartCoroutine(Request("chat", args, null));
 		};
 		InstantiateInputFieldPopup("Nearby Chat", action);
@@ -702,7 +667,7 @@ public class NetworkManager : Manager
 
 	public void Vote(int pollId, bool vote)
     {
-		var args = new string[]{GameManager.Instance.me.id.ToString(), pollId.ToString(), vote.ToString()};
+		var args = new string[]{GameManager.Instance.Me.id.ToString(), pollId.ToString(), vote.ToString()};
 		StartCoroutine(Request("vote-create", args, null));
 	}
 
@@ -730,7 +695,7 @@ public class NetworkManager : Manager
 
 	public void InstantiateNoticePopup(string caption, string description)
 	{
-		var noticePopup = Instantiate(noticePopupPrefab, UiCanvas.transform)
+		var noticePopup = Instantiate(NoticePopupPrefab, UiCanvas.transform)
 			.GetComponent<Side.NoticePopup>();
 		noticePopup.caption.text = caption;
 		noticePopup.description.text = description;
@@ -765,12 +730,14 @@ public class NetworkManager : Manager
 		}
 	}
 
-	public void InstantiateQuickMenu(Transform transform)
+	public void InstantiateRadialMenu(Transform transform)
 	{
-		var quickMenuController = Instantiate(quickMenuPrefab, UiCanvas.transform)
-			.GetComponent<Side.QuickMenuController>();
-		quickMenuController.Entity = transform.GetComponent<Entity>();
-		quickMenuController.UpdateButtons();
+		var radialMenuController = Instantiate(RadialMenuPrefab, UiCanvas.transform)
+			.GetComponent<RadialMenuController>();
+		radialMenuController.Entity = transform.GetComponent<Entity>();
+		Debug.Log(transform);
+		Debug.Log(radialMenuController.Entity);
+		radialMenuController.UpdateButtons();
 	}
 
 	public void TaskAccept(int citizenId, int taskId)
@@ -781,7 +748,7 @@ public class NetworkManager : Manager
 
 	private void ProcessCitizenMove(string json)
 	{
-		GameManager.Instance.me = JsonUtility.FromJson<CitizenMoveResponse>(json).citizen;
+		GameManager.Instance.Me = JsonUtility.FromJson<CitizenMoveResponse>(json).citizen;
 		ProcessParcel(json);
 	}
 
@@ -794,19 +761,19 @@ public class NetworkManager : Manager
 		}
 
 		var universe = response.universe;
-		GameManager.Instance.currentUniverse = universe;
-		GameManager.Instance.state = GameManager.Universe;
+		GameManager.Instance.Universe = universe;
+		GameManager.Instance.State = GameManager.StateUniverse;
 
 		DestroyAll();
 		foreach(var galaxy in universe.galaxies)
 		{
 			var x = galaxy.number * 2;
 
-			var prefab = galaxy.systems_count == 0 ? galaxyUnknownPrefab : galaxyExploredPrefab;
+			var prefab = galaxy.systems_count == 0 ? GalaxyUnknownPrefab : GalaxyExploredPrefab;
 
 			var instance = Instantiate(prefab, new Vector3(x, 0, 5), Quaternion.identity, GroundCanvas.transform);
 			instance.name = $"Galaxy#{galaxy.id} ({galaxy.number})";
-			instance.GetComponent<Entities.Cells.Galaxy>().galaxyItem = galaxy;
+			instance.GetComponent<Entities.Cells.Galaxy>().Item = galaxy;
 			CenterCameraButton();
 		}
 	}
@@ -820,19 +787,19 @@ public class NetworkManager : Manager
 		}
 
 		var galaxy = response.galaxy;
-		GameManager.Instance.currentGalaxy = galaxy;
-		GameManager.Instance.state = GameManager.Galaxy;
+		GameManager.Instance.Galaxy = galaxy;
+		GameManager.Instance.State = GameManager.StateGalaxy;
 
 		DestroyAll();
 		foreach(var system in galaxy.systems)
 		{
 			var x = system.number * 2;
 
-			var prefab = system.planets_count == 0 ? systemUnknownPrefab : systemExploredPrefab;
+			var prefab = system.planets_count == 0 ? SystemUnknownPrefab : SystemExploredPrefab;
 
 			var instance = Instantiate(prefab, new Vector3(x, 0, 8), Quaternion.identity, GroundCanvas.transform);
 			instance.name = $"System#{system.id} ({system.number})";
-			instance.GetComponent<Entities.Cells.System>().systemItem = system;
+			instance.GetComponent<Entities.Cells.System>().Item = system;
 			CenterCameraButton();
 		}
 	}
@@ -846,21 +813,21 @@ public class NetworkManager : Manager
 		}
 
 		var system = response.system;
-		GameManager.Instance.currentSystem = system;
-		GameManager.Instance.state = GameManager.System;
+		GameManager.Instance.System = system;
+		GameManager.Instance.State = GameManager.StateSystem;
 
 		DestroyAll();
-		var starInstance = Instantiate(systemExploredPrefab, new Vector3(0, 4f, 0), Quaternion.identity, GroundCanvas.transform);
+		var starInstance = Instantiate(SystemExploredPrefab, new Vector3(0, 4f, 0), Quaternion.identity, GroundCanvas.transform);
 		starInstance.transform.localScale = Vector3.one * 8;
 		foreach(var planet in system.planets)
 		{
 			var x = -planet.number * 2 - 4;
 
-			var prefab = planet.continents_count == 0 ? planetUnknownPrefab : planetExploredPrefab;
+			var prefab = planet.continents_count == 0 ? PlanetUnknownPrefab : PlanetExploredPrefab;
 
 			var instance = Instantiate(prefab, new Vector3(x, 0, 0), Quaternion.identity, GroundCanvas.transform);
 			instance.name = $"Planet#{planet.id} ({planet.number})";
-			instance.GetComponent<Entities.Cells.Planet>().planetItem = new Models.PlanetItem(planet);
+			instance.GetComponent<Entities.Cells.Planet>().Item = new Models.PlanetItem(planet);
 		}
 		CenterCameraButton();
 	}
@@ -874,19 +841,19 @@ public class NetworkManager : Manager
 		}
 
 		var planet = response.planet;
-		GameManager.Instance.currentPlanet = planet;
-		GameManager.Instance.state = GameManager.Planet;
+		GameManager.Instance.Planet = planet;
+		GameManager.Instance.State = GameManager.StatePlanet;
 
 		DestroyAll();
 		foreach(var continent in planet.continents)
 		{
 			var z = -continent.number * 3 + 8;
 
-			var continentPrefab = continent.regions_count == 0 ? continentUnknownPrefab : continentExploredPrefab;
+			var continentPrefab = continent.regions_count == 0 ? ContinentUnknownPrefab : ContinentExploredPrefab;
 
 			var continentInstance = Instantiate(continentPrefab, new Vector3(0, z, 0), Quaternion.identity, GroundCanvas.transform);
 			continentInstance.name = $"Continent#{continent.id} ({continent.number})";
-			continentInstance.GetComponent<Entities.Cells.Continent>().continentItem = continent;
+			continentInstance.GetComponent<Entities.Cells.Continent>().Item = continent;
 
 			if (continent.regions.Count == 0)
 			{
@@ -894,7 +861,7 @@ public class NetworkManager : Manager
 				{
 					for (var j = 0; j < planet.size; j++)
 					{
-						var regionInstance = Instantiate(regionUnknownPrefab, new Vector3(i+1, z, j+1), Quaternion.identity, continentInstance.transform);
+						var regionInstance = Instantiate(RegionUnknownPrefab, new Vector3(i+1, z, j+1), Quaternion.identity, continentInstance.transform);
 						Destroy(regionInstance.GetComponent<BoxCollider>());
 					}
 				}
@@ -903,7 +870,7 @@ public class NetworkManager : Manager
 			{
 				foreach(var region in continent.regions)
 				{
-					var regionInstance = Instantiate(regionUnknownPrefab, new Vector3(region.x, z, region.y), Quaternion.identity, continentInstance.transform);
+					var regionInstance = Instantiate(RegionUnknownPrefab, new Vector3(region.x, z, region.y), Quaternion.identity, continentInstance.transform);
 					var color = region.z > 0 ? new Color(0.5f, 1.0f, 0.5f) : new Color(0.0f, 0.5f, 1.0f);
 					regionInstance.GetComponentInChildren<Renderer>().material.color = color;
 					Destroy(regionInstance.GetComponent<BoxCollider>());
@@ -922,8 +889,8 @@ public class NetworkManager : Manager
 		}
 
 		var continent = response.continent;
-		GameManager.Instance.currentContinent = continent;
-		GameManager.Instance.state = GameManager.Continent;
+		GameManager.Instance.Continent = continent;
+		GameManager.Instance.State = GameManager.StateContinent;
 
 		DestroyAll();
 		foreach(var region in continent.regions)
@@ -931,31 +898,31 @@ public class NetworkManager : Manager
 			GameObject prefab = null;
 			if (region.cities_count == 0)
 			{
-				prefab = regionUnknownPrefab;
+				prefab = RegionUnknownPrefab;
 			}
 			else
 			{
 				switch (region.z)
 				{
 					case -1:
-						prefab = regionOceanPrefab;
+						prefab = RegionOceanPrefab;
 						break;
 					case 0:
-						prefab = regionCoastPrefab;
+						prefab = RegionCoastPrefab;
 						break;
 					case 1:
-						prefab = regionPlainPrefab;
+						prefab = RegionPlainPrefab;
 						break;
 					case 2:
-						prefab = regionMountPrefab;
+						prefab = RegionMountPrefab;
 						break;
 				}
 			}
 			
 			var instance = Instantiate(prefab, new Vector3(region.x, 0, region.y), Quaternion.identity, GroundCanvas.transform);
 			instance.name = $"Region#{region.id} ({region.x}/{region.y})";
-			instance.GetComponent<Entities.Cells.Region>().regionItem = region;
-			if (region.cities.Count == 0)
+			instance.GetComponent<Entities.Cells.Region>().Item = region;
+			if (region.parcels.Count == 0)
 			{
 				var color = region.z > 0 ? new Color(0.5f, 1.0f, 0.5f) : new Color(0.0f, 0.5f, 1.0f);
 				instance.GetComponentInChildren<Renderer>().material.color = color;
@@ -973,62 +940,16 @@ public class NetworkManager : Manager
 		}
 
 		var region = response.region;
-		GameManager.Instance.currentRegion = region;
-		GameManager.Instance.state = GameManager.Region;
+		GameManager.Instance.Region = region;
+		GameManager.Instance.State = GameManager.StateRegion;
 
 		DestroyAll();
-		foreach(var city in region.cities)
+		foreach(var parcel in region.parcels)
 		{
-			var prefab = city.blocks_count == 0 ? cityUnknownPrefab : cityExploredPrefab;
-			var instance = Instantiate(prefab, new Vector3(city.x, 0, city.y), Quaternion.identity, GroundCanvas.transform);
-			instance.name = $"City#{city.id} ({city.x}/{city.y})";
-			instance.GetComponent<Entities.Cells.City>().cityItem = city;
-		}
-		CenterCameraButton();
-	}
-
-	private void ProcessCity(string json)
-	{
-		var response = JsonUtility.FromJson<CityResponse>(json);
-		if (response == null)
-		{
-			return;
-		}
-
-		var city = response.city;
-		GameManager.Instance.currentCity = city;
-		GameManager.Instance.state = GameManager.City;
-
-		DestroyAll();
-		foreach(var block in city.blocks)
-		{
-			var prefab = block.parcels_count == 0 ? blockUnknownPrefab : blockExploredPrefab;
-			var instance = Instantiate(prefab, new Vector3(block.x, 0, block.y), Quaternion.identity, GroundCanvas.transform);
-			instance.name = $"Block#{block.id} ({block.x}/{block.y})";
-			instance.GetComponent<Entities.Cells.Block>().blockItem = block;
-		}
-		CenterCameraButton();
-	}
-
-	private void ProcessBlock(string json)
-	{
-		var response = JsonUtility.FromJson<BlockResponse>(json);
-		if (response == null)
-		{
-			return;
-		}
-
-		var block = response.block;
-		GameManager.Instance.currentBlock = block;
-		GameManager.Instance.state = GameManager.Block;
-
-		DestroyAll();
-		foreach(var parcel in block.parcels)
-		{
-			var prefab = parcel.rooms_count == 0 ? parcelUnknownPrefab : parcelExploredPrefab;
+			var prefab = parcel.rooms_count == 0 ? ParcelUnknownPrefab : ParcelExploredPrefab;
 			var instance = Instantiate(prefab, new Vector3(parcel.x, 0, parcel.y), Quaternion.identity, GroundCanvas.transform);
 			instance.name = $"Parcel#{parcel.id} ({parcel.x}/{parcel.y})";
-			instance.GetComponent<Entities.Cells.Parcel>().parcelItem = parcel;
+			instance.GetComponent<Entities.Cells.Parcel>().Item = parcel;
 		}
 		CenterCameraButton();
 	}
@@ -1036,8 +957,8 @@ public class NetworkManager : Manager
 	public void ProcessParcel(string json)
 	{
 		var parcel = JsonUtility.FromJson<ParcelResponse>(json).parcel;
-		GameManager.Instance.currentParcel = parcel;
-		GameManager.Instance.state = GameManager.Parcel;
+		GameManager.Instance.Parcel = parcel;
+		GameManager.Instance.State = GameManager.StateParcel;
 
 		InstantiateParcel(parcel);
 		CenterCameraButton();
@@ -1130,17 +1051,17 @@ public class NetworkManager : Manager
 		instance.name = $"Ground#{ground.id} ({ground.x}/{ground.y}/{ground.z})";
 		var component = instance.GetComponent<Entities.Cells.Ground>();
 		component.GetComponentInChildren<Renderer>().material.color = new Color(UnityEngine.Random.Range(0.4f, 0.6f), UnityEngine.Random.Range(0.8f, 1.0f), UnityEngine.Random.Range(0.4f, 0.6f));
-		component.groundItem = ground;
+		component.Item = ground;
 	}
 
 	private void InstantiateRoom(RoomItem room, Vector3 pos)
 	{
-		var prefab = room.id == GameManager.Instance.me.room.id ? openRoomPrefab : closedRoomPrefab;
+		var prefab = room.id == GameManager.Instance.Me.room.id ? OpenRoomPrefab : ClosedRoomPrefab;
 		var instance = Instantiate(prefab, pos, Quaternion.identity, RoomCanvas.transform);
 		instance.name = $"Room#{room.id} ({room.x}/{room.y}/{room.z})";
 		var component = instance.GetComponent<Entities.Cells.Room>();
 		component.GetComponentInChildren<Renderer>().material.color = room.type.properties.color;
-		component.roomItem = room;
+		component.Item = room;
 	}
 
 	private void InstantiateCitizen(CitizenItem citizen, Vector3 pos)
@@ -1149,7 +1070,7 @@ public class NetworkManager : Manager
 		var instance = Instantiate(prefab, pos, Quaternion.identity, CitizenCanvas.transform);
 		instance.name = $"Citizen#{citizen.id} ({citizen.x}/{citizen.y}/{citizen.z})";
 		var component = instance.GetComponent<Entities.Citizen>();
-		component.citizenItem = citizen;
+		component.Item = citizen;
 	}
 
 	public void InstantiatePda(string address = "")
@@ -1179,7 +1100,7 @@ public class NetworkManager : Manager
             return;
         }
 
-		GameManager.Instance.me = response.citizen;
+		GameManager.Instance.Me = response.citizen;
 	}
 
 	public string Escape(string text)

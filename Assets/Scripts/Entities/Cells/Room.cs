@@ -11,38 +11,38 @@ namespace Entities.Cells
 {
     public class Room : Entity
     {
-        public RoomItem roomItem;
+        public RoomItem Item;
 
         private void Start()
         {
-            if (GameManager.Instance.me.organizations
-                .Any(x => x.id == roomItem.organization_id)
-                || roomItem.id == GameManager.Instance.me.room.id
-                || GameManager.Instance.me.workplace.id == roomItem.id)
+            if (GameManager.Instance.Me.organizations
+                .Any(x => x.id == Item.organization_id)
+                || Item.id == GameManager.Instance.Me.room.id
+                || GameManager.Instance.Me.workplace.id == Item.id)
             {
-                AddButton($"Move Into Room", () => NetworkManager.Instance.CitizenMove(GameManager.Instance.me.id, roomItem.parcel_id, (int)GameManager.Instance.Cursor.transform.position.x, (int)GameManager.Instance.Cursor.transform.position.z, roomItem.z));
+                AddButton($"Move Into Room", () => NetworkManager.Instance.CitizenMove(GameManager.Instance.Me.id, Item.parcel_id, (int)GameManager.Instance.Cursor.transform.position.x, (int)GameManager.Instance.Cursor.transform.position.z, Item.z));
             }
             else
             {
-                AddButton($"Enter Password", () => NetworkManager.Instance.InstantiateEnterPasswordPopup(roomItem));
+                AddButton($"Enter Password", () => NetworkManager.Instance.InstantiateEnterPasswordPopup(Item));
             }
             AddButton($"Zoom Out", () => NetworkManager.Instance.ZoomOutButton());
-            AddButton($"Create Room", () => NetworkManager.Instance.InstantiateCreateRoomPopup(roomItem.z + 1));
+            AddButton($"Create Room", () => NetworkManager.Instance.InstantiateCreateRoomPopup(Item.z + 1));
 
 
-            if (roomItem.id == GameManager.Instance.me.room.id)
+            if (Item.id == GameManager.Instance.Me.room.id)
             {
-                if (roomItem.organization_id == 0)
+                if (Item.organization_id == 0)
                 {
-                    UnityAction<string> action = (text) => StartCoroutine(NetworkManager.Instance.Request("room-attach", new string[]{roomItem.id.ToString(), text}, (json) => {
+                    UnityAction<string> action = (text) => StartCoroutine(NetworkManager.Instance.Request("room-attach", new string[]{Item.id.ToString(), text}, (json) => {
                         NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
                     }));
                     AddButton($"Attach Room", () => NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization ID", action));
                 }
-                else if (GameManager.Instance.me.organizations
-                    .Any(x => x.id == roomItem.organization_id))
+                else if (GameManager.Instance.Me.organizations
+                    .Any(x => x.id == Item.organization_id))
                 {
-                    AddButton($"Detach Room", () => StartCoroutine(NetworkManager.Instance.Request("room-detach", new string[]{GameManager.Instance.me.id.ToString(), roomItem.id.ToString()}, (json) => {
+                    AddButton($"Detach Room", () => StartCoroutine(NetworkManager.Instance.Request("room-detach", new string[]{GameManager.Instance.Me.id.ToString(), Item.id.ToString()}, (json) => {
                         NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
                     })));
                 }
@@ -51,13 +51,13 @@ namespace Entities.Cells
 
         private void OnMouseEnter()
         {
-            if (!GameManager.QuickMenuActive
+            if (!GameManager.RadialMenuActive
                 && !GameManager.WindowActive
                 && !GameManager.PopupActive
                 && !Mouse.current.rightButton.isPressed)
             {
-                GameManager.SetDescription($"\n\n{roomItem}");
-                GameManager.Instance.Cursor.transform.SetPositionAndRotation(this.transform.position, Quaternion.identity);
+                GameManager.SetDescriptionText(Item.ToString());
+                GameManager.Instance.Cursor.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
             }
         }
     }

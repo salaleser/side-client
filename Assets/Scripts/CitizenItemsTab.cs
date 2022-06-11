@@ -27,8 +27,8 @@ namespace Side
         private void Start()
         {
             List<TMP_Dropdown.OptionData> options = new();
-            options.Add(new TMP_Dropdown.OptionData($"{GameManager.Instance.me.ToCaption()}"));
-            options.Add(new TMP_Dropdown.OptionData($"{GameManager.Instance.me.room.type.title} {GameManager.Instance.me.room.title}"));
+            options.Add(new TMP_Dropdown.OptionData($"{GameManager.Instance.Me.ToCaption()}"));
+            options.Add(new TMP_Dropdown.OptionData($"{GameManager.Instance.Me.room.type.title} {GameManager.Instance.Me.room.title}"));
             Inventories.AddOptions(options);
         }
 
@@ -108,57 +108,57 @@ namespace Side
 
         public void UpdateItems()
         {
-            _items.ForEach(x => Destroy(x));
-            _items = new();
+            // _items.ForEach(x => Destroy(x));
+            // _items = new();
 
-            List<ItemItem> items = new();
-            if (Inventories.value == 0)
-            {
-                items = GameManager.Instance.me.items.ToList();
-            }
-            else if (Inventories.value == 1)
-            {
-                items = GameManager.Instance.me.room.items.ToList();
-            }
+            // List<ItemItem> items = new();
+            // if (Inventories.value == 0)
+            // {
+            //     items = GameManager.Instance.Me.items.ToList();
+            // }
+            // else if (Inventories.value == 1)
+            // {
+            //     items = GameManager.Instance.Me.room.items.ToList();
+            // }
 
-            var col = 0;
-            var row = 0;
-            for (var i = 0; i < items.Count; i++)
-            {
-                if (i > 0 && i % 4 == 0)
-                {
-                    col++;
-                    row = 0;
-                }
+            // var col = 0;
+            // var row = 0;
+            // for (var i = 0; i < items.Count; i++)
+            // {
+            //     if (i > 0 && i % 4 == 0)
+            //     {
+            //         col++;
+            //         row = 0;
+            //     }
 
-                var item = items[i];
+            //     var item = items[i];
 
-                var instance = Instantiate(ItemPrefab);
-                _items.Add(instance);
-                // instance.GetComponent<Image>().color = item.price == 0 ? Color.white : Color.green;
-                var rectTransform = instance.transform.GetComponent<RectTransform>();
-                rectTransform.transform.SetParent(Content.transform.GetComponent<RectTransform>());
-                var x = (rectTransform.rect.width * col) + rectTransform.rect.width / 2;
-                var y = -(rectTransform.rect.height * row) - rectTransform.rect.height / 2;
-                rectTransform.anchoredPosition = new Vector3(x, y, 0);
+            //     var instance = Instantiate(ItemPrefab);
+            //     _items.Add(instance);
+            //     // instance.GetComponent<Image>().color = item.price == 0 ? Color.white : Color.green;
+            //     var rectTransform = instance.transform.GetComponent<RectTransform>();
+            //     rectTransform.transform.SetParent(Content.transform.GetComponent<RectTransform>());
+            //     var x = (rectTransform.rect.width * col) + rectTransform.rect.width / 2;
+            //     var y = -(rectTransform.rect.height * row) - rectTransform.rect.height / 2;
+            //     rectTransform.anchoredPosition = new Vector3(x, y, 0);
 
-                var button = instance.GetComponent<Button>();
-                button.GetComponentInChildren<TMP_Text>().text = $"{item.type.title} x{item.quantity} ={item.price}";
-                button.onClick.AddListener(() => {
-                    _item = item;
-                    GameManager.SetDescription(_item.ToString());
-                    UpdateButtons();
-                });
+            //     var button = instance.GetComponent<Button>();
+            //     button.GetComponentInChildren<TMP_Text>().text = $"{item.type.title} x{item.quantity} ={item.price}";
+            //     button.onClick.AddListener(() => {
+            //         _item = item;
+            //         GameManager.SetDescription(_item.ToString());
+            //         UpdateButtons();
+            //     });
 
-                row++;
-            }
+            //     row++;
+            // }
         }
 
         public void Split()
         {
             // var args = new string[]{_item.id.ToString(), Quantity.text};
             // StartCoroutine(NetworkManager.Instance.Request("item-split", args, (json) => {
-            //     NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
+            //     NetworkManager.Instance.Citizen(GameManager.Instance.Me.id, "Items");
             // }));
         }
 
@@ -166,23 +166,23 @@ namespace Side
         {
             // var args = new string[]{_item.id.ToString()};
             // StartCoroutine(NetworkManager.Instance.Request("item-stack", args, (json) => {
-            //     NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
+            //     NetworkManager.Instance.Citizen(GameManager.Instance.Me.id, "Items");
             // }));
         }
 
         public void Drop()
         {
-            // var args = new string[]{_item.id.ToString(), GameManager.Instance.me.room.item_id.ToString()};
+            // var args = new string[]{_item.id.ToString(), GameManager.Instance.Me.room.item_id.ToString()};
             // StartCoroutine(NetworkManager.Instance.Request("item-drop", args, (json) => {
-            //     NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
+            //     NetworkManager.Instance.Citizen(GameManager.Instance.Me.id, "Items");
             // }));
         }
 
         public void Take()
         {
-            // var args = new string[]{_item.id.ToString(), GameManager.Instance.me.item_id.ToString()};
+            // var args = new string[]{_item.id.ToString(), GameManager.Instance.Me.item_id.ToString()};
             // StartCoroutine(NetworkManager.Instance.Request("item-take", args, (json) => {
-            //     NetworkManager.Instance.Citizen(GameManager.Instance.me.id, "Items");
+            //     NetworkManager.Instance.Citizen(GameManager.Instance.Me.id, "Items");
             // }));
         }
     }

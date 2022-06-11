@@ -66,7 +66,7 @@ namespace Side
 
         public void DeleteEmail()
         {
-            var email = GameManager.Instance.me.emails
+            var email = GameManager.Instance.Me.emails
                 .Where(x => x.ToCaption() == Emails.captionText.text)
                 .FirstOrDefault();
             if (email == null)
@@ -82,13 +82,13 @@ namespace Side
 
         public void UpdateEmails()
         {
-            var args = new string[]{GameManager.Instance.me.id.ToString()};
+            var args = new string[]{GameManager.Instance.Me.id.ToString()};
             StartCoroutine(NetworkManager.Instance.Request("emails", args, (json) =>
             {
                 var emails = JsonUtility.FromJson<EmailsResponse>(json).emails;
                 Emails.ClearOptions();
                 Emails.AddOptions(emails.Select(x => new TMP_Dropdown.OptionData(x.ToCaption())).ToList());
-                GameManager.Instance.me.emails = emails;
+                GameManager.Instance.Me.emails = emails;
                 EmailsCount.text = Emails.options.Count.ToString();
                 LoadEmail();
             }));
@@ -100,7 +100,7 @@ namespace Side
             Body.text = "—";
             From.text = "—";
             Date.text = "—";
-            foreach (var email in GameManager.Instance.me.emails)
+            foreach (var email in GameManager.Instance.Me.emails)
             {
                 if (email.ToCaption() == Emails.captionText.text)
                 {

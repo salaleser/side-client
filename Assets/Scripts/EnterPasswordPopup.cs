@@ -37,7 +37,7 @@ namespace Side
 
         public void EnterRoom()
         {
-            NetworkManager.Instance.CitizenEnterRoom(GameManager.Instance.me.id, _room.id, Password.text);
+            NetworkManager.Instance.CitizenEnterRoom(GameManager.Instance.Me.id, _room.id, Password.text);
         }
 
         public void SetRoom(RoomItem room) => _room = room;

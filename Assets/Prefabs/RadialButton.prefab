@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 8158004168055208568}
   - component: {fileID: 5699621769975554489}
   m_Layer: 5
-  m_Name: QuickButton
+  m_Name: RadialButton
   m_TagString: Untagged
   m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0

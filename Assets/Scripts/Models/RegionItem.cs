@@ -11,7 +11,7 @@ namespace Models
         public int z;
         public int continent_id;
         public int explorer_id;
-        public List<CityItem> cities;
+        public List<ParcelItem> parcels;
         public int cities_count;
 
         public override string ToString() => @$"[region]:

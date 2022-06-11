@@ -9,7 +9,7 @@ namespace Models
         public int x;
         public int y;
         public int explorer_id;
-        public int block_id;
+        public int region_id;
         public List<RoomItem> rooms;
         public List<CitizenItem> citizens;
         public int rooms_count;
@@ -18,6 +18,7 @@ namespace Models
         public override string ToString() => @$"[parcel]:
 id={id}
 title={title}
+region_id={region_id}
 explorer_id={explorer_id}
 properties={properties}
 rooms_count={rooms_count}";

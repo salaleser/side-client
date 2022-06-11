@@ -143,10 +143,10 @@ namespace Side
             if ((roomType.properties.w + (int.Parse(X.text) - 1) <= Size)
                 && (roomType.properties.h + (Size - int.Parse(Y.text)) <= Size))
             {
-                NetworkManager.Instance.CreateRoom(GameManager.Instance.currentParcel.id,
+                NetworkManager.Instance.CreateRoom(GameManager.Instance.Parcel.id,
                     roomType.id, int.Parse(X.text), int.Parse(Y.text), int.Parse(Z.text),
                     roomType.properties.w, roomType.properties.h,
-                    constructionOrganization.id, GameManager.Instance.me.id, Title.text);
+                    constructionOrganization.id, GameManager.Instance.Me.id, Title.text);
                 Destroy(gameObject);
             }
             else

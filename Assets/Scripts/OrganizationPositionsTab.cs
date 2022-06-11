@@ -33,7 +33,7 @@ namespace Side
         {
             // gameObject.SetActive(GameManager.Instance.currentOrganization.positions
             //     .Where(x => _allowed_position_ids.Contains(x.type.id))
-            //     .Where(x => x.citizen.id == GameManager.Instance.me.id)
+            //     .Where(x => x.citizen.id == GameManager.Instance.Me.id)
             //     .Any());
             // UpdateButtons();
             this.GetComponentInParent<WindowManager>()
@@ -94,7 +94,7 @@ namespace Side
 
         public void Offer()
         {
-            // NetworkManager.Instance.OfferCreate(GameManager.Instance.me.id, _position.id, int.Parse(CitizenId.text));
+            // NetworkManager.Instance.OfferCreate(GameManager.Instance.Me.id, _position.id, int.Parse(CitizenId.text));
         }
 
         public void SetProperties()

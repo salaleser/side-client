@@ -9,27 +9,26 @@ using TMPro;
 
 namespace Side
 {
-    public class QuickMenuController : MonoBehaviour
+    public class RadialMenuController : MonoBehaviour
     {
-        public GameObject QuickButtonPrefab;
-        public Transform Menu;
+        public GameObject RadialButtonPrefab;
         public Entity Entity;
 
         private void Awake()
         {
-            GameManager.SetQuickMenuActive(true);
+            GameManager.SetRadialMenuActive(true);
         }
 
         private void OnDisable()
         {
-            GameManager.SetQuickMenuActive(false);
+            GameManager.SetRadialMenuActive(false);
         }
 
         private void Update()
         {
             if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
-                var qbrt = QuickButtonPrefab.transform.GetComponent<RectTransform>();
+                var qbrt = RadialButtonPrefab.transform.GetComponent<RectTransform>();
                 var qmrt = this.transform.GetComponent<RectTransform>();
                 var startX = qmrt.transform.position.x;
                 var startY = qmrt.transform.position.y;
@@ -68,9 +67,9 @@ namespace Side
                     : num8 ? 8
                     : num9 ? 9 : 0;
 
-                if (buttonNumber > 0 && buttonNumber <= Entity.QuickButtons.Count)
+                if (buttonNumber > 0 && buttonNumber <= Entity.RadialButtons.Count)
                 {
-                    Entity.QuickButtons[buttonNumber-1]?.Action();
+                    Entity.RadialButtons[buttonNumber-1]?.Action();
                 }
 
                 Mouse.current.WarpCursorPosition(new Vector2(startX, startY));
@@ -85,7 +84,7 @@ namespace Side
 
             var col = 0;
             var row = 0;
-            for (var i = 0; i < Entity.QuickButtons.Count; i++)
+            for (var i = 0; i < Entity.RadialButtons.Count; i++)
             {
                 if (i > 0 && i % 3 == 0)
                 {
@@ -93,18 +92,18 @@ namespace Side
                     col = 0;
                 }
 
-                if (Entity.QuickButtons[i] == null)
+                if (Entity.RadialButtons[i] == null)
                 {
                     col++;
                     continue;
                 }
 
-                var quickButtonInstance = Instantiate(QuickButtonPrefab);
-                var button = quickButtonInstance.GetComponent<Button>();
-                button.GetComponentInChildren<Text>().text = Entity.QuickButtons[i].Text;
-                button.onClick.AddListener(Entity.QuickButtons[i].Action);
-                var rectTransform = quickButtonInstance.transform.GetComponent<RectTransform>();
-                quickButtonInstance.transform.SetParent(this.transform);
+                var radialButtonInstance = Instantiate(RadialButtonPrefab);
+                var button = radialButtonInstance.GetComponent<Button>();
+                button.GetComponentInChildren<Text>().text = Entity.RadialButtons[i].Text;
+                button.onClick.AddListener(Entity.RadialButtons[i].Action);
+                var rectTransform = radialButtonInstance.transform.GetComponent<RectTransform>();
+                radialButtonInstance.transform.SetParent(this.transform);
 
                 var x = (rectTransform.rect.width * col) + rectTransform.rect.width / 2;
                 var y = -(rectTransform.rect.height * row) - rectTransform.rect.height / 2;

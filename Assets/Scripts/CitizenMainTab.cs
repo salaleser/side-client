@@ -17,7 +17,7 @@ namespace Side
 
         public void Start()
         {
-            CitizenName.text = GameManager.Instance.me.title;
+            CitizenName.text = GameManager.Instance.Me.title;
             UpdateDeliveryAddress();
         }
 
@@ -27,7 +27,7 @@ namespace Side
                 .Where(x => x.type.id == 4)
                 .Select(x => new TMP_Dropdown.OptionData(x.ToCaption()))
                 .ToList());
-            DeliveryAddressId.text = GameManager.Instance.me.delivery_address.ToCaption();
+            DeliveryAddressId.text = GameManager.Instance.Me.delivery_address.ToCaption();
         }
 
         public void SetProperties()
@@ -35,9 +35,9 @@ namespace Side
             // var rentedRoom = _rentedRooms
             //     .Where(x => x.ToCaption() == DeliveryAddress.captionText.text)
             //     .FirstOrDefault();
-            // GameManager.Instance.me.delivery_address = rentedRoom;
+            // GameManager.Instance.Me.delivery_address = rentedRoom;
             // DeliveryAddressId.text = rentedRoom.ToCaption();
-            // var args = new string[]{GameManager.Instance.me.id.ToString(), rentedRoom.id.ToString()};
+            // var args = new string[]{GameManager.Instance.Me.id.ToString(), rentedRoom.id.ToString()};
             // StartCoroutine(NetworkManager.Instance.Request("citizen-delivery-address", args, (json) => {
             //     NetworkManager.Instance.ProcessCitizen(json, "Main");
             // }));

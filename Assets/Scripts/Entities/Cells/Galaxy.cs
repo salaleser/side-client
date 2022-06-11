@@ -9,17 +9,17 @@ namespace Entities.Cells
 {
     public class Galaxy : Entity
     {
-        public GalaxyItem galaxyItem;
+        public GalaxyItem Item;
 
         private void Start()
         {
-            if (galaxyItem.explorer_id == 0)
+            if (Item.explorer_id == 0)
             {
-                AddButton($"Explore \"{galaxyItem.title}\"", () => NetworkManager.Instance.GalaxyExplore(galaxyItem.id));
+                AddButton($"Explore \"{Item.title}\"", () => NetworkManager.Instance.GalaxyExplore(Item.id));
             }
             else
             {
-                AddButton($"Zoom in \"{galaxyItem.title}\"", () => NetworkManager.Instance.Galaxy(galaxyItem.id));
+                AddButton($"Zoom in \"{Item.title}\"", () => NetworkManager.Instance.Galaxy(Item.id));
             }
             AddButton($"Zoom Out", () => NetworkManager.Instance.ZoomOutButton());
             AddButton($"Center Camera", () => NetworkManager.Instance.CenterCameraButton());
@@ -28,13 +28,13 @@ namespace Entities.Cells
 
         private void OnMouseEnter()
         {
-            if (!GameManager.QuickMenuActive
+            if (!GameManager.RadialMenuActive
                 && !GameManager.WindowActive
                 && !GameManager.PopupActive
                 && !Mouse.current.rightButton.isPressed)
             {
-                GameManager.SetDescription($"\n\n{galaxyItem}");
-                GameManager.Instance.Cursor.transform.SetPositionAndRotation(this.transform.position, Quaternion.identity);
+                GameManager.SetDescriptionText(Item.ToString());
+                GameManager.Instance.Cursor.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
             }
         }
     }
