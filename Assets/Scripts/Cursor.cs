@@ -35,18 +35,6 @@ namespace Side
                     _camera.transform.RotateAround(transform.position, new Vector3(0, -1, 0), 90);
                 }
 
-                if (_mouse.leftButton.wasPressedThisFrame)
-                {
-                    
-                    // _camera.transform.localPosition = transform.position;
-                    // _mouse.WarpCursorPosition(new Vector2(Screen.width / 2, Screen.height / 2));
-                    GameManager.DescriptionSetActive(true);
-                }
-                else if (_mouse.leftButton.wasReleasedThisFrame)
-                {
-                    GameManager.DescriptionSetActive(false);
-                }
-
                 // if (_mouse.position.x.ReadValue() > Screen.width - 5)
                 // {
                 //     MoveDown(0.05f);

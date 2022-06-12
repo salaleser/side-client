@@ -69,6 +69,7 @@ namespace Side
 
         public void LoadPage(string internetAddress)
         {
+            gameObject.SetActive(true);
             var (address, path) = GameManager.ParseInternetAddress(internetAddress);
             var args = new string[]{GameManager.Instance.Citizen.id.ToString(), address, path};
             StartCoroutine(NetworkManager.Instance.Request("page", args, (json) => {

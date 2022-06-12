@@ -176,6 +176,10 @@ public class NetworkManager : Manager
 				{
 					CenterCameraButton();
 				}
+				else if (Keyboard.current.iKey.wasPressedThisFrame)
+                {
+                    GameManager.DescriptionToggleActive();
+                }
 			}
 		}
 	}
@@ -537,11 +541,12 @@ public class NetworkManager : Manager
 			.GetComponent<EnterPasswordPopup>().SetRoom(room);
 	}
 
-	public void InstantiateInputFieldPopup(string text, UnityAction<string> action, int type = -1)
+	public void InstantiateInputFieldPopup(string title, string text, UnityAction<string> action, int type = -1)
 	{
 		var popup = Instantiate(InputFieldPopupPrefab, UiCanvas.transform)
 			.GetComponent<InputFieldPopup>();
-		popup.Caption.text = text;
+		popup.Caption.text = title;
+		popup.InputField.text = text;
 		popup.Action = action;
 
 		Color borderColor = new();
@@ -628,9 +633,13 @@ public class NetworkManager : Manager
 		StartCoroutine(Request("offer-decline", args, null));
 	}
 
-	public void CitizenChatButton()
+	public void CitizenChatButton(string citizenId = "")
 	{
 		UnityAction<string> action = (text) => {
+			if (citizenId != "")
+			{
+				text = $"{citizenId} {text}";
+			}
 			var s = Regex.Split(text, @"(^\d+) ");
 			if (s.Length > 2)
 			{
@@ -638,7 +647,7 @@ public class NetworkManager : Manager
 				StartCoroutine(Request("chat", args, null));
 			}
 		};
-		InstantiateInputFieldPopup("Citizen Chat", action, 2);
+		InstantiateInputFieldPopup($"Citizen {citizenId} Chat", "", action, 2);
 	}
 
 	public void OrganizationChatButton()
@@ -651,7 +660,7 @@ public class NetworkManager : Manager
 				StartCoroutine(Request("chat", args, null));
 			}
 		};
-		InstantiateInputFieldPopup("Organization Chat", action, 1);
+		InstantiateInputFieldPopup("Organization Chat", "-", action, 1);
 	}
 
 	public void NearbyChatButton()
@@ -660,7 +669,7 @@ public class NetworkManager : Manager
 			var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(text), GameManager.Instance.Citizen.parcel_id.ToString(), "", ""};
 			StartCoroutine(Request("chat", args, null));
 		};
-		InstantiateInputFieldPopup("Nearby Chat", action, 0);
+		InstantiateInputFieldPopup("Nearby Chat", "", action, 0);
 	}
 
 	public void Vote(int pollId, bool vote)
@@ -1068,15 +1077,13 @@ public class NetworkManager : Manager
 		component.Item = citizen;
 	}
 
-	public WebBrowser InstantiateWebBrowser(string internetAddress = "")
+	public WebBrowser InstantiateWebBrowser(string internetAddress)
 	{
 		DestroyWindows();
-		var webBrowser = Instantiate(WebBrowserPrefab, UiCanvas.transform)
-			.GetComponent<WebBrowser>();
-		if (internetAddress != "")
-		{
-			webBrowser.LoadPage(internetAddress);
-		}
+		var webBrowserInstance = Instantiate(WebBrowserPrefab, UiCanvas.transform);
+
+		var webBrowser = webBrowserInstance.GetComponent<WebBrowser>();
+		webBrowser.LoadPage(internetAddress);
 
 		return webBrowser;
 	}

@@ -55,31 +55,31 @@ namespace Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append($"<color=grey>[{CreatedAt.ToString("ddd hh:mm")}]</color>");
+            sb.Append($"<color=grey>[{CreatedAt.ToString("ddd hh:mm")}]</color> ");
 
             if (OrganizationId < 0)
             {
-                sb.Append($" <link={OrganizationId}><color=green><u>{OrganizationId}</u></color></link>->");
+                sb.Append($"<link={OrganizationId}><color=green><u>{OrganizationId}</u></color></link>►");
             }
 
-            sb.Append($" <link={SenderId}><color=yellow><u>{SenderId}</u></color></link>:");
+            sb.Append($"<link={SenderId}><color=yellow><u>{SenderId}</u></color></link>: ");
             
             if (Text.Contains("!"))
             {
-                sb.Append($" <size=50><b>{Text}</b></size>");
+                sb.Append($"<size=50><b>{Text}</b></size>");
             }
             else
             {
-                sb.Append($" <b>{Text}</b>");
+                sb.Append($"<b>{Text}</b>");
             }
 
             if (CitizenId > 0)
             {
-                sb.Append($" <link=?chat:{SenderId}><color=blue><u>{{reply}}</u></color></link>");
+                sb.Append($" <link=?chat:{SenderId}><color=blue><b>{{</b><u>reply</u><b>}}</b></color></link>");
             }
             else if (OrganizationId < 0)
             {
-                sb.Append($" <link=?chat:{OrganizationId}><color=blue><u>{{dm}}</u></color></link>");
+                sb.Append($" <link=?chat:{SenderId}><color=blue><b>{{</b><u>dm</u><b>}}</b></color></link>");
             }
 
             return sb.ToString();

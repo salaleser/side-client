@@ -24,26 +24,23 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
         }
 
         TMP_LinkInfo linkInfo = Content.textInfo.linkInfo[linkIndex];
-        var internetAddress = linkInfo.GetLinkID();
+        var linkId = linkInfo.GetLinkID();
 
-        if (_webBrowser == null)
+        if (linkId.StartsWith("?"))
         {
-            _webBrowser = NetworkManager.Instance.InstantiateWebBrowser();
-        }
-
-        if (internetAddress.StartsWith("?"))
-        {
-            ExecCommand(internetAddress);
+            _webBrowser = NetworkManager.Instance.InstantiateWebBrowser("");
+            _webBrowser.gameObject.SetActive(false);
+            ExecCommand(linkId.Substring(1));
         }
         else
         {
-            _webBrowser.LoadPage(internetAddress);
+            NetworkManager.Instance.InstantiateWebBrowser(linkId);
         }
     }
 
     private void ExecCommand(string commandWithArgs)
     {
-        var c = commandWithArgs.Substring(1).Split(":");
+        var c = commandWithArgs.Split(":");
         var command = c[0];
         var args = new string[]{};
         if (c.Length > 1)
@@ -55,10 +52,7 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
         switch (command)
         {
             case "chat":
-                UnityAction<string> action = (text) => StartCoroutine(NetworkManager.Instance.Request("chat",
-                    new string[]{GameManager.Instance.Citizen.id.ToString(), NetworkManager.Instance.Escape(text),
-                        GameManager.Instance.Citizen.parcel_id.ToString(), "", args[0]}, null));
-                InstantiateInputFieldPopup($"Citizen {args[0]} Chat", action, 2);
+                NetworkManager.Instance.CitizenChatButton(args[0]);
                 break;
             case "deal":
                 var (marketId, _) = GameManager.ParseInternetAddress(_webBrowser.AddressBar.text);
@@ -102,7 +96,7 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                 action = (text) => StartCoroutine(NetworkManager.Instance.Request("room-attach", new string[]{args[0], text}, (json) => {
                     NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
                 }));
-                NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization ID", action);
+                NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization ID", "-", action);
                 break;
             case "room-detach":
                 StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Citizen.id.ToString(), args[0]}, (json) => {
@@ -113,7 +107,7 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                 action = (text) => StartCoroutine(NetworkManager.Instance.Request("organization-attach", new string[]{GameManager.Instance.Citizen.id.ToString(), args[0], text}, (json) => {
                     NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
                 }));
-                NetworkManager.Instance.InstantiateInputFieldPopup("Enter Parent Organization ID", action);
+                NetworkManager.Instance.InstantiateInputFieldPopup("Enter Parent Organization ID", "-", action);
                 break;
             case "organization-change-join-type":
                 StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Citizen.id.ToString(), args[0]}, (json) => {
@@ -134,7 +128,7 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                 action = (text) => StartCoroutine(NetworkManager.Instance.Request("organization-set-title", new string[]{args[0], NetworkManager.Instance.Escape(text)}, (json) => {
                     _webBrowser.ReloadPage();
                 }));
-		        NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization Title", action);
+		        NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization Title", "", action);
                 break;
             case "rule-change":
                 StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Citizen.id.ToString(), args[0], args[1]}, (json) => {

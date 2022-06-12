@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
 		Cursor = Instantiate(CursorPrefab, NetworkManager.Instance.UiCanvas.transform);
 
 		Description = Instantiate(DescriptionPrefab, NetworkManager.Instance.UiCanvas.transform);
+		Description.SetActive(false);
 
 		SetShortcutsActive(true);
 	}
@@ -90,9 +91,9 @@ public class GameManager : MonoBehaviour
 		RadialMenuActive = isActive;
 	}
 
-	public static void DescriptionSetActive(bool isActive)
+	public static void DescriptionToggleActive()
 	{
-		Description.SetActive(isActive);
+		Description.SetActive(!Description.activeSelf);
 	}
 
 	public static void DescriptionSetText(string text)

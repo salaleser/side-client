@@ -37,7 +37,7 @@ namespace Entities.Cells
                     UnityAction<string> action = (text) => StartCoroutine(NetworkManager.Instance.Request("room-attach", new string[]{Item.id.ToString(), text}, (json) => {
                         NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
                     }));
-                    AddButton($"Attach Room", () => NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization ID", action));
+                    AddButton($"Attach Room", () => NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization ID", "-", action));
                 }
                 else if (GameManager.Instance.Citizen.organizations
                     .Any(x => x.id == Item.organization_id))
