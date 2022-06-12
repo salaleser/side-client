@@ -13,6 +13,8 @@ namespace Models
         public int CitizenId;
         public int OrganizationId;
         public DateTime CreatedAt;
+        public long TgChatId;
+        public long TgUserId;
 
         public Message(string data)
         {
@@ -47,6 +49,12 @@ namespace Models
                         break;
                     case 6:
                         CreatedAt = DateTime.Parse(elements[i]);
+                        break;
+                    case 7:
+                        TgChatId = long.Parse(elements[i]);
+                        break;
+                    case 8:
+                        TgUserId = long.Parse(elements[i]);
                         break;
                 }
             }

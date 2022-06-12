@@ -132,9 +132,7 @@ public class NetworkManager : Manager
 
 	private void Start()
 	{
-		// Instantiate(mainButtonsPanelPrefab, UiCanvas.transform);
 		Instantiate(LoginPopupPrefab, UiCanvas.transform);
-		StartCoroutine(ConnectChat());
 	}
 
 	private void Update()
@@ -314,9 +312,10 @@ public class NetworkManager : Manager
 		}
 	}
 
-	public IEnumerator ConnectChat()
+	public IEnumerator ConnectChat(UserItem user)
 	{
-		_ws = new WebSocket($"ws://{Host}:65279/{GameManager.Instance.User.id}");
+		var organizationIds = string.Join(",", user.citizen.organizations.Select(x => x.id));
+		_ws = new WebSocket($"ws://{Host}:65279/ws/chat?user_id={user.id}&citizen_id={user.citizen.id}&parcel_id={user.citizen.parcel_id}&organization_ids={organizationIds}");
 
 		_ws.OnMessage += (sender, ev) => {
 			try {
@@ -643,7 +642,7 @@ public class NetworkManager : Manager
 			var s = Regex.Split(text, @"(^\d+) ");
 			if (s.Length > 2)
 			{
-				var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(s[2]), GameManager.Instance.Citizen.parcel_id.ToString(), "", s[1]};
+				var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(s[2]), GameManager.Instance.Citizen.parcel_id.ToString(), s[1], "", "", ""};
 				StartCoroutine(Request("chat", args, null));
 			}
 		};
@@ -656,7 +655,7 @@ public class NetworkManager : Manager
 			var s = Regex.Split(text, @"(^-\d+) ");
 			if (s.Length > 2)
 			{
-				var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(s[2]), GameManager.Instance.Citizen.parcel_id.ToString(), s[1], ""};
+				var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(s[2]), GameManager.Instance.Citizen.parcel_id.ToString(), "", s[1], "", ""};
 				StartCoroutine(Request("chat", args, null));
 			}
 		};
@@ -666,7 +665,7 @@ public class NetworkManager : Manager
 	public void NearbyChatButton()
 	{
 		UnityAction<string> action = (text) => {
-			var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(text), GameManager.Instance.Citizen.parcel_id.ToString(), "", ""};
+			var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(text), GameManager.Instance.Citizen.parcel_id.ToString(), "", "", "", ""};
 			StartCoroutine(Request("chat", args, null));
 		};
 		InstantiateInputFieldPopup("Nearby Chat", "", action, 0);
@@ -1099,6 +1098,7 @@ public class NetworkManager : Manager
 		GameManager.Instance.User = response.user;
 		GameManager.Instance.Citizen = response.user.citizen;
 		CenterCitizenButton(GameManager.Instance.Citizen);
+		StartCoroutine(ConnectChat(GameManager.Instance.User));
 	}
 
 	public string Escape(string text)
