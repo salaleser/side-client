@@ -146,7 +146,7 @@ namespace Side
                 NetworkManager.Instance.CreateRoom(GameManager.Instance.Parcel.id,
                     roomType.id, int.Parse(X.text), int.Parse(Y.text), int.Parse(Z.text),
                     roomType.properties.w, roomType.properties.h,
-                    constructionOrganization.id, GameManager.Instance.Me.id, Title.text);
+                    constructionOrganization.id, GameManager.Instance.Citizen.id, Title.text);
                 Destroy(gameObject);
             }
             else

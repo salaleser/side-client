@@ -37,8 +37,7 @@ namespace Side
                 if (!GameManager.PopupActive)
                 {
                     if (Keyboard.current.qKey.wasPressedThisFrame
-                        || Keyboard.current.escapeKey.wasPressedThisFrame
-                        || Mouse.current.rightButton.wasPressedThisFrame)
+                        || Keyboard.current.escapeKey.wasPressedThisFrame)
                     {
                         CloseWindow();
                     }

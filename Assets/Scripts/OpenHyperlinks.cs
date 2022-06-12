@@ -13,13 +13,7 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
 {
     public TMP_Text Content;
 
-    private ComputerInternetTab _pda;
-
-    private void Start()
-    {
-        _pda = GameObject.Find("ComputerWindow(Clone)")
-            .GetComponentInChildren<ComputerInternetTab>();
-    }
+    private WebBrowser _webBrowser;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -30,25 +24,26 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
         }
 
         TMP_LinkInfo linkInfo = Content.textInfo.linkInfo[linkIndex];
-        var linkId = linkInfo.GetLinkID();
-        var linkText = linkInfo.GetLinkText();
+        var internetAddress = linkInfo.GetLinkID();
 
-        var (address, path) = GameManager.ParseInternetAddress(linkId);
-        _pda.AddressBar.text = $"{address}/{path}";
-
-        if (linkId.StartsWith("?"))
+        if (_webBrowser == null)
         {
-            ExecCommand(address, linkId, linkText);
+            _webBrowser = NetworkManager.Instance.InstantiateWebBrowser();
+        }
+
+        if (internetAddress.StartsWith("?"))
+        {
+            ExecCommand(internetAddress);
         }
         else
         {
-            _pda.LoadPage(linkId);
+            _webBrowser.LoadPage(internetAddress);
         }
     }
 
-    private void ExecCommand(string address, string linkId, string linkText)
+    private void ExecCommand(string commandWithArgs)
     {
-        var c = linkId.Substring(1).Split(":");
+        var c = commandWithArgs.Substring(1).Split(":");
         var command = c[0];
         var args = new string[]{};
         if (c.Length > 1)
@@ -59,9 +54,18 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
         UnityAction<string> action;
         switch (command)
         {
+            case "chat":
+                UnityAction<string> action = (text) => StartCoroutine(NetworkManager.Instance.Request("chat",
+                    new string[]{GameManager.Instance.Citizen.id.ToString(), NetworkManager.Instance.Escape(text),
+                        GameManager.Instance.Citizen.parcel_id.ToString(), "", args[0]}, null));
+                InstantiateInputFieldPopup($"Citizen {args[0]} Chat", action, 2);
+                break;
             case "deal":
-                NetworkManager.Instance.DealCreate(int.Parse(address), GameManager.Instance.Me.account_id,
-                    GameManager.Instance.Me.delivery_address.id != 0 ? GameManager.Instance.Me.delivery_address.id : GameManager.Instance.Me.room.id,
+                var (marketId, _) = GameManager.ParseInternetAddress(_webBrowser.AddressBar.text);
+                NetworkManager.Instance.DealCreate(int.Parse(marketId), GameManager.Instance.Citizen.account_id,
+                    GameManager.Instance.Citizen.delivery_address.id != 0
+                        ? GameManager.Instance.Citizen.delivery_address.id
+                        : GameManager.Instance.Citizen.room.id,
                     int.Parse(args[0]), int.Parse(args[1]), int.Parse(args[2]));
                 break;
             case "invite":
@@ -75,23 +79,23 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                 }));
                 break;
             case "poll":
-                StartCoroutine(NetworkManager.Instance.Request("poll", new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request("poll", new string[]{GameManager.Instance.Citizen.id.ToString(), args[0]}, (json) => {
                     NetworkManager.Instance.InstantiatePollPopup(JsonUtility.FromJson<PollResponse>(json).poll);
                 }));
                 break;
             case "task-accept":
-                StartCoroutine(NetworkManager.Instance.Request("task-accept", new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
+                StartCoroutine(NetworkManager.Instance.Request("task-accept", new string[]{GameManager.Instance.Citizen.id.ToString(), args[0]}, (json) => {
                     NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
                 }));
                 break;
             case "member-create":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
-                    _pda.LoadPath("community");
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Citizen.id.ToString(), args[0]}, (json) => {
+                    _webBrowser.LoadPath("community");
                 }));
                 break;
             case "member-delete":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
-                    _pda.ReloadPage();
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Citizen.id.ToString(), args[0]}, (json) => {
+                    _webBrowser.ReloadPage();
                 }));
                 break;
             case "room-input-organization-id":
@@ -101,55 +105,54 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
                 NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization ID", action);
                 break;
             case "room-detach":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
-                    _pda.LoadPath("root");
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Citizen.id.ToString(), args[0]}, (json) => {
+                    _webBrowser.LoadPath("root");
                 }));
                 break;
             case "organization-input-parent-id":
-                action = (text) => StartCoroutine(NetworkManager.Instance.Request("organization-attach", new string[]{GameManager.Instance.Me.id.ToString(), args[0], text}, (json) => {
+                action = (text) => StartCoroutine(NetworkManager.Instance.Request("organization-attach", new string[]{GameManager.Instance.Citizen.id.ToString(), args[0], text}, (json) => {
                     NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
                 }));
                 NetworkManager.Instance.InstantiateInputFieldPopup("Enter Parent Organization ID", action);
                 break;
             case "organization-change-join-type":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
-                    _pda.ReloadPage();
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Citizen.id.ToString(), args[0]}, (json) => {
+                    _webBrowser.ReloadPage();
                 }));
                 break;
             case "organization-change-leave-type":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
-                    _pda.ReloadPage();
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Citizen.id.ToString(), args[0]}, (json) => {
+                    _webBrowser.ReloadPage();
                 }));
                 break;
             case "organization-detach":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
-                    _pda.ReloadPage();
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Citizen.id.ToString(), args[0]}, (json) => {
+                    _webBrowser.ReloadPage();
                 }));
                 break;
             case "organization-input-title":
                 action = (text) => StartCoroutine(NetworkManager.Instance.Request("organization-set-title", new string[]{args[0], NetworkManager.Instance.Escape(text)}, (json) => {
-                    _pda.ReloadPage();
+                    _webBrowser.ReloadPage();
                 }));
 		        NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization Title", action);
                 break;
             case "rule-change":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0], args[1]}, (json) => {
-                    _pda.ReloadPage();
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Citizen.id.ToString(), args[0], args[1]}, (json) => {
+                    _webBrowser.ReloadPage();
                 }));
                 break;
             case "poll-create":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0], args[1]}, (json) => {
-                    _pda.LoadPath("*oll");
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Citizen.id.ToString(), args[0], args[1]}, (json) => {
+                    _webBrowser.LoadPath("*oll");
                 }));
                 break;
             case "poll-delete":
-                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Me.id.ToString(), args[0]}, (json) => {
-                    _pda.LoadPath("root");
+                StartCoroutine(NetworkManager.Instance.Request(command, new string[]{GameManager.Instance.Citizen.id.ToString(), args[0]}, (json) => {
+                    _webBrowser.LoadPath("root");
                 }));
                 break;
             default:
                 NetworkManager.Instance.InstantiateNoticePopup("ERROR", $"Command \"{command}\" not supported");
-                // NetworkManager.Instance.Exec(command, args);
                 break;
         }
     }

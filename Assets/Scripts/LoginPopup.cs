@@ -10,23 +10,20 @@ namespace Side
 {
     public class LoginPopup : MonoBehaviour
     {
-        public TMP_InputField CitizenId;
+        public TMP_InputField UserId;
 
         private void Update()
         {
-            if (GameManager.ShortcutsActive)
+            if (Keyboard.current.enterKey.wasPressedThisFrame)
             {
-                if (Keyboard.current.enterKey.wasPressedThisFrame)
-                {
-                    Login(int.Parse(CitizenId.text));
-                }
+                Login(int.Parse(UserId.text));
             }
         }
 
-        public void Login(int citizenId)
+        public void Login(int userId)
         {
-            NetworkManager.Instance.Login(citizenId == 0 ? int.Parse(CitizenId.text) : citizenId);
-            Destroy(this.gameObject);
+            NetworkManager.Instance.User(userId);
+            Destroy(gameObject);
         }
     }
 }

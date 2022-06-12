@@ -15,12 +15,12 @@ namespace Entities.Cells
 
         private void Start()
         {
-            if (GameManager.Instance.Me.organizations
+            if (GameManager.Instance.Citizen.organizations
                 .Any(x => x.id == Item.organization_id)
-                || Item.id == GameManager.Instance.Me.room.id
-                || GameManager.Instance.Me.workplace.id == Item.id)
+                || Item.id == GameManager.Instance.Citizen.room.id
+                || GameManager.Instance.Citizen.workplace.id == Item.id)
             {
-                AddButton($"Move Into Room", () => NetworkManager.Instance.CitizenMove(GameManager.Instance.Me.id, Item.parcel_id, (int)GameManager.Instance.Cursor.transform.position.x, (int)GameManager.Instance.Cursor.transform.position.z, Item.z));
+                AddButton($"Move Into Room", () => NetworkManager.Instance.CitizenMove(GameManager.Instance.Citizen.id, Item.parcel_id, (int)GameManager.Instance.Cursor.transform.position.x, (int)GameManager.Instance.Cursor.transform.position.z, Item.z));
             }
             else
             {
@@ -30,7 +30,7 @@ namespace Entities.Cells
             AddButton($"Create Room", () => NetworkManager.Instance.InstantiateCreateRoomPopup(Item.z + 1));
 
 
-            if (Item.id == GameManager.Instance.Me.room.id)
+            if (Item.id == GameManager.Instance.Citizen.room.id)
             {
                 if (Item.organization_id == 0)
                 {
@@ -39,10 +39,10 @@ namespace Entities.Cells
                     }));
                     AddButton($"Attach Room", () => NetworkManager.Instance.InstantiateInputFieldPopup("Enter Organization ID", action));
                 }
-                else if (GameManager.Instance.Me.organizations
+                else if (GameManager.Instance.Citizen.organizations
                     .Any(x => x.id == Item.organization_id))
                 {
-                    AddButton($"Detach Room", () => StartCoroutine(NetworkManager.Instance.Request("room-detach", new string[]{GameManager.Instance.Me.id.ToString(), Item.id.ToString()}, (json) => {
+                    AddButton($"Detach Room", () => StartCoroutine(NetworkManager.Instance.Request("room-detach", new string[]{GameManager.Instance.Citizen.id.ToString(), Item.id.ToString()}, (json) => {
                         NetworkManager.Instance.InstantiateNoticePopup("STATUS", JsonUtility.FromJson<Response>(json).status);
                     })));
                 }
@@ -54,9 +54,9 @@ namespace Entities.Cells
             if (!GameManager.RadialMenuActive
                 && !GameManager.WindowActive
                 && !GameManager.PopupActive
-                && !Mouse.current.rightButton.isPressed)
+                && !Mouse.current.leftButton.isPressed)
             {
-                GameManager.SetDescriptionText(Item.ToString());
+                GameManager.DescriptionSetText(Item.ToString());
                 GameManager.Instance.Cursor.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
             }
         }

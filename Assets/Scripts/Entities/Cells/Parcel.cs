@@ -14,7 +14,7 @@ namespace Entities.Cells
         private void Start()
         {
             AddButton($"Zoom in \"{Item.title}\"", () => NetworkManager.Instance.Parcel(Item.id));
-            AddButton($"Center Me", () => NetworkManager.Instance.CenterMeButton());
+            AddButton($"Center Me", () => NetworkManager.Instance.CenterCitizenButton(GameManager.Instance.Citizen));
             AddButton($"Zoom Out", () => NetworkManager.Instance.ZoomOutButton());
         }
 
@@ -23,9 +23,9 @@ namespace Entities.Cells
             if (!GameManager.RadialMenuActive
                 && !GameManager.WindowActive
                 && !GameManager.PopupActive
-                && !Mouse.current.rightButton.isPressed)
+                && !Mouse.current.leftButton.isPressed)
             {
-                GameManager.SetDescriptionText(Item.ToString());
+                GameManager.DescriptionSetText(Item.ToString());
                 GameManager.Instance.Cursor.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
             }
         }

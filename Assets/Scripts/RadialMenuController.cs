@@ -11,8 +11,27 @@ namespace Side
 {
     public class RadialMenuController : MonoBehaviour
     {
+        private const int RotateSpeed = 5;
+        private const float ZoomSpeed = 5f;
+        private const float ZoomMin = 1f;
+        private const float ZoomMax = 32f;
+
         public GameObject RadialButtonPrefab;
         public Entity Entity;
+
+        private Camera _camera;
+        private Mouse _mouse;
+        private Keyboard _keyboard;
+
+        private RectTransform _qbrt;
+        private RectTransform _qmrt;
+        private float _startX;
+        private float _startY;
+        private float _bW;
+        private float _bH;
+        private float _mW;
+        private float _mH;
+        private float _targetZoom;
 
         private void Awake()
         {
@@ -24,28 +43,64 @@ namespace Side
             GameManager.SetRadialMenuActive(false);
         }
 
+        private void Start()
+        {
+            _camera = Camera.main;
+            _mouse = Mouse.current;
+            _keyboard = Keyboard.current;
+
+            _startX = _mouse.position.x.ReadValue();
+            _startY = _mouse.position.y.ReadValue();
+
+            _qbrt = RadialButtonPrefab.transform.GetComponent<RectTransform>();
+            _qmrt = transform.GetComponent<RectTransform>();
+
+            _bW = _qbrt.rect.width;
+            _bH = _qbrt.rect.height;
+            _mW = _qmrt.rect.width;
+            _mH = _qmrt.rect.height;
+
+            UpdateButtons();
+        }
+
         private void Update()
         {
-            if (Mouse.current.leftButton.wasReleasedThisFrame)
+            if (_mouse.rightButton.isPressed)
             {
-                var qbrt = RadialButtonPrefab.transform.GetComponent<RectTransform>();
-                var qmrt = this.transform.GetComponent<RectTransform>();
-                var startX = qmrt.transform.position.x;
-                var startY = qmrt.transform.position.y;
-                var endX = Mouse.current.position.x.ReadValue();
-                var endY = Mouse.current.position.y.ReadValue();
+                if (_mouse.position.x.ReadValue() < _startX - 200)
+                {
+                    _camera.transform.RotateAround(GameManager.Instance.Cursor.transform.position, new Vector3(0, -1, 0), 30 * (_keyboard.leftShiftKey.isPressed ? RotateSpeed : 1) * Time.deltaTime);
+                }
+                else if (_mouse.position.x.ReadValue() > _startX + 200)
+                {
+                    _camera.transform.RotateAround(GameManager.Instance.Cursor.transform.position, new Vector3(0, 1, 0), 30 * (_keyboard.leftShiftKey.isPressed ? RotateSpeed : 1) * Time.deltaTime);
+                }
+                
+                if (_mouse.position.y.ReadValue() < _startY - 200)
+                {
+                    _targetZoom -= _mouse.position.y.ReadValue() + _startY + 200 * ZoomSpeed;
+                    _targetZoom = Mathf.Clamp(_targetZoom, ZoomMax, ZoomMin);
+                    _camera.orthographicSize = Mathf.MoveTowards(_camera.orthographicSize, _targetZoom, ZoomSpeed * Time.deltaTime);
+                }
+                else if (_mouse.position.y.ReadValue() > _startY + 200)
+                {
+                    _targetZoom += _mouse.position.y.ReadValue() + _startY + 200 * ZoomSpeed;
+                    _targetZoom = Mathf.Clamp(_targetZoom, ZoomMax, ZoomMin);
+                    _camera.orthographicSize = Mathf.MoveTowards(_camera.orthographicSize, _targetZoom, ZoomSpeed * Time.deltaTime);
+                }
+            }
 
-                var bW = qbrt.rect.width;
-                var bH = qbrt.rect.height;
-                var mW = qmrt.rect.width;
-                var mH = qmrt.rect.height;
+            if (_mouse.rightButton.wasReleasedThisFrame)
+            {
+                var endX = _mouse.position.x.ReadValue();
+                var endY = _mouse.position.y.ReadValue();
 
-                var row1 = endY >= startY + bH / 2 && endY < startY + mH / 2;
-                var row2 = endY >= startY - bH / 2 && endY < startY + bH / 2;
-                var row3 = endY >= startY - mH / 2 && endY < startY - bH / 2;
-                var col1 = endX >= startX - mW / 2 && endX < startX - bW / 2;
-                var col2 = endX >= startX - bW / 2 && endX < startX + bW / 2;
-                var col3 = endX >= startX + bW / 2 && endX < startX + mW / 2;
+                var row1 = endY >= _startY + _bH / 2 && endY < _startY + _mH / 2;
+                var row2 = endY >= _startY - _bH / 2 && endY < _startY + _bH / 2;
+                var row3 = endY >= _startY - _mH / 2 && endY < _startY - _bH / 2;
+                var col1 = endX >= _startX - _mW / 2 && endX < _startX - _bW / 2;
+                var col2 = endX >= _startX - _bW / 2 && endX < _startX + _bW / 2;
+                var col3 = endX >= _startX + _bW / 2 && endX < _startX + _mW / 2;
 
                 var num1 = row1 && col1;
                 var num2 = row1 && col2;
@@ -72,15 +127,15 @@ namespace Side
                     Entity.RadialButtons[buttonNumber-1]?.Action();
                 }
 
-                Mouse.current.WarpCursorPosition(new Vector2(startX, startY));
-                Destroy(this.gameObject);
+                _mouse.WarpCursorPosition(new Vector2(_startX, _startY));
+                Destroy(gameObject);
             }
         }
         
         public void UpdateButtons()
         {
-            this.transform.SetParent(Entity.transform);
-            this.transform.position = Mouse.current.position.ReadValue();
+            transform.SetParent(Entity.transform);
+            transform.position = _mouse.position.ReadValue();
 
             var col = 0;
             var row = 0;

@@ -9,7 +9,7 @@ namespace Side
 {
     public class Cursor : MonoBehaviour
     {
-        private const int M = 5;
+        private const int RotateSpeed = 5;
 
         private Camera _camera;
         private Mouse _mouse;
@@ -26,11 +26,6 @@ namespace Side
         {
             if (!GameManager.WindowActive && !GameManager.PopupActive)
             {
-                if (_mouse.rightButton.wasPressedThisFrame)
-                {
-                    _camera.transform.localPosition = transform.position;
-                }
-
                 if (_keyboard.leftBracketKey.wasPressedThisFrame)
                 {
                     _camera.transform.RotateAround(transform.position, new Vector3(0, 1, 0), 90);
@@ -40,16 +35,16 @@ namespace Side
                     _camera.transform.RotateAround(transform.position, new Vector3(0, -1, 0), 90);
                 }
 
-                if (_mouse.rightButton.isPressed)
+                if (_mouse.leftButton.wasPressedThisFrame)
                 {
-                    if (_mouse.position.x.ReadValue() > Screen.width / 2 + 100)
-                    {
-                        _camera.transform.RotateAround(transform.position, new Vector3(0, -1, 0), 100 * (_keyboard.leftShiftKey.isPressed ? M : 1) * Time.deltaTime);
-                    }
-                    else if (_mouse.position.x.ReadValue() < Screen.width / 2 - 100)
-                    {
-                        _camera.transform.RotateAround(transform.position, new Vector3(0, 1, 0), 100 * (_keyboard.leftShiftKey.isPressed ? M : 1) * Time.deltaTime);
-                    }
+                    
+                    // _camera.transform.localPosition = transform.position;
+                    // _mouse.WarpCursorPosition(new Vector2(Screen.width / 2, Screen.height / 2));
+                    GameManager.DescriptionSetActive(true);
+                }
+                else if (_mouse.leftButton.wasReleasedThisFrame)
+                {
+                    GameManager.DescriptionSetActive(false);
                 }
 
                 // if (_mouse.position.x.ReadValue() > Screen.width - 5)
@@ -102,22 +97,22 @@ namespace Side
 
         private void MoveLeft(float m = 1.0f)
         {
-            _camera.transform.localPosition -= new Vector3(_keyboard.leftShiftKey.isPressed ? M : 1, 0, 0) * m;
+            _camera.transform.localPosition -= new Vector3(_keyboard.leftShiftKey.isPressed ? RotateSpeed : 1, 0, 0) * m;
         }
 
         private void MoveRight(float m = 1.0f)
         {
-            _camera.transform.localPosition += new Vector3(_keyboard.leftShiftKey.isPressed ? M : 1, 0, 0) * m;;
+            _camera.transform.localPosition += new Vector3(_keyboard.leftShiftKey.isPressed ? RotateSpeed : 1, 0, 0) * m;;
         }
 
         private void MoveUp(float m = 1.0f)
         {
-            _camera.transform.localPosition += new Vector3(0, 0, _keyboard.leftShiftKey.isPressed ? M : 1) * m;;
+            _camera.transform.localPosition += new Vector3(0, 0, _keyboard.leftShiftKey.isPressed ? RotateSpeed : 1) * m;;
         }
 
         private void MoveDown(float m = 1.0f)
         {
-            _camera.transform.localPosition -= new Vector3(0, 0, _keyboard.leftShiftKey.isPressed ? M : 1) * m;;
+            _camera.transform.localPosition -= new Vector3(0, 0, _keyboard.leftShiftKey.isPressed ? RotateSpeed : 1) * m;;
         }
     }
 }

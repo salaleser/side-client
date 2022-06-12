@@ -19,7 +19,7 @@ public class Entity : MonoBehaviour
     {
         if (!GameManager.WindowActive && !GameManager.PopupActive)
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+            if (Mouse.current.rightButton.wasPressedThisFrame)
             {
                 NetworkManager.Instance.InstantiateRadialMenu(transform);
             }

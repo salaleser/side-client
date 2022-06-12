@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
 
 	public int State;
 	
+	public UserItem User;
+	public CitizenItem Citizen;
 	public UniverseItem Universe;
 	public GalaxyItem Galaxy;
 	public SystemItem System;
@@ -28,21 +30,19 @@ public class GameManager : MonoBehaviour
 	public ContinentItem Continent;
 	public RegionItem Region;
 	public ParcelItem Parcel;
-	public CitizenItem Me = new();
     
 	public GameObject CursorPrefab;
 	public GameObject Cursor { get; private set; }
 
 	public GameObject DescriptionPrefab;
 	public static GameObject Description { get; private set; }
-	private Description _description;
 
 	public GameObject MiniMapPrefab;
 	public static GameObject MiniMap { get; private set; }
 
 	public GameObject ChatPrefab;
 	public static GameObject Chat { get; private set; }
-	public ConcurrentQueue<string> ChatMessages = new();
+	public ConcurrentQueue<Message> ChatMessages = new();
 
 	public GameObject ShortcutsActiveSign;
 	public static bool RadialMenuActive { get; private set; }
@@ -74,7 +74,6 @@ public class GameManager : MonoBehaviour
 		Cursor = Instantiate(CursorPrefab, NetworkManager.Instance.UiCanvas.transform);
 
 		Description = Instantiate(DescriptionPrefab, NetworkManager.Instance.UiCanvas.transform);
-		Description.SetActive(false);
 
 		SetShortcutsActive(true);
 	}
@@ -91,12 +90,12 @@ public class GameManager : MonoBehaviour
 		RadialMenuActive = isActive;
 	}
 
-	public static void SetDescriptionActive(bool isActive)
+	public static void DescriptionSetActive(bool isActive)
 	{
 		Description.SetActive(isActive);
 	}
 
-	public static void SetDescriptionText(string text)
+	public static void DescriptionSetText(string text)
 	{
 		Description.GetComponent<Description>().Text.text = text;
 	}
@@ -104,13 +103,11 @@ public class GameManager : MonoBehaviour
 	public static void SetWindowActive(bool isActive)
 	{
 		WindowActive = isActive;
-		Chat.SetActive(!isActive);
 	}
 
 	public static void SetPopupActive(bool isActive)
 	{
 		PopupActive = isActive;
-		Chat.SetActive(!isActive);
 	}
 
 	public static (string, string) ParseInternetAddress(string internetAddress)

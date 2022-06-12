@@ -157,10 +157,10 @@ RectTransform:
   m_Father: {fileID: 1207886750}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -409.3, y: -46.6}
-  m_SizeDelta: {x: 134.6352, y: 83.7187}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 67.31763, y: 41.859344}
+  m_SizeDelta: {x: 134.63525, y: 83.71869}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &152935538
 MonoBehaviour:
@@ -266,66 +266,118 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   State: 0
-  Universe:
+  User:
     id: 0
     title: 
-    number: 0
-    galaxies: []
-  Galaxy:
-    id: 0
-    title: 
-    number: 0
-    explorer_id: 0
-    systems: []
-    systems_count: 0
-  System:
-    id: 0
-    title: 
-    number: 0
-    explorer_id: 0
-    galaxy_id: 0
-    planets: []
-    planets_count: 0
-  Planet:
-    id: 0
-    title: 
-    number: 0
-    explorer_id: 0
-    system_id: 0
-    size: 0
-    continents: []
-    continents_count: 0
-  Continent:
-    id: 0
-    title: 
-    number: 0
-    explorer_id: 0
-    planet_id: 0
-    regions: []
-    regions_count: 0
-  Region:
-    id: 0
-    title: 
-    x: 0
-    y: 0
-    z: 0
-    continent_id: 0
-    explorer_id: 0
-    parcels: []
-    cities_count: 0
-  Parcel:
-    id: 0
-    title: 
-    x: 0
-    y: 0
-    explorer_id: 0
-    region_id: 0
-    rooms: []
-    citizens: []
-    rooms_count: 0
-    properties:
-      resources: []
-  Me:
+    username: 
+    citizen:
+      id: 0
+      title: 
+      account_id: 0
+      parcel_id: 0
+      x: 0
+      y: 0
+      z: 0
+      item_id: 0
+      workplace:
+        id: 0
+        title: 
+        type:
+          id: 0
+          title: 
+          properties:
+            color: {r: 0, g: 0, b: 0, a: 0}
+            w: 0
+            h: 0
+            durability: 0
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+        h: 0
+        health: 0
+        creator_id: 0
+        renter_id: 0
+        item_id: 0
+        parcel_id: 0
+        rentable: 0
+        organization_id: 0
+        items: []
+        citizens: []
+        messages: []
+        properties:
+          type_id: 0
+          door:
+            password: 
+      delivery_address:
+        id: 0
+        title: 
+        type:
+          id: 0
+          title: 
+          properties:
+            color: {r: 0, g: 0, b: 0, a: 0}
+            w: 0
+            h: 0
+            durability: 0
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+        h: 0
+        health: 0
+        creator_id: 0
+        renter_id: 0
+        item_id: 0
+        parcel_id: 0
+        rentable: 0
+        organization_id: 0
+        items: []
+        citizens: []
+        messages: []
+        properties:
+          type_id: 0
+          door:
+            password: 
+      items: []
+      friends: []
+      actions: []
+      statuses: []
+      characteristics: []
+      organizations: []
+      emails: []
+      room:
+        id: 0
+        title: 
+        type:
+          id: 0
+          title: 
+          properties:
+            color: {r: 0, g: 0, b: 0, a: 0}
+            w: 0
+            h: 0
+            durability: 0
+        x: 0
+        y: 0
+        z: 0
+        w: 0
+        h: 0
+        health: 0
+        creator_id: 0
+        renter_id: 0
+        item_id: 0
+        parcel_id: 0
+        rentable: 0
+        organization_id: 0
+        items: []
+        citizens: []
+        messages: []
+        properties:
+          type_id: 0
+          door:
+            password: 
+    created_at: 
+  Citizen:
     id: 0
     title: 
     account_id: 0
@@ -431,6 +483,65 @@ MonoBehaviour:
         type_id: 0
         door:
           password: 
+  Universe:
+    id: 0
+    title: 
+    number: 0
+    galaxies: []
+  Galaxy:
+    id: 0
+    title: 
+    number: 0
+    explorer_id: 0
+    systems: []
+    systems_count: 0
+  System:
+    id: 0
+    title: 
+    number: 0
+    explorer_id: 0
+    galaxy_id: 0
+    planets: []
+    planets_count: 0
+  Planet:
+    id: 0
+    title: 
+    number: 0
+    explorer_id: 0
+    system_id: 0
+    size: 0
+    continents: []
+    continents_count: 0
+  Continent:
+    id: 0
+    title: 
+    number: 0
+    explorer_id: 0
+    planet_id: 0
+    regions: []
+    regions_count: 0
+  Region:
+    id: 0
+    title: 
+    x: 0
+    y: 0
+    z: 0
+    continent_id: 0
+    explorer_id: 0
+    parcels: []
+    cities_count: 0
+  Parcel:
+    id: 0
+    title: 
+    x: 0
+    y: 0
+    explorer_id: 0
+    region_id: 0
+    rooms: []
+    citizens: []
+    rooms_count: 0
+    properties:
+      resources: []
   CursorPrefab: {fileID: 9040041545605410619, guid: 1c67092b2b351416c8e492129189ed2d, type: 3}
   DescriptionPrefab: {fileID: 521065865709494434, guid: 05e85d39ee9354df886f6123570b5bc8, type: 3}
   MiniMapPrefab: {fileID: 3180324904303522590, guid: 854cc9f9a53c24d50ad0d20d18d154ab, type: 3}
@@ -724,7 +835,7 @@ MonoBehaviour:
   CreateRoomPopupPrefab: {fileID: 2130151071311696967, guid: 91778e3526d294319b6b93bf0e6348ce, type: 3}
   NoticePopupPrefab: {fileID: 2130151071311696967, guid: 411be8ea80c7a475290182270c3c7ae4, type: 3}
   LoginPopupPrefab: {fileID: 2130151071311696967, guid: 821cf549b71da46c296859cdc8c3e911, type: 3}
-  PdaPrefab: {fileID: 5675518160032065541, guid: 7bee1e4f612574b88802571278907e54, type: 3}
+  WebBrowserPrefab: {fileID: 5675518160032065541, guid: 1ee270e55bdb44a1995a6c15a5a54986, type: 3}
   RadialMenuPrefab: {fileID: 6657676188238830695, guid: c3ace36d5551e4b118710cdc24625288, type: 3}
   UiCanvas: {fileID: 645576251}
   GroundCanvas: {fileID: 1987155250}
@@ -775,7 +886,6 @@ GameObject:
   - component: {fileID: 1602942932}
   - component: {fileID: 1602942931}
   - component: {fileID: 1602942930}
-  - component: {fileID: 1602942933}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -849,18 +959,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 20, y: 45, z: 0}
---- !u!114 &1602942933
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1602942929}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 761d523721361480f83efc8939171351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1719722359
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,23 +8,33 @@ using Entities.Items;
 using Entities.Cells;
 using Models;
 using TMPro;
+using Side;
 
 namespace Side
 {
-    public class ComputerInternetTab : MonoBehaviour
+    public class WebBrowser : MonoBehaviour
     {
         public TMP_InputField AddressBar;
         public TMP_InputField SearchBar;
         public TMP_Text Content;
 
         private List<string> _history = new();
+        private RectTransform _rectTransform;
+
+        private void Awake()
+        {
+            _rectTransform = transform.GetComponent<RectTransform>();
+        }
+
+        private void Start()
+        {
+            _rectTransform.sizeDelta = new Vector2(Screen.width / 2, Screen.height);
+        }
 
         private void OnEnable()
         {
             AddressBar.onSubmit.AddListener(LoadPage);
             SearchBar.onSubmit.AddListener(Search);
-            this.GetComponentInParent<WindowManager>()
-                .UpdateHotkeys(GameObject.FindGameObjectsWithTag("Hotkey"));
         }
 
         private void OnDisable()
@@ -37,11 +47,11 @@ namespace Side
         {
             if (GameManager.ShortcutsActive)
             {
-                if (Keyboard.current.aKey.wasPressedThisFrame)
+                if (Keyboard.current.leftCtrlKey.isPressed && Keyboard.current.lKey.wasPressedThisFrame)
                 {
                     AddressBar.Select();
                 }
-                else if (Keyboard.current.sKey.wasPressedThisFrame)
+                else if (Keyboard.current.leftCtrlKey.isPressed && Keyboard.current.fKey.wasPressedThisFrame)
                 {
                     SearchBar.Select();
                 }
@@ -57,10 +67,10 @@ namespace Side
             }));
         }
 
-        public void LoadPage(string text)
+        public void LoadPage(string internetAddress)
         {
-            var (address, path) = GameManager.ParseInternetAddress(text);
-            var args = new string[]{GameManager.Instance.Me.id.ToString(), address, path};
+            var (address, path) = GameManager.ParseInternetAddress(internetAddress);
+            var args = new string[]{GameManager.Instance.Citizen.id.ToString(), address, path};
             StartCoroutine(NetworkManager.Instance.Request("page", args, (json) => {
                 var page = JsonUtility.FromJson<PageResponse>(json).page;
                 Content.text = page.content;

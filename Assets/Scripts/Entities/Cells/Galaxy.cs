@@ -23,7 +23,7 @@ namespace Entities.Cells
             }
             AddButton($"Zoom Out", () => NetworkManager.Instance.ZoomOutButton());
             AddButton($"Center Camera", () => NetworkManager.Instance.CenterCameraButton());
-            AddButton($"Center Me", () => NetworkManager.Instance.CenterMeButton());
+            AddButton($"Center Me", () => NetworkManager.Instance.CenterCitizenButton(GameManager.Instance.Citizen));
         }
 
         private void OnMouseEnter()
@@ -31,9 +31,9 @@ namespace Entities.Cells
             if (!GameManager.RadialMenuActive
                 && !GameManager.WindowActive
                 && !GameManager.PopupActive
-                && !Mouse.current.rightButton.isPressed)
+                && !Mouse.current.leftButton.isPressed)
             {
-                GameManager.SetDescriptionText(Item.ToString());
+                GameManager.DescriptionSetText(Item.ToString());
                 GameManager.Instance.Cursor.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
             }
         }

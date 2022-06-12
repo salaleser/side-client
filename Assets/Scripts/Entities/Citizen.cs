@@ -15,9 +15,9 @@ namespace Entities
             if (!GameManager.RadialMenuActive
                 && !GameManager.WindowActive
                 && !GameManager.PopupActive
-                && !Mouse.current.rightButton.isPressed)
+                && !Mouse.current.leftButton.isPressed)
             {
-                GameManager.SetDescriptionText(Item.ToString());
+                GameManager.DescriptionSetText(Item.ToString());
                 GameManager.Instance.Cursor.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
             }
         }

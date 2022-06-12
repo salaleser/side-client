@@ -11,33 +11,27 @@ namespace Side
 {
     public class InputFieldPopup : MonoBehaviour
     {
-        public TMP_Text Description;
+        public TMP_Text Caption;
         public TMP_InputField InputField;
         public UnityAction<string> Action;
 
-        public void Accept()
+        private void Start()
         {
-            Action(InputField.text);
-            this.GetComponent<PopupManager>().ClosePopup();
-        }
-
-        public void Decline()
-        {
-            this.GetComponent<PopupManager>().ClosePopup();
+            InputField.Select();
         }
 
         private void Update()
         {
-            if (GameManager.ShortcutsActive)
+            if (Keyboard.current.enterKey.wasPressedThisFrame)
             {
-                if (Keyboard.current.enterKey.wasPressedThisFrame)
-                {
-                    Accept();
-                }
-                else if (Keyboard.current.escapeKey.wasPressedThisFrame)
-                {
-                    Decline();
-                }
+                Action(InputField.text);
+                GameManager.SetShortcutsActive(true);
+                Destroy(gameObject);
+            }
+            else if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                GameManager.SetShortcutsActive(true);
+                Destroy(gameObject);
             }
         }
     }

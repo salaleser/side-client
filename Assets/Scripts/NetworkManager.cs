@@ -35,7 +35,7 @@ public class NetworkManager : Manager
 	public GameObject CreateRoomPopupPrefab;
 	public GameObject NoticePopupPrefab;
 	public GameObject LoginPopupPrefab;
-	public GameObject PdaPrefab;
+	public GameObject WebBrowserPrefab;
 	public GameObject RadialMenuPrefab;
 
 	public GameObject UiCanvas;
@@ -72,7 +72,7 @@ public class NetworkManager : Manager
 	private void Awake()
 	{
 		var dir = "";
-		switch (Application.platform)
+		switch (UnityEngine.Application.platform)
 		{
 			case RuntimePlatform.OSXEditor:
 			case RuntimePlatform.WindowsEditor:
@@ -109,7 +109,7 @@ public class NetworkManager : Manager
 
 	private void LoadConfig(string filepath)
 	{
-		var path = Application.dataPath + filepath;
+		var path = UnityEngine.Application.dataPath + filepath;
 		using (StreamReader reader = new StreamReader(path))
 		{
 			var config = reader.ReadToEnd();
@@ -139,13 +139,9 @@ public class NetworkManager : Manager
 
 	private void Update()
 	{
-		if (GameManager.ShortcutsActive && !GameManager.WindowActive && !GameManager.PopupActive)
+		if (GameManager.ShortcutsActive && !GameManager.PopupActive)
 		{
-			if (Keyboard.current.mKey.wasPressedThisFrame)
-			{
-				ShowMapButton();
-			}
-			else if (Keyboard.current.enterKey.wasPressedThisFrame)
+			if (Keyboard.current.enterKey.wasPressedThisFrame)
 			{
 				NearbyChatButton();
 			}
@@ -157,33 +153,29 @@ public class NetworkManager : Manager
 			{
 				CitizenChatButton();
 			}
-			else if (Keyboard.current.rKey.wasPressedThisFrame)
+
+			if (!GameManager.WindowActive)
 			{
-				ReloadButton();
-			}
-			else if (Keyboard.current.equalsKey.wasPressedThisFrame)
-			{
-				CenterMeButton();
-			}
-			else if (Keyboard.current.minusKey.wasPressedThisFrame)
-			{
-				ZoomOutButton();
-			}
-			else if (Keyboard.current.tabKey.wasPressedThisFrame)
-			{
-				PdaButton();
-			}
-			else if (Keyboard.current.escapeKey.wasPressedThisFrame)
-			{
-				CenterCameraButton();
-			}
-			else if (Keyboard.current.iKey.wasPressedThisFrame)
-			{
-				GameManager.SetDescriptionActive(true);
-			}
-			else if (Keyboard.current.iKey.wasReleasedThisFrame)
-			{
-				GameManager.SetDescriptionActive(false);
+				if (Keyboard.current.rKey.wasPressedThisFrame)
+				{
+					ReloadButton();
+				}
+				else if (Keyboard.current.equalsKey.wasPressedThisFrame)
+				{
+					CenterCitizenButton(GameManager.Instance.Citizen);
+				}
+				else if (Keyboard.current.minusKey.wasPressedThisFrame)
+				{
+					ZoomOutButton();
+				}
+				else if (Keyboard.current.wKey.wasPressedThisFrame)
+				{
+					WebBrowserButton();
+				}
+				else if (Keyboard.current.escapeKey.wasPressedThisFrame)
+				{
+					CenterCameraButton();
+				}
 			}
 		}
 	}
@@ -202,20 +194,20 @@ public class NetworkManager : Manager
 				Camera.main.transform.localRotation = Quaternion.Euler(20, 45, 0);
 				break;
 			case 7:
-				Camera.main.transform.localPosition = new Vector3(GameManager.Instance.Me.x, GameManager.Instance.Me.z, GameManager.Instance.Me.y);
+				Camera.main.transform.localPosition = new Vector3(GameManager.Instance.Citizen.x, GameManager.Instance.Citizen.z, GameManager.Instance.Citizen.y);
 				Camera.main.transform.localRotation = Quaternion.Euler(20, 45, 0);
 				break;
 		}
 	}
 
-	public void PdaButton()
+	public void WebBrowserButton()
 	{
-		InstantiatePda();
+		InstantiateWebBrowser(GameManager.Instance.Citizen.id.ToString());
 	}
 
 	public void MeButton()
 	{
-		InstantiatePda(GameManager.Instance.Me.id.ToString());
+		InstantiateWebBrowser(GameManager.Instance.Citizen.id.ToString());
 	}
 
 	public void ZoomOutButton()
@@ -245,14 +237,9 @@ public class NetworkManager : Manager
 		}
 	}
 
-	public void ShowMapButton()
-	{
-		Universe();
-	}
-
 	public void ReloadButton()
 	{
-		Me();
+		User(GameManager.Instance.User.id);
 		switch (GameManager.Instance.State)
 		{
 			case 1:
@@ -279,9 +266,9 @@ public class NetworkManager : Manager
 		}
 	}
 
-	public void CenterMeButton()
+	public void CenterCitizenButton(CitizenItem citizen)
 	{
-		Parcel(GameManager.Instance.Me.parcel_id);
+		Parcel(citizen.parcel_id);
 	}
 
 	private void DestroyCells()
@@ -325,18 +312,11 @@ public class NetworkManager : Manager
 
 	public IEnumerator ConnectChat()
 	{
-		_ws = new WebSocket($"ws://{Host}:65279");
+		_ws = new WebSocket($"ws://{Host}:65279/{GameManager.Instance.User.id}");
 
 		_ws.OnMessage += (sender, ev) => {
 			try {
-				var data = ev.Data.Split("◊");
-				var chat = new Chat();
-				chat.CitizenId = int.Parse(data[0]);
-				int.TryParse(data[1], out chat.OrganizationId);
-				chat.Text = data[2];
-				chat.CreatedAt = data[3];
-
-				GameManager.Instance.ChatMessages.Enqueue(chat.ToString());
+				GameManager.Instance.ChatMessages.Enqueue(new Message(ev.Data));
 			}
 			catch (Exception e)
 			{
@@ -396,25 +376,10 @@ public class NetworkManager : Manager
 		}
 	}
 
-	public void Login(int citizenId)
-	{
-		var args = new string[]{citizenId.ToString()};
-		StartCoroutine(Request("citizen", args, (result) => {
-			ProcessMe(result);
-			CenterMeButton();
-		}));
-	}
-
-	public void Exec(string command, string[] parameters)
-	{
-		var args = new string[]{GameManager.Instance.Me.id.ToString(), command, string.Join(",", parameters)};
-		StartCoroutine(Request("exec", args, ProcessExec));
-	}
-
-	public void Me()
+	public void User(int userId)
     {
-		var args = new string[]{GameManager.Instance.Me.id.ToString()};
-		StartCoroutine(Request("citizen", args, ProcessMe));
+		var args = new string[]{userId.ToString()};
+		StartCoroutine(Request("user", args, ProcessUser));
 	}
 
 	public void Universe()
@@ -431,7 +396,7 @@ public class NetworkManager : Manager
 
 	public void GalaxyExplore(int galaxyId)
     {
-		var args = new string[]{galaxyId.ToString(), GameManager.Instance.Me.id.ToString()};
+		var args = new string[]{galaxyId.ToString(), GameManager.Instance.Citizen.id.ToString()};
 		StartCoroutine(Request("galaxy-explore", args, ProcessUniverse));
 	}
 
@@ -443,7 +408,7 @@ public class NetworkManager : Manager
 
 	public void SystemExplore(int systemId)
     {
-		var args = new string[]{systemId.ToString(), GameManager.Instance.Me.id.ToString()};
+		var args = new string[]{systemId.ToString(), GameManager.Instance.Citizen.id.ToString()};
 		StartCoroutine(Request("system-explore", args, ProcessGalaxy));
 	}
 
@@ -455,7 +420,7 @@ public class NetworkManager : Manager
 
 	public void PlanetExplore(int planetId)
     {
-		var args = new string[]{planetId.ToString(), GameManager.Instance.Me.id.ToString()};
+		var args = new string[]{planetId.ToString(), GameManager.Instance.Citizen.id.ToString()};
 		StartCoroutine(Request("planet-explore", args, ProcessSystem));
 	}
 
@@ -467,7 +432,7 @@ public class NetworkManager : Manager
 
 	public void ContinentExplore(int continentId)
     {
-		var args = new string[]{continentId.ToString(), GameManager.Instance.Me.id.ToString()};
+		var args = new string[]{continentId.ToString(), GameManager.Instance.Citizen.id.ToString()};
 		StartCoroutine(Request("continent-explore", args, ProcessPlanet));
 	}
 
@@ -479,7 +444,7 @@ public class NetworkManager : Manager
 
 	public void RegionExplore(int regionId)
     {
-		var args = new string[]{regionId.ToString(), GameManager.Instance.Me.id.ToString()};
+		var args = new string[]{regionId.ToString(), GameManager.Instance.Citizen.id.ToString()};
 		StartCoroutine(Request("region-explore", args, ProcessContinent));
 	}
 
@@ -563,27 +528,60 @@ public class NetworkManager : Manager
 	public void InstantiateCreateRoomPopup(int z)
 	{
 		Instantiate(CreateRoomPopupPrefab, UiCanvas.transform)
-			.GetComponent<Side.CreateRoomPopup>().Z.text = z.ToString();
+			.GetComponent<CreateRoomPopup>().Z.text = z.ToString();
 	}
 
 	public void InstantiateEnterPasswordPopup(RoomItem room)
 	{
 		Instantiate(EnterPasswordPopupPrefab, UiCanvas.transform)
-			.GetComponent<Side.EnterPasswordPopup>().SetRoom(room);
+			.GetComponent<EnterPasswordPopup>().SetRoom(room);
 	}
 
-	public void InstantiateInputFieldPopup(string description, UnityAction<string> action)
+	public void InstantiateInputFieldPopup(string text, UnityAction<string> action, int type = -1)
 	{
 		var popup = Instantiate(InputFieldPopupPrefab, UiCanvas.transform)
-			.GetComponent<Side.InputFieldPopup>();
-		popup.Description.text = description;
+			.GetComponent<InputFieldPopup>();
+		popup.Caption.text = text;
 		popup.Action = action;
+
+		Color borderColor = new();
+		Color backgroundColor = new();
+		switch (type)
+		{
+			case 0:
+				borderColor = new Color(1.0f, 1.0f, 0.0f, 1.0f);
+				backgroundColor = new Color(1.0f, 1.0f, 0.5f, 1.0f);
+				break;
+			case 1:
+				borderColor = new Color(1.0f, 0.0f, 1.0f, 1.0f);
+				backgroundColor = new Color(1.0f, 0.5f, 1.0f, 1.0f);
+				break;
+			case 2:
+				borderColor = new Color(0.0f, 1.0f, 1.0f, 1.0f);
+				backgroundColor = new Color(0.0f, 0.5f, 0.5f, 1.0f);
+				break;
+			default:
+				borderColor = new Color(0.0f, 0.0f, 1.0f, 1.0f);
+				backgroundColor = new Color(0.5f, 0.5f, 0.1f, 1.0f);
+				break;
+		}
+		foreach (var component in popup.GetComponentsInChildren<Image>())
+		{
+			if (component.name == "Border")
+			{
+				component.color = borderColor;
+			}
+			else if (component.name == "Background")
+			{
+				component.color = backgroundColor;
+			}
+		}
 	}
 
 	private void InstantiateDealPopup(DealItem deal)
 	{
 		Instantiate(DealPopupPrefab, UiCanvas.transform)
-			.GetComponent<Side.DealPopup>().Deal = deal;
+			.GetComponent<DealPopup>().Deal = deal;
 	}
 
 	public void InviteCreate(int inviterId, int organizationId, int citizenId)
@@ -636,11 +634,11 @@ public class NetworkManager : Manager
 			var s = Regex.Split(text, @"(^\d+) ");
 			if (s.Length > 2)
 			{
-				var args = new string[]{GameManager.Instance.Me.id.ToString(), Escape(s[2]), GameManager.Instance.Me.parcel_id.ToString(), "", s[1]};
+				var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(s[2]), GameManager.Instance.Citizen.parcel_id.ToString(), "", s[1]};
 				StartCoroutine(Request("chat", args, null));
 			}
 		};
-		InstantiateInputFieldPopup("Citizen Chat", action);
+		InstantiateInputFieldPopup("Citizen Chat", action, 2);
 	}
 
 	public void OrganizationChatButton()
@@ -649,25 +647,25 @@ public class NetworkManager : Manager
 			var s = Regex.Split(text, @"(^-\d+) ");
 			if (s.Length > 2)
 			{
-				var args = new string[]{GameManager.Instance.Me.id.ToString(), Escape(s[2]), GameManager.Instance.Me.parcel_id.ToString(), s[1], ""};
+				var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(s[2]), GameManager.Instance.Citizen.parcel_id.ToString(), s[1], ""};
 				StartCoroutine(Request("chat", args, null));
 			}
 		};
-		InstantiateInputFieldPopup("Organization Chat", action);
+		InstantiateInputFieldPopup("Organization Chat", action, 1);
 	}
 
 	public void NearbyChatButton()
 	{
 		UnityAction<string> action = (text) => {
-			var args = new string[]{GameManager.Instance.Me.id.ToString(), Escape(text), GameManager.Instance.Me.parcel_id.ToString(), "", ""};
+			var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(text), GameManager.Instance.Citizen.parcel_id.ToString(), "", ""};
 			StartCoroutine(Request("chat", args, null));
 		};
-		InstantiateInputFieldPopup("Nearby Chat", action);
+		InstantiateInputFieldPopup("Nearby Chat", action, 0);
 	}
 
 	public void Vote(int pollId, bool vote)
     {
-		var args = new string[]{GameManager.Instance.Me.id.ToString(), pollId.ToString(), vote.ToString()};
+		var args = new string[]{GameManager.Instance.Citizen.id.ToString(), pollId.ToString(), vote.ToString()};
 		StartCoroutine(Request("vote-create", args, null));
 	}
 
@@ -696,7 +694,7 @@ public class NetworkManager : Manager
 	public void InstantiateNoticePopup(string caption, string description)
 	{
 		var noticePopup = Instantiate(NoticePopupPrefab, UiCanvas.transform)
-			.GetComponent<Side.NoticePopup>();
+			.GetComponent<NoticePopup>();
 		noticePopup.caption.text = caption;
 		noticePopup.description.text = description;
 
@@ -735,9 +733,6 @@ public class NetworkManager : Manager
 		var radialMenuController = Instantiate(RadialMenuPrefab, UiCanvas.transform)
 			.GetComponent<RadialMenuController>();
 		radialMenuController.Entity = transform.GetComponent<Entity>();
-		Debug.Log(transform);
-		Debug.Log(radialMenuController.Entity);
-		radialMenuController.UpdateButtons();
 	}
 
 	public void TaskAccept(int citizenId, int taskId)
@@ -748,7 +743,7 @@ public class NetworkManager : Manager
 
 	private void ProcessCitizenMove(string json)
 	{
-		GameManager.Instance.Me = JsonUtility.FromJson<CitizenMoveResponse>(json).citizen;
+		GameManager.Instance.Citizen = JsonUtility.FromJson<CitizenMoveResponse>(json).citizen;
 		ProcessParcel(json);
 	}
 
@@ -1056,7 +1051,7 @@ public class NetworkManager : Manager
 
 	private void InstantiateRoom(RoomItem room, Vector3 pos)
 	{
-		var prefab = room.id == GameManager.Instance.Me.room.id ? OpenRoomPrefab : ClosedRoomPrefab;
+		var prefab = room.id == GameManager.Instance.Citizen.room.id ? OpenRoomPrefab : ClosedRoomPrefab;
 		var instance = Instantiate(prefab, pos, Quaternion.identity, RoomCanvas.transform);
 		instance.name = $"Room#{room.id} ({room.x}/{room.y}/{room.z})";
 		var component = instance.GetComponent<Entities.Cells.Room>();
@@ -1073,34 +1068,30 @@ public class NetworkManager : Manager
 		component.Item = citizen;
 	}
 
-	public void InstantiatePda(string address = "")
+	public WebBrowser InstantiateWebBrowser(string internetAddress = "")
 	{
 		DestroyWindows();
-		Instantiate(PdaPrefab, UiCanvas.transform)
-			.GetComponent<Side.WindowManager>().SwitchTab("Internet");
-	}
-
-	private void ProcessExec(string json)
-	{
-		var response = JsonUtility.FromJson<ExecResponse>(json);
-		if (response == null)
+		var webBrowser = Instantiate(WebBrowserPrefab, UiCanvas.transform)
+			.GetComponent<WebBrowser>();
+		if (internetAddress != "")
 		{
-			return;
+			webBrowser.LoadPage(internetAddress);
 		}
 
-		GameObject.Find("ComputerWindow(Clone)")
-			.GetComponentInChildren<Side.ComputerInternetTab>().Content.text = response.result;
+		return webBrowser;
 	}
 
-	private void ProcessMe(string json)
+	private void ProcessUser(string json)
 	{
-		var response = JsonUtility.FromJson<CitizenResponse>(json);
+		var response = JsonUtility.FromJson<UserResponse>(json);
         if (response == null)
         {
             return;
         }
 
-		GameManager.Instance.Me = response.citizen;
+		GameManager.Instance.User = response.user;
+		GameManager.Instance.Citizen = response.user.citizen;
+		CenterCitizenButton(GameManager.Instance.Citizen);
 	}
 
 	public string Escape(string text)
