@@ -6,14 +6,13 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Models;
 using TMPro;
-using Side;
 
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
 {
     public TMP_Text Content;
 
-    private WebBrowser _webBrowser;
+    private Side.WebBrowser _webBrowser;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -51,6 +50,9 @@ public class OpenHyperlinks : MonoBehaviour, IPointerClickHandler
         UnityAction<string> action;
         switch (command)
         {
+            case "goto":
+                Application.OpenURL($"https://t.me/{args[0]}");
+                break;
             case "chat":
                 NetworkManager.Instance.CitizenChatButton(args[0]);
                 break;

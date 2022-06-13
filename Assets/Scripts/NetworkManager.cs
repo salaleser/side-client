@@ -15,7 +15,6 @@ using TMPro;
 using Entities.Items;
 using Models;
 using WebSocketSharp;
-using Side;
 
 public class NetworkManager : Manager
 {
@@ -531,19 +530,19 @@ public class NetworkManager : Manager
 	public void InstantiateCreateRoomPopup(int z)
 	{
 		Instantiate(CreateRoomPopupPrefab, UiCanvas.transform)
-			.GetComponent<CreateRoomPopup>().Z.text = z.ToString();
+			.GetComponent<Side.CreateRoomPopup>().Z.text = z.ToString();
 	}
 
 	public void InstantiateEnterPasswordPopup(RoomItem room)
 	{
 		Instantiate(EnterPasswordPopupPrefab, UiCanvas.transform)
-			.GetComponent<EnterPasswordPopup>().SetRoom(room);
+			.GetComponent<Side.EnterPasswordPopup>().SetRoom(room);
 	}
 
 	public void InstantiateInputFieldPopup(string title, string text, UnityAction<string> action, int type = -1)
 	{
 		var popup = Instantiate(InputFieldPopupPrefab, UiCanvas.transform)
-			.GetComponent<InputFieldPopup>();
+			.GetComponent<Side.InputFieldPopup>();
 		popup.Caption.text = title;
 		popup.InputField.text = text;
 		popup.Action = action;
@@ -585,7 +584,7 @@ public class NetworkManager : Manager
 	private void InstantiateDealPopup(DealItem deal)
 	{
 		Instantiate(DealPopupPrefab, UiCanvas.transform)
-			.GetComponent<DealPopup>().Deal = deal;
+			.GetComponent<Side.DealPopup>().Deal = deal;
 	}
 
 	public void InviteCreate(int inviterId, int organizationId, int citizenId)
@@ -642,7 +641,7 @@ public class NetworkManager : Manager
 			var s = Regex.Split(text, @"(^\d+) ");
 			if (s.Length > 2)
 			{
-				var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(s[2]), GameManager.Instance.Citizen.parcel_id.ToString(), s[1], "", "", ""};
+				var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(s[2]), GameManager.Instance.Citizen.parcel_id.ToString(), s[1], "", "", "", "0"};
 				StartCoroutine(Request("chat", args, null));
 			}
 		};
@@ -655,7 +654,7 @@ public class NetworkManager : Manager
 			var s = Regex.Split(text, @"(^-\d+) ");
 			if (s.Length > 2)
 			{
-				var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(s[2]), GameManager.Instance.Citizen.parcel_id.ToString(), "", s[1], "", ""};
+				var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(s[2]), GameManager.Instance.Citizen.parcel_id.ToString(), "", s[1], "", "", "0"};
 				StartCoroutine(Request("chat", args, null));
 			}
 		};
@@ -665,7 +664,7 @@ public class NetworkManager : Manager
 	public void NearbyChatButton()
 	{
 		UnityAction<string> action = (text) => {
-			var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(text), GameManager.Instance.Citizen.parcel_id.ToString(), "", "", "", ""};
+			var args = new string[]{GameManager.Instance.Citizen.id.ToString(), Escape(text), GameManager.Instance.Citizen.parcel_id.ToString(), "", "", "", "", "0"};
 			StartCoroutine(Request("chat", args, null));
 		};
 		InstantiateInputFieldPopup("Nearby Chat", "", action, 0);
@@ -702,7 +701,7 @@ public class NetworkManager : Manager
 	public void InstantiateNoticePopup(string caption, string description)
 	{
 		var noticePopup = Instantiate(NoticePopupPrefab, UiCanvas.transform)
-			.GetComponent<NoticePopup>();
+			.GetComponent<Side.NoticePopup>();
 		noticePopup.caption.text = caption;
 		noticePopup.description.text = description;
 
@@ -739,7 +738,7 @@ public class NetworkManager : Manager
 	public void InstantiateRadialMenu(Transform transform)
 	{
 		var radialMenuController = Instantiate(RadialMenuPrefab, UiCanvas.transform)
-			.GetComponent<RadialMenuController>();
+			.GetComponent<Side.RadialMenuController>();
 		radialMenuController.Entity = transform.GetComponent<Entity>();
 	}
 
@@ -1076,12 +1075,12 @@ public class NetworkManager : Manager
 		component.Item = citizen;
 	}
 
-	public WebBrowser InstantiateWebBrowser(string internetAddress)
+	public Side.WebBrowser InstantiateWebBrowser(string internetAddress)
 	{
 		DestroyWindows();
 		var webBrowserInstance = Instantiate(WebBrowserPrefab, UiCanvas.transform);
 
-		var webBrowser = webBrowserInstance.GetComponent<WebBrowser>();
+		var webBrowser = webBrowserInstance.GetComponent<Side.WebBrowser>();
 		webBrowser.LoadPage(internetAddress);
 
 		return webBrowser;
